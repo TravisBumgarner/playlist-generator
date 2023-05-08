@@ -1,0 +1,24 @@
+{
+  "name": "yes-backend",
+  "author": "Travis Bumgarner",
+  "scripts": {
+    "start": "nodemon ./index.ts"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.17.2",
+    "mongodb": "^5.4.0",
+    "runtypes": "^6.6.0",
+    "ts-node": "^10.4.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.13",
+    "nodemon": "^2.0.15",
+    "typescript": "^4.9.5"
+  }
+}
