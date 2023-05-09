@@ -3,15 +3,26 @@ const webpack = require('webpack')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-let __STATIC__
-let __API__
-if (process.env.NODE_ENV === 'production') {
-  __STATIC__ = '"someprodurl"'
-  __API__ = '"someprodurl"'
-} else {
-  __STATIC__ = '"http://localhost:3000/public"'
-  __API__ = '"http://localhost:5001"'
+const PLUGIN_VARS = {
+  local: {
+    __API_WS_ENDPOINT__: "'ws://localhost:8080/graphql'",
+    __API_HTTP_ENDPOINT__: "'http://localhost:8080/graphql'",
+    __LOGGING_LEVEL__: "'local'",
+    __API__: '"http://localhost:5001"'
+  },
+  production: {
+    __API_WS_ENDPOINT__: "''",
+    __API_HTTP_ENDPOINT__: "''",
+    __LOGGING_LEVEL__: "'sentry'",
+    __API__: '"someprodurl"'
+  }
 }
+
+const getEnvVariables = () => {
+  return PLUGIN_VARS[process.env.NODE_ENV || 'production']
+}
+
+const envVariables = getEnvVariables()
 
 
 module.exports = {
@@ -51,8 +62,7 @@ module.exports = {
     historyApiFallback: true,
   },
   plugins: [
-    new webpack.DefinePlugin({ __STATIC__ }),
-    new webpack.DefinePlugin({ __API__ }),
+    new webpack.DefinePlugin(envVariables),
     new HtmlWebpackPlugin({
       template: './src/static/index.template.ejs',
       favicon: './src/static/favicon.png',
