@@ -4,12 +4,15 @@
   "veresion": "1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
+    "@apollo/client": "^3.7.14",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.3",
     "axios": "^1.4.0",
+    "graphql": "^16.6.0",
+    "graphql-ws": "^5.12.1",
     "polished": "^4.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -28,7 +31,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "scripts": {
-    "start": "webpack serve --mode=development --config=webpack.js",
+    "start": "export NODE_ENV=local && webpack serve --config=webpack.js",
     "build": " rm -rf ./build; mkdir ./build; webpack --mode=production --config=webpack.js"
   }
 }
