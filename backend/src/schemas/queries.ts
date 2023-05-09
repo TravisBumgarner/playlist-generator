@@ -8,7 +8,6 @@ const ping = {
         ping: { type: new GraphQLNonNull(GraphQLString) }
     },
     resolve: async (_: any, args: { ping: string }) => {
-        console.log('resolving')
         return `pong, ${ping}`
     },
 }
