@@ -1,6 +1,6 @@
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client"
 import { Box, Button, Container, ListItemButton, Typography } from "@mui/material"
-import { useCallback, useEffect, useState, useMemo } from "react"
+import { useCallback, useContext, useState, useMemo } from "react"
 
 import { Loading } from "sharedComponents"
 import { TAutocompleteEntry, TPlaylistEntry } from '../../../shared/types'
@@ -14,6 +14,9 @@ import ImageIcon from '@mui/icons-material/Image';
 import WorkIcon from '@mui/icons-material/Work';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import TextField from '@mui/material/TextField';
+import SpotifyWebApi from 'spotify-web-api-node'
+import { ELocalStorageItems, getLocalStorage } from "utilities"
+import { context } from "context"
 
 
 const AUTOCOMPLETE_QUERY = gql`
@@ -110,7 +113,8 @@ const SearchBox = ({ resultSelectedCallback }: { resultSelectedCallback: (artist
 const Playlist = ({ artistId }: { artistId: string }) => {
     const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
     const [createEnergizingPlaylist] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
-    const [savePlaylist] = useMutation<{ savePlaylist: boolean }>(SAVE_PLAYLIST_QUERY)
+    const { dispatch } = useContext(context)
+    // const [savePlaylist] = useMutation<{ savePlaylist: boolean }>(SAVE_PLAYLIST_QUERY)
 
     const handleCreatePlaylistSubmit = useCallback(async () => {
         setPlaylistEntries([])
@@ -123,12 +127,22 @@ const Playlist = ({ artistId }: { artistId: string }) => {
     const handleSavePlaylistSubmit = useCallback(async () => {
         console.log(playlistEntries)
         const uris = playlistEntries.map(({ uri }) => uri)
-        console.log(uris.join(','))
-        navigator.clipboard.writeText(uris.join(','))
-        // const result = await savePlaylist({ variables: { uris } })
-        // // if (result.data?.savePlaylist) {
-        // //     setPlaylistEntries(result.data?.savePlaylist)
-        // // }
+
+        const spotifyApi = new SpotifyWebApi({});
+        const accessToken = getLocalStorage(ELocalStorageItems.AccessToken)
+        if (!accessToken) { //TODO - could warn sooner
+            dispatch({ type: "ADD_MESSAGE", data: { message: "You need to login first" } })
+            return
+        }
+        await spotifyApi.setAccessToken(accessToken)
+
+        const playlist = await spotifyApi.createPlaylist('My Programatic Playlist')
+
+        await spotifyApi.addTracksToPlaylist(playlist.body.id, uris)
+
+        dispatch({ type: "ADD_MESSAGE", data: { message: `Success! Open Spotify https://open.spotify.com/playlist/${playlist.body.uri}` } })
+
+
         setPlaylistEntries([])
     }, [artistId, playlistEntries])
 

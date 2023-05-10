@@ -5,8 +5,24 @@ const logger = (message: any) => {
     console.log(JSON.stringify(message)) // eslint-disable-line
 }
 
+enum ELocalStorageItems {
+    AccessToken = 'accessToken'
+}
+
+const getLocalStorage = (key: ELocalStorageItems) => {
+    const result = localStorage.getItem(key)
+    return result ? JSON.parse(result) : ''
+}
+
+const setLocalStorage = (key: ELocalStorageItems, value: any) => {
+    localStorage.setItem(key, JSON.stringify(value))
+}
+
 export {
     logger,
     AtLeast,
     Exactly,
+    getLocalStorage,
+    setLocalStorage,
+    ELocalStorageItems
 }

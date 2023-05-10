@@ -58,9 +58,7 @@ const SpotifyClientPromise = (async () => {
     });
 
     if (expiresIn < new Date()) {
-        console.log('setting token')
         const token = await getSpotifyToken()
-        console.log(token)
         spotifyApi.setAccessToken(token.access_token)
 
         expiresIn = new Date(expiresIn.getTime() + token.expires_in * 1000);

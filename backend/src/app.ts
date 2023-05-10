@@ -6,6 +6,9 @@ import bodyParser from 'body-parser'
 import { WebSocketServer } from 'ws'
 import schema from './schemas'
 import { logger } from './utilities'
+import { Number, Record, String } from 'runtypes'
+import config from './config'
+import axios from 'axios'
 const app = express()
 
 // process.on('uncaughtException', (error: any) => logger(error))
@@ -40,6 +43,35 @@ app.use(bodyParser.json())
 
 app.get('/ok', async (req: express.Request, res: express.Response) => {
   res.send('pong!')
+})
+
+app.get('/spotify_redirect', async (req: express.Request, res: express.Response) => {
+  const SpotifyRedirect = Record({ code: String, state: String, })
+  try {
+    const { state, code } = SpotifyRedirect.check(req.query)
+    if (state === null) {
+      res.sendStatus(500)
+      return
+    }
+    const response = await axios.post('https://accounts.spotify.com/api/token', {
+      grant_type: 'authorization_code',
+      code,
+      redirect_uri: config.spotify.backendRedirectURI,
+    }, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + (Buffer.from(config.spotify.clientId + ':' + config.spotify.clientSecret).toString('base64'))
+      },
+    })
+    console.log(response.data)
+    const SpotifyToken = Record({ access_token: String, token_type: String, scope: String, expires_in: Number, refresh_token: String })
+    const { access_token } = SpotifyToken.check(response.data)
+    console.log(`${config.spotify.frontendRedirectURI}?access_token=${access_token}`)
+    res.redirect(`${config.spotify.frontendRedirectURI}?access_token=${access_token}`)
+  } catch (e) {
+    logger(e)
+    res.sendStatus(401)
+  }
 })
 
 app.use('/graphql', graphqlHTTP(() => ({

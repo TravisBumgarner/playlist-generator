@@ -10,7 +10,9 @@ const Env = Record({
     }),
     spotify: Record({
         clientId: String,
-        clientSecret: String
+        clientSecret: String,
+        frontendRedirectURI: String,
+        backendRedirectURI: String
     })
 
 })
@@ -25,6 +27,8 @@ const getEnv = () => {
         spotify: {
             clientId: process.env.SPOTIFY_CLIENT_ID,
             clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+            frontendRedirectURI: process.env.SPOTIFY_REDIRECT_FRONTEND_URI,
+            backendRedirectURI: process.env.SPOTIFY_REDIRECT_BACKEND_URI,
         }
     }
     try {

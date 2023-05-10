@@ -13,5 +13,9 @@
 
 # Ideas for Features
 
+# If things are failing
+
+- Make sure ngrok URI is up to date in dashboard (Needs to include `/spotify_redirect`)
+
 
 - https://developer.spotify.com/documentation/web-api/reference/get-several-audio-features

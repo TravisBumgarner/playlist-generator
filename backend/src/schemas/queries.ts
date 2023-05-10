@@ -1,7 +1,10 @@
 import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
-import spotifyAPIClient from '../spotify'
+import { v4 as uuidv4 } from 'uuid'
+
 import SpotifyClientPromise from '../spotify'
 import { TAutocompleteEntry, TPlaylistEntry } from '../../../shared/types'
+import config from '../config'
+
 
 // They're f'ing case sensative -_-
 enum Markets {
@@ -61,6 +64,28 @@ const PlaylistType = new GraphQLObjectType({
         uri: { type: new GraphQLNonNull(GraphQLString) },
     }),
 })
+
+const getSpotifyRedirectURI = {
+    type: GraphQLString,
+    description: 'Initiate Login Process',
+    args: {
+    },
+    resolve: async () => {
+        const state = uuidv4();
+        const scope = 'user-read-private user-read-email playlist-modify-public';
+
+        const queryString = new URLSearchParams({
+            response_type: 'code',
+            client_id: config.spotify.clientId,
+            scope: scope,
+            redirect_uri: config.spotify.backendRedirectURI,
+            state: state
+        })
+
+        const redirectUrl = 'https://accounts.spotify.com/authorize?' + queryString.toString()
+        return redirectUrl
+    }
+}
 
 const autocomplete = {
     type: new GraphQLList(AutoCompleteType),
@@ -136,7 +161,8 @@ const RootQueryType = new GraphQLObjectType({
     fields: () => ({
         ping,
         autocomplete,
-        createEnergizingPlaylist
+        createEnergizingPlaylist,
+        getSpotifyRedirectURI
     }),
 })
 
