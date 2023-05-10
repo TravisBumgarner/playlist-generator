@@ -1,23 +1,17 @@
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client"
-import { Box, Button, Container, ListItemButton, Typography } from "@mui/material"
+import { gql, useLazyQuery } from "@apollo/client"
+import { Box, Button, Container, Typography } from "@mui/material"
 import { useCallback, useContext, useState, useMemo } from "react"
-
-import { Loading } from "sharedComponents"
-import { TAutocompleteEntry, TPlaylistEntry } from '../../../shared/types'
 import * as React from 'react';
-import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import ImageIcon from '@mui/icons-material/Image';
-import WorkIcon from '@mui/icons-material/Work';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 import TextField from '@mui/material/TextField';
 import SpotifyWebApi from 'spotify-web-api-node'
+
+import { TAutocompleteEntry, TPlaylistEntry } from '../../../shared/types'
 import { ELocalStorageItems, getLocalStorage } from "utilities"
 import { context } from "context"
-
 
 const AUTOCOMPLETE_QUERY = gql`
 query Autocomplete($query: String!) {
@@ -41,12 +35,6 @@ query createEnergizingPlaylist($artistId: String!) {
   }
 `
 
-const SAVE_PLAYLIST_QUERY = gql`
-mutation savePlaylist($uris: [String]!) {
-    savePlaylist(uris: $uris)
-  }
-`
-
 const PlaylistItem = (data: TPlaylistEntry) => {
     const handleClick = useCallback(() => alert(data.id), [])
     return (
@@ -58,7 +46,6 @@ const PlaylistItem = (data: TPlaylistEntry) => {
         </ListItem >
     )
 }
-
 
 const AutocompleteItem = ({ data, resultSelectedCallback }: { data: TAutocompleteEntry, resultSelectedCallback: (artistId: string) => void }) => {
     const handleClick = useCallback(() => resultSelectedCallback(data.id), [data.id])
@@ -114,7 +101,6 @@ const Playlist = ({ artistId }: { artistId: string }) => {
     const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
     const [createEnergizingPlaylist] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
     const { dispatch } = useContext(context)
-    // const [savePlaylist] = useMutation<{ savePlaylist: boolean }>(SAVE_PLAYLIST_QUERY)
 
     const handleCreatePlaylistSubmit = useCallback(async () => {
         setPlaylistEntries([])
@@ -125,7 +111,6 @@ const Playlist = ({ artistId }: { artistId: string }) => {
     }, [artistId])
 
     const handleSavePlaylistSubmit = useCallback(async () => {
-        console.log(playlistEntries)
         const uris = playlistEntries.map(({ uri }) => uri)
 
         const spotifyApi = new SpotifyWebApi({});
@@ -149,8 +134,6 @@ const Playlist = ({ artistId }: { artistId: string }) => {
     const Playlist = useMemo(() => {
         return playlistEntries.map(result => <PlaylistItem key={result.uri} {...result} />)
     }, [playlistEntries])
-
-    console.log(playlistEntries)
 
     return (<Box>
         {

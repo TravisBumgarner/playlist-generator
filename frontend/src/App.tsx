@@ -4,14 +4,14 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { Record, String, Array } from 'runtypes'
-
-import { PageHeader, Alert, Router, Navigation } from "./components"
 import { useNavigate, useParams } from "react-router"
-import { useSearchParams } from "react-router-dom"
 import { useCallback, useContext, useEffect } from "react"
+import axios from "axios"
+import { useSearchParams } from "react-router-dom"
+
+import { Alert, Router, Navigation } from "./components"
 import { ELocalStorageItems, getLocalStorage, logger, setLocalStorage } from "utilities"
 import { context } from "context"
-import axios from "axios"
 
 const wsLink = new GraphQLWsLink(createClient({ url: __API_WS_ENDPOINT__ }))
 const httpLink = new HttpLink({ uri: __API_HTTP_ENDPOINT__ })
@@ -93,7 +93,6 @@ const App = () => {
   return (
     <ApolloProvider client={apolloClient} >
       <CssBaseline />
-      <PageHeader />
       <Navigation />
       <Alert />
       <Router />

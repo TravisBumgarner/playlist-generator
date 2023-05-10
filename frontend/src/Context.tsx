@@ -29,6 +29,10 @@ type Login = {
     }
 }
 
+type Logout = {
+    type: "LOGOUT",
+}
+
 type HasErrored = {
     type: 'HAS_ERRORED'
 }
@@ -49,6 +53,7 @@ type Action =
     | DeleteMessage
     | HasErrored
     | Login
+    | Logout
 
 const context = createContext(
     {
@@ -66,7 +71,6 @@ const reducer = (state: State, action: Action): State => {
             return { ...state, hasErrored: true }
         }
         case 'ADD_MESSAGE': {
-            console.log(action.data.message)
             return { ...state, message: { body: action.data.message } }
         }
         case 'DELETE_MESSAGE': {
@@ -74,6 +78,9 @@ const reducer = (state: State, action: Action): State => {
         }
         case "LOGIN": {
             return { ...state, user: { ...action.data } }
+        }
+        case "LOGOUT": {
+            return { ...state, user: null }
         }
         default: {
             logger(`Swallowing action: ${JSON.stringify(action)}`)

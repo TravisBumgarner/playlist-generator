@@ -2,7 +2,7 @@ import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQ
 import { v4 as uuidv4 } from 'uuid'
 
 import SpotifyClientPromise from '../spotify'
-import { TAutocompleteEntry, TPlaylistEntry } from '../../../shared/types'
+import { TAutocompleteEntry } from '../../../shared/types'
 import config from '../config'
 
 
@@ -78,7 +78,7 @@ const getSpotifyRedirectURI = {
             response_type: 'code',
             client_id: config.spotify.clientId,
             scope: scope,
-            redirect_uri: config.spotify.backendRedirectURI,
+            redirect_uri: config.spotify.redirectURI,
             state: state
         })
 

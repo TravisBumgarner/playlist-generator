@@ -18,11 +18,16 @@ const setLocalStorage = (key: ELocalStorageItems, value: any) => {
     localStorage.setItem(key, JSON.stringify(value))
 }
 
+const deleteLocalStorage = (key: ELocalStorageItems) => {
+    localStorage.removeItem(key)
+}
+
 export {
     logger,
     AtLeast,
     Exactly,
     getLocalStorage,
     setLocalStorage,
+    deleteLocalStorage,
     ELocalStorageItems
 }

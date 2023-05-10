@@ -56,18 +56,17 @@ app.get('/spotify_redirect', async (req: express.Request, res: express.Response)
     const response = await axios.post('https://accounts.spotify.com/api/token', {
       grant_type: 'authorization_code',
       code,
-      redirect_uri: config.spotify.backendRedirectURI,
+      redirect_uri: config.spotify.redirectURI,
     }, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': 'Basic ' + (Buffer.from(config.spotify.clientId + ':' + config.spotify.clientSecret).toString('base64'))
       },
     })
-    console.log(response.data)
     const SpotifyToken = Record({ access_token: String, token_type: String, scope: String, expires_in: Number, refresh_token: String })
     const { access_token } = SpotifyToken.check(response.data)
-    console.log(`${config.spotify.frontendRedirectURI}?access_token=${access_token}`)
-    res.redirect(`${config.spotify.frontendRedirectURI}?access_token=${access_token}`)
+    // TODO - Get off refresh_token as well
+    res.redirect(`http://localhost:3001/?access_token=${access_token}`)
   } catch (e) {
     logger(e)
     res.sendStatus(401)
@@ -102,7 +101,6 @@ app.use('/graphql', graphqlHTTP(() => ({
 // })
 
 const server = app.listen(5001, '0.0.0.0', () => {
-  console.log('App listening at http://0.0.0.0:5001') //eslint-disable-line
 
   const wsServer = new WebSocketServer({ server, path: '/graphql' })
   useServer({ schema }, wsServer)
