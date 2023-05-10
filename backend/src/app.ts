@@ -15,7 +15,7 @@ const app = express()
 // app.use(Sentry.Handlers.tracingHandler())
 
 const CORS_DEV = [
-  'localhost:3000',
+  'localhost:3001',
 ]
 
 const COORS_PROD = [
@@ -45,7 +45,7 @@ app.get('/ok', async (req: express.Request, res: express.Response) => {
 app.use('/graphql', graphqlHTTP(() => ({
   schema,
   graphiql: process.env.NODE_ENV !== 'production',
-  customFormatErrorFn: (err) => {
+  customFormatErrorFn: (err: any) => {
     logger(err.message)
     // if (err.message in errorLookup) return errorLookup[err.message]
     return {
@@ -69,9 +69,11 @@ app.use('/graphql', graphqlHTTP(() => ({
 //   tracesSampleRate: 1.0,
 // })
 
-const server = app.listen(8080, '0.0.0.0', () => {
-  console.log('App listening at http://0.0.0.0:8080') //eslint-disable-line
+const server = app.listen(5001, '0.0.0.0', () => {
+  console.log('App listening at http://0.0.0.0:5001') //eslint-disable-line
 
   const wsServer = new WebSocketServer({ server, path: '/graphql' })
   useServer({ schema }, wsServer)
 })
+
+export { }

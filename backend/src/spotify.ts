@@ -1,6 +1,7 @@
 import { Constraint, Literal, Number, Record, String, Union } from 'runtypes'
 import config from './config'
 import axios from 'axios'
+import SpotifyWebApi from 'spotify-web-api-node'
 
 const Token = Record({
     access_token: String,
@@ -47,3 +48,25 @@ export const getSpotifyThing = async () => {
 
     return response.data as JSON
 }
+
+let expiresIn: Date = new Date()
+const SpotifyClientPromise = (async () => {
+    const spotifyApi = new SpotifyWebApi({
+        clientId: config.spotify.clientId,
+        clientSecret: config.spotify.clientSecret,
+        // redirectUri: 'http://www.example.com/callback'
+    });
+
+    if (expiresIn < new Date()) {
+        console.log('setting token')
+        const token = await getSpotifyToken()
+        console.log(token)
+        spotifyApi.setAccessToken(token.access_token)
+
+        expiresIn = new Date(expiresIn.getTime() + token.expires_in * 1000);
+    }
+    return spotifyApi
+
+})()
+
+export default SpotifyClientPromise
