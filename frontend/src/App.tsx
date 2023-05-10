@@ -33,12 +33,16 @@ const apolloClient = new ApolloClient({
   link: splitLink
 })
 
-
-
 const App = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate();
-  const { dispatch } = useContext(context)
+  const { dispatch, state } = useContext(context)
+
+
+  useEffect(() => {
+    // TODO - maybe a better way to redirect users home if they log out.
+    if (!state.user) navigate('/')
+  }, [window.location, state.user])
 
   const getUserDetails = useCallback(async () => {
     const accessToken = getLocalStorage(ELocalStorageItems.AccessToken)

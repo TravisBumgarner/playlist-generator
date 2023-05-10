@@ -10,7 +10,6 @@ import LoginIcon from '@mui/icons-material/Login';
 import { Avatar } from '@mui/material';
 import { ELocalStorageItems, deleteLocalStorage, setLocalStorage } from 'utilities';
 
-
 const GET_SPOTIFY_REDIRECT_URI_QUERY = gql`
 query GetSpotifyRedirectURI {
     getSpotifyRedirectURI
@@ -18,9 +17,7 @@ query GetSpotifyRedirectURI {
 `
 
 export default function MenuAppBar() {
-    const [auth, setAuth] = useState(true);
     const [login] = useLazyQuery<{ getSpotifyRedirectURI: string }>(GET_SPOTIFY_REDIRECT_URI_QUERY)
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const { dispatch, state } = useContext(context)
 
     const handleLogin = useCallback(async () => {
@@ -36,16 +33,8 @@ export default function MenuAppBar() {
     const handleLogout = useCallback(() => {
         deleteLocalStorage(ELocalStorageItems.AccessToken)
         dispatch({ type: "LOGOUT" })
-
     }, [])
 
-    const handleMenu = (event: MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
     return (
         <AppBar position="static">
@@ -57,11 +46,6 @@ export default function MenuAppBar() {
                     <div>
                         <IconButton
                             size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleMenu}
-                            color="inherit"
                         >
                             <Avatar src={state.user.image || ''} alt={state.user.displayName} />
                         </IconButton>
