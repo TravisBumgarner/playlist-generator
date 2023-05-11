@@ -1,7 +1,7 @@
 import { GraphQLEnumType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 import { v4 as uuidv4 } from 'uuid'
 
-import SpotifyClientPromise, { getSpotifyUserTokenWithRefresh } from '../spotify'
+import getSpotifyClient, { getSpotifyUserTokenWithRefresh } from '../spotify'
 import { TAutocompleteEntry } from '../../../shared/types'
 import config from '../config'
 
@@ -121,7 +121,9 @@ const autocomplete = {
         query: { type: new GraphQLNonNull(GraphQLString) }
     },
     resolve: async (_: any, { query, types }: SearchArgs) => {
-        const client = await SpotifyClientPromise
+        const client = await getSpotifyClient()
+        console.log('autocomplete', client.getAccessToken())
+
         const spotifyResults = await client.search(query, [types], { market: Markets.US, offset: 0, limit: 10 })
         const autocompleteResults = spotifyResults?.body?.artists?.items.map(({ id, images, name }) => {
             return {
@@ -144,7 +146,8 @@ type GetRecommendationsOptions = {
 }
 
 const getRecommendations = async (options: GetRecommendationsOptions) => {
-    const client = await SpotifyClientPromise
+    const client = await getSpotifyClient()
+    console.log('getrecs', client.getAccessToken())
     try {
         const results = await client.getRecommendations(options)
         return results.body?.tracks?.map(({ id, name, artists, album, uri }) => {

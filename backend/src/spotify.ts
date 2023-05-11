@@ -16,11 +16,9 @@ export const handleSpotifyUserRedirect = async (query: express.Request['query'])
     const SpotifyRedirect = Record({ code: String, state: String, })
     try {
         const { state, code } = SpotifyRedirect.check(query)
-        console.log(state, code)
         if (state === null) {
             return null
         }
-        console.log(config.spotify)
         const response = await axios.post('https://accounts.spotify.com/api/token', {
             grant_type: 'authorization_code',
             code,
@@ -42,7 +40,6 @@ export const handleSpotifyUserRedirect = async (query: express.Request['query'])
 
         return `http://localhost:3001?${urlSearchParams.toString()}`
     } catch (e) {
-        console.log('sad panda')
         logger(e)
         return null
     }
@@ -96,20 +93,22 @@ export const getSpotifyUserTokenWithRefresh = async (refreshToken: string) => {
     }
 }
 
-let expiresIn: Date = new Date()
-const SpotifyClientPromise = (async () => {
+const expiresIn = {
+    value: new Date()
+}
+const getSpotifyClient = async () => {
     const spotifyApi = new SpotifyWebApi({
         clientId: config.spotify.clientId,
         clientSecret: config.spotify.clientSecret,
     });
-    if (expiresIn < new Date()) {
+    if (!spotifyApi.getAccessToken() || expiresIn.value < new Date()) {
         const token = await getSpotifyClientToken()
         spotifyApi.setAccessToken(token.access_token)
 
-        expiresIn = new Date(expiresIn.getTime() + token.expires_in * 1000); // There might be something off with the TTL here.
+        expiresIn.value = new Date(expiresIn.value.getTime() + token.expires_in * 1000); // There might be something off with the TTL here.
     }
     return spotifyApi
 
-})()
+}
 
-export default SpotifyClientPromise
+export default getSpotifyClient
