@@ -7,30 +7,11 @@ type State = {
         body: string
     } | null
     hasErrored: boolean
-    user: {
-        displayName: string,
-        image: string | null
-        uri: string
-    } | null
 }
 
 const EMPTY_STATE: State = {
     message: null,
     hasErrored: false,
-    user: null
-}
-
-type Login = {
-    type: "LOGIN",
-    data: {
-        displayName: string
-        uri: string
-        image: string | null
-    }
-}
-
-type Logout = {
-    type: "LOGOUT",
 }
 
 type HasErrored = {
@@ -52,8 +33,6 @@ type Action =
     | AddMessage
     | DeleteMessage
     | HasErrored
-    | Login
-    | Logout
 
 const context = createContext(
     {
@@ -66,6 +45,7 @@ const context = createContext(
 )
 
 const reducer = (state: State, action: Action): State => {
+    console.log(action.type)
     switch (action.type) {
         case 'HAS_ERRORED': {
             return { ...state, hasErrored: true }
@@ -75,12 +55,6 @@ const reducer = (state: State, action: Action): State => {
         }
         case 'DELETE_MESSAGE': {
             return { ...state, message: null }
-        }
-        case "LOGIN": {
-            return { ...state, user: { ...action.data } }
-        }
-        case "LOGOUT": {
-            return { ...state, user: null }
         }
         default: {
             logger(`Swallowing action: ${JSON.stringify(action)}`)

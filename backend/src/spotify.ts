@@ -1,52 +1,16 @@
-import { Literal, Number, Optional, Record, String, Union } from 'runtypes'
-import express from 'express'
+import { Constraint, Literal, Number, Record, String, Union } from 'runtypes'
 import config from './config'
 import axios from 'axios'
 import SpotifyWebApi from 'spotify-web-api-node'
-import { logger } from './utilities'
 
-const SpotifyToken = Record({
+const Token = Record({
     access_token: String,
     token_type: Union(Literal('Bearer')),
-    expires_in: Number,
-    refresh_token: Optional(String)
+    expires_in: Number
+
 })
 
-export const handleSpotifyUserRedirect = async (query: express.Request['query']) => {
-    const SpotifyRedirect = Record({ code: String, state: String, })
-    try {
-        const { state, code } = SpotifyRedirect.check(query)
-        if (state === null) {
-            return null
-        }
-        const response = await axios.post('https://accounts.spotify.com/api/token', {
-            grant_type: 'authorization_code',
-            code,
-            redirect_uri: config.spotify.redirectURI,
-        }, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic ' + (Buffer.from(config.spotify.clientId + ':' + config.spotify.clientSecret).toString('base64'))
-            },
-        })
-        const { access_token, expires_in, refresh_token } = SpotifyToken.check(response.data)
-
-        const urlSearchParams = new URLSearchParams()
-        urlSearchParams.append('access_token', access_token)
-        urlSearchParams.append('expires_in', expires_in.toString())
-        if (refresh_token) {
-            urlSearchParams.append('refresh_token', refresh_token)
-        }
-
-        return `http://localhost:3001?${urlSearchParams.toString()}`
-    } catch (e) {
-        logger(e)
-        return null
-    }
-}
-
-
-const getSpotifyClientToken = async () => {
+const getSpotifyToken = async () => {
     const response = await axios.post('https://accounts.spotify.com/api/token', {
         grant_type: 'client_credentials',
         client_id: config.spotify.clientId,
@@ -60,55 +24,49 @@ const getSpotifyClientToken = async () => {
     if (!response.data) {
         throw new Error("Failed to fetch Spotify Token")
     }
+
     try {
-        return SpotifyToken.check(response.data)
+        return Token.check(response.data)
     } catch (error) {
         throw Error("Failed to decode Token")
     }
 }
 
-export const getSpotifyUserTokenWithRefresh = async (refreshToken: string) => {
-    const response = await axios.post('https://accounts.spotify.com/api/token', {
-        grant_type: 'refresh_token',
-        refresh_token: refreshToken
-    }, {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic ' + (Buffer.from(config.spotify.clientId + ':' + config.spotify.clientSecret).toString('base64'))
-        },
-    })
+export const getSpotifyThing = async () => {
+    const tokenResponse = await getSpotifyToken()
+
+    const response = await
+        axios.get('https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb', {
+            headers: {
+                'Authorization': `Bearer ${tokenResponse.access_token}`
+            }
+        })
 
     if (!response.data) {
-        throw new Error("Failed to fetch Spotify Token with refresh")
+        throw new Error("Failed to fetch Spotify Thing")
     }
-    try {
-        const data = SpotifyToken.check(response.data)
-        return {
-            expiresIn: data.expires_in,
-            refreshToken: data.refresh_token,
-            accessToken: data.access_token,
-        }
-    } catch (error) {
-        throw Error("Failed to decode Token after refresh")
-    }
+
+    return response.data as JSON
 }
 
-const expiresIn = {
-    value: new Date()
-}
-const getSpotifyClient = async () => {
+let expiresIn: Date = new Date()
+const SpotifyClientPromise = (async () => {
     const spotifyApi = new SpotifyWebApi({
         clientId: config.spotify.clientId,
         clientSecret: config.spotify.clientSecret,
+        // redirectUri: 'http://www.example.com/callback'
     });
-    if (!spotifyApi.getAccessToken() || expiresIn.value < new Date()) {
-        const token = await getSpotifyClientToken()
+
+    if (expiresIn < new Date()) {
+        console.log('setting token')
+        const token = await getSpotifyToken()
+        console.log(token)
         spotifyApi.setAccessToken(token.access_token)
 
-        expiresIn.value = new Date(expiresIn.value.getTime() + token.expires_in * 1000); // There might be something off with the TTL here.
+        expiresIn = new Date(expiresIn.getTime() + token.expires_in * 1000);
     }
     return spotifyApi
 
-}
+})()
 
-export default getSpotifyClient
+export default SpotifyClientPromise

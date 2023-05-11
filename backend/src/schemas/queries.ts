@@ -1,10 +1,7 @@
-import { GraphQLEnumType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
-import { v4 as uuidv4 } from 'uuid'
-
-import getSpotifyClient, { getSpotifyUserTokenWithRefresh } from '../spotify'
-import { TAutocompleteEntry } from '../../../shared/types'
-import config from '../config'
-
+import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
+import spotifyAPIClient from '../spotify'
+import SpotifyClientPromise from '../spotify'
+import { TAutocompleteEntry, TPlaylistEntry } from '../../../shared/types'
 
 // They're f'ing case sensative -_-
 enum Markets {
@@ -38,24 +35,10 @@ type SearchArgs = {
     query: string
 }
 
-type RefreshTokenArgs = {
-    refreshToken: string
-}
-
-
 type CreateEnergizingPlaylistArgs = {
     artistId: string,
 }
 
-const TokenType = new GraphQLObjectType({
-    name: 'Token',
-    description: 'This represents a spotify Token',
-    fields: () => ({
-        refreshToken: { type: GraphQLString },
-        expiresIn: { type: new GraphQLNonNull(GraphQLInt) },
-        accessToken: { type: new GraphQLNonNull(GraphQLString) },
-    }),
-})
 
 const AutoCompleteType = new GraphQLObjectType({
     name: 'AutocompleteResult',
@@ -79,40 +62,6 @@ const PlaylistType = new GraphQLObjectType({
     }),
 })
 
-const getSpotifyRedirectURI = {
-    type: GraphQLString,
-    description: 'Initiate Login Process',
-    args: {
-    },
-    resolve: async () => {
-        const state = uuidv4();
-        const scope = 'user-read-private user-read-email playlist-modify-public';
-
-        const queryString = new URLSearchParams({
-            response_type: 'code',
-            client_id: config.spotify.clientId,
-            scope: scope,
-            redirect_uri: config.spotify.redirectURI,
-            state: state
-        })
-
-        const redirectUrl = 'https://accounts.spotify.com/authorize?' + queryString.toString()
-        return redirectUrl
-    }
-}
-
-const refreshToken = {
-    type: new GraphQLNonNull(TokenType),
-    description: 'Initiate Token Refresh Process',
-    args: {
-        refreshToken: { type: new GraphQLNonNull(GraphQLString) }
-    },
-    resolve: async (_: any, { refreshToken }: RefreshTokenArgs) => {
-        return await getSpotifyUserTokenWithRefresh(refreshToken)
-    }
-}
-
-
 const autocomplete = {
     type: new GraphQLList(AutoCompleteType),
     description: 'Get a list of items searched for autocomplete',
@@ -121,9 +70,7 @@ const autocomplete = {
         query: { type: new GraphQLNonNull(GraphQLString) }
     },
     resolve: async (_: any, { query, types }: SearchArgs) => {
-        const client = await getSpotifyClient()
-        console.log('autocomplete', client.getAccessToken())
-
+        const client = await SpotifyClientPromise
         const spotifyResults = await client.search(query, [types], { market: Markets.US, offset: 0, limit: 10 })
         const autocompleteResults = spotifyResults?.body?.artists?.items.map(({ id, images, name }) => {
             return {
@@ -146,8 +93,7 @@ type GetRecommendationsOptions = {
 }
 
 const getRecommendations = async (options: GetRecommendationsOptions) => {
-    const client = await getSpotifyClient()
-    console.log('getrecs', client.getAccessToken())
+    const client = await SpotifyClientPromise
     try {
         const results = await client.getRecommendations(options)
         return results.body?.tracks?.map(({ id, name, artists, album, uri }) => {
@@ -182,15 +128,15 @@ const createEnergizingPlaylist = {
     }
 }
 
+
+
 const RootQueryType = new GraphQLObjectType({
     name: 'Query',
     description: 'Root Query',
     fields: () => ({
         ping,
         autocomplete,
-        createEnergizingPlaylist,
-        getSpotifyRedirectURI,
-        refreshToken
+        createEnergizingPlaylist
     }),
 })
 
