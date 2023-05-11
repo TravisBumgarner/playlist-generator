@@ -1,18 +1,11 @@
-# Setup
-
-1. Install dependencies in each folder
-2. `yarn start` from the root
-
-## Generate a key
-
-1. Start up `yarn tunnel`
-2. Copy forwarding ports to `backend/.env`
-3. Copy forwarding ports to Spotify https://developer.spotify.com/dashboard/901c16df18ad4cf894bf8c2cf98dc3e1
 
 # Next Steps
 
 - [ ] Setup user auth for saving songs to playlist
 - [ ] Can't refresh routes outside of homepage.
+
+# Post Deploy
+- [ ] Implement TS Project References
 
 # Random notes
 

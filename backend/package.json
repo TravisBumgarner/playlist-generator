@@ -4,6 +4,7 @@
   "scripts": {
     "start": "nodemon ./src/app.ts"
   },
+  "version": "1.0.0",
   "keywords": [],
   "license": "ISC",
   "dependencies": {

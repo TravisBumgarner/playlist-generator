@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "author": "Travis Bumgarner",
-  "veresion": "1.0.0",
+  "version": "1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
     "@apollo/client": "^3.7.14",
