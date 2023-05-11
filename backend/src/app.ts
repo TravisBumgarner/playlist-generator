@@ -6,10 +6,7 @@ import bodyParser from 'body-parser'
 import { WebSocketServer } from 'ws'
 import schema from './schemas'
 import { logger } from './utilities'
-import { Number, Record, String } from 'runtypes'
-import config from './config'
-import axios from 'axios'
-import { SpotifyToken } from './spotify'
+import { handleSpotifyUserRedirect } from './spotify'
 const app = express()
 
 // process.on('uncaughtException', (error: any) => logger(error))
@@ -47,38 +44,12 @@ app.get('/ok', async (req: express.Request, res: express.Response) => {
 })
 
 app.get('/spotify_redirect', async (req: express.Request, res: express.Response) => {
-  const SpotifyRedirect = Record({ code: String, state: String, })
-  try {
-    const { state, code } = SpotifyRedirect.check(req.query)
-    if (state === null) {
-      res.sendStatus(500)
-      return
-    }
-    const response = await axios.post('https://accounts.spotify.com/api/token', {
-      grant_type: 'authorization_code',
-      code,
-      redirect_uri: config.spotify.redirectURI,
-    }, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + (Buffer.from(config.spotify.clientId + ':' + config.spotify.clientSecret).toString('base64'))
-      },
-    })
-    // TODO - can this be moved to spotify and also grpahql
-    const { access_token, expires_in, refresh_token } = SpotifyToken.check(response.data)
-    // TODO - Get off refresh_token as well
-    const urlSearchParams = new URLSearchParams()
-    urlSearchParams.append('access_token', access_token)
-    urlSearchParams.append('expires_in', expires_in.toString())
-    if (refresh_token) {
-      urlSearchParams.append('refresh_token', refresh_token)
-    }
-
-    res.redirect(`http://localhost:3001?${urlSearchParams.toString()}`)
-  } catch (e) {
-    logger(e)
-    res.sendStatus(401)
+  const response = await handleSpotifyUserRedirect(req.query)
+  if (response === null) {
+    res.sendStatus(500)
+    return
   }
+  res.redirect(response)
 })
 
 app.use('/graphql', graphqlHTTP(() => ({

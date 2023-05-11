@@ -1,7 +1,7 @@
 import { GraphQLEnumType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 import { v4 as uuidv4 } from 'uuid'
 
-import SpotifyClientPromise, { getSpotifyTokenWithRefresh } from '../spotify'
+import SpotifyClientPromise, { getSpotifyUserTokenWithRefresh } from '../spotify'
 import { TAutocompleteEntry } from '../../../shared/types'
 import config from '../config'
 
@@ -108,7 +108,7 @@ const refreshToken = {
         refreshToken: { type: new GraphQLNonNull(GraphQLString) }
     },
     resolve: async (_: any, { refreshToken }: RefreshTokenArgs) => {
-        return await getSpotifyTokenWithRefresh(refreshToken)
+        return await getSpotifyUserTokenWithRefresh(refreshToken)
     }
 }
 

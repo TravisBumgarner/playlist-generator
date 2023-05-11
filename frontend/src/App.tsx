@@ -97,9 +97,7 @@ const App = () => {
     const accessTokenLocalStorage = getLocalStorage(ELocalStorageItems.AccessToken)
     if (accessTokenLocalStorage) {
       const expiresAtLocalStorage = new Date(getLocalStorage(ELocalStorageItems.ExpiresAt))
-      console.log(expiresAtLocalStorage)
       const isTokenInvalid = expiresAtLocalStorage < new Date() || !(expiresAtLocalStorage instanceof Date)
-      console.log("token valid", isTokenInvalid)
       if (isTokenInvalid) {
         getUserDetails().then(data => dispatch({ type: "LOGIN", data })) // TODO - Could be optimized later.
       } else {
@@ -110,11 +108,9 @@ const App = () => {
 
   const refreshTokenInStorage = useCallback(() => {
     const refreshTokenLocalStorage = getLocalStorage(ELocalStorageItems.RefreshToken)
-    console.log(refreshTokenLocalStorage, 'refresh in storage??')
     if (!refreshTokenLocalStorage) {
       logout(dispatch)
     }
-    console.log('refreshing')
     refreshToken({ variables: { refreshToken: refreshTokenLocalStorage } }).then(({ data }) => {
       if (!data) {
         logout(dispatch)
