@@ -1,13 +1,15 @@
-import { Literal, Number, Record, String, Union } from 'runtypes'
+import { Literal, Number, Optional, Record, String, Union } from 'runtypes'
 import config from './config'
 import axios from 'axios'
 import SpotifyWebApi from 'spotify-web-api-node'
 
-const Token = Record({
+export const SpotifyToken = Record({
     access_token: String,
     token_type: Union(Literal('Bearer')),
-    expires_in: Number
+    expires_in: Number,
+    refresh_token: Optional(String)
 })
+
 
 const getSpotifyToken = async () => {
     const response = await axios.post('https://accounts.spotify.com/api/token', {
@@ -24,9 +26,36 @@ const getSpotifyToken = async () => {
         throw new Error("Failed to fetch Spotify Token")
     }
     try {
-        return Token.check(response.data)
+        return SpotifyToken.check(response.data)
     } catch (error) {
         throw Error("Failed to decode Token")
+    }
+}
+
+export const getSpotifyTokenWithRefresh = async (refreshToken: string) => {
+    const response = await axios.post('https://accounts.spotify.com/api/token', {
+        grant_type: 'refresh_token',
+        refresh_token: refreshToken
+    }, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + (Buffer.from(config.spotify.clientId + ':' + config.spotify.clientSecret).toString('base64'))
+        },
+    })
+
+    if (!response.data) {
+        throw new Error("Failed to fetch Spotify Token with refresh")
+    }
+    try {
+        console.log(response.data)
+        const data = SpotifyToken.check(response.data)
+        return {
+            expiresIn: data.expires_in,
+            refreshToken: data.refresh_token,
+            accessToken: data.access_token,
+        }
+    } catch (error) {
+        throw Error("Failed to decode Token after refresh")
     }
 }
 

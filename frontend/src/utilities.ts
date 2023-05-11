@@ -1,3 +1,5 @@
+import { Action } from "context"
+
 type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>
 type Exactly<T, K extends keyof T> = Pick<T, K>
 
@@ -6,12 +8,14 @@ const logger = (message: any) => {
 }
 
 enum ELocalStorageItems {
-    AccessToken = 'accessToken'
+    AccessToken = 'accessToken',
+    RefreshToken = 'refreshToken',
+    ExpiresAt = 'expiresAt'
 }
 
 const getLocalStorage = (key: ELocalStorageItems) => {
     const result = localStorage.getItem(key)
-    return result ? JSON.parse(result) : ''
+    return result ? JSON.parse(result) : null
 }
 
 const setLocalStorage = (key: ELocalStorageItems, value: any) => {
@@ -22,6 +26,13 @@ const deleteLocalStorage = (key: ELocalStorageItems) => {
     localStorage.removeItem(key)
 }
 
+const logout = (dispatch: (value: Action) => void) => {
+    deleteLocalStorage(ELocalStorageItems.AccessToken)
+    deleteLocalStorage(ELocalStorageItems.ExpiresAt)
+    deleteLocalStorage(ELocalStorageItems.RefreshToken)
+    dispatch({ type: "LOGOUT" })
+}
+
 export {
     logger,
     AtLeast,
@@ -29,5 +40,6 @@ export {
     getLocalStorage,
     setLocalStorage,
     deleteLocalStorage,
-    ELocalStorageItems
+    ELocalStorageItems,
+    logout
 }

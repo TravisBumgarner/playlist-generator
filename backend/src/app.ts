@@ -9,6 +9,7 @@ import { logger } from './utilities'
 import { Number, Record, String } from 'runtypes'
 import config from './config'
 import axios from 'axios'
+import { SpotifyToken } from './spotify'
 const app = express()
 
 // process.on('uncaughtException', (error: any) => logger(error))
@@ -63,10 +64,17 @@ app.get('/spotify_redirect', async (req: express.Request, res: express.Response)
         'Authorization': 'Basic ' + (Buffer.from(config.spotify.clientId + ':' + config.spotify.clientSecret).toString('base64'))
       },
     })
-    const SpotifyToken = Record({ access_token: String, token_type: String, scope: String, expires_in: Number, refresh_token: String })
-    const { access_token } = SpotifyToken.check(response.data)
+    // TODO - can this be moved to spotify and also grpahql
+    const { access_token, expires_in, refresh_token } = SpotifyToken.check(response.data)
     // TODO - Get off refresh_token as well
-    res.redirect(`http://localhost:3001/?access_token=${access_token}`)
+    const urlSearchParams = new URLSearchParams()
+    urlSearchParams.append('access_token', access_token)
+    urlSearchParams.append('expires_in', expires_in.toString())
+    if (refresh_token) {
+      urlSearchParams.append('refresh_token', refresh_token)
+    }
+
+    res.redirect(`http://localhost:3001?${urlSearchParams.toString()}`)
   } catch (e) {
     logger(e)
     res.sendStatus(401)

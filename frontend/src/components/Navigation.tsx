@@ -8,7 +8,7 @@ import { gql, useLazyQuery } from '@apollo/client';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import { Avatar } from '@mui/material';
-import { ELocalStorageItems, deleteLocalStorage, setLocalStorage } from 'utilities';
+import { ELocalStorageItems, deleteLocalStorage, logout, setLocalStorage } from 'utilities';
 
 const GET_SPOTIFY_REDIRECT_URI_QUERY = gql`
 query GetSpotifyRedirectURI {
@@ -31,8 +31,7 @@ export default function MenuAppBar() {
     }, [])
 
     const handleLogout = useCallback(() => {
-        deleteLocalStorage(ELocalStorageItems.AccessToken)
-        dispatch({ type: "LOGOUT" })
+        logout(dispatch)
     }, [])
 
 
