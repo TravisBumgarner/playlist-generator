@@ -53,7 +53,6 @@ const getSpotifyToken = async () => {
     }
 
     try {
-        console.log(response.data)
         return response.data.access_token
     } catch (error) {
         throw Error("Failed to decode Token")
@@ -69,7 +68,6 @@ const SpotifyClientPromise = (async () => {
         // redirectUri: 'http://www.example.com/callback'
     });
     const token = await getSpotifyToken()
-    console.log(token)
     await spotifyApi.setAccessToken(token)
     return spotifyApi
 
@@ -78,7 +76,6 @@ const SpotifyClientPromise = (async () => {
 const main = async () => {
     const client = await SpotifyClientPromise
     const results = await client.createPlaylist('foobar')
-    console.log(results)
 }
 
 main()

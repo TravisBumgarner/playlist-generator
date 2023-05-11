@@ -6,6 +6,7 @@ import bodyParser from 'body-parser'
 import { WebSocketServer } from 'ws'
 import schema from './schemas'
 import { logger } from './utilities'
+import { handleSpotifyUserRedirect } from './spotify'
 const app = express()
 
 // process.on('uncaughtException', (error: any) => logger(error))
@@ -42,6 +43,15 @@ app.get('/ok', async (req: express.Request, res: express.Response) => {
   res.send('pong!')
 })
 
+app.get('/spotify_redirect', async (req: express.Request, res: express.Response) => {
+  const response = await handleSpotifyUserRedirect(req.query)
+  if (response === null) {
+    res.sendStatus(500)
+    return
+  }
+  res.redirect(response)
+})
+
 app.use('/graphql', graphqlHTTP(() => ({
   schema,
   graphiql: process.env.NODE_ENV !== 'production',
@@ -70,7 +80,6 @@ app.use('/graphql', graphqlHTTP(() => ({
 // })
 
 const server = app.listen(5001, '0.0.0.0', () => {
-  console.log('App listening at http://0.0.0.0:5001') //eslint-disable-line
 
   const wsServer = new WebSocketServer({ server, path: '/graphql' })
   useServer({ schema }, wsServer)

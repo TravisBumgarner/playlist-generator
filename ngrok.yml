@@ -1,0 +1,10 @@
+version: 1
+authtoken:  4Lg69pe365Ny9zQt3vgmv_2TUEYeY2ARUhxVb1ocGwY
+tunnels:
+  # frontend:
+  #   addr: 3001
+  #   proto: http
+  #   host_header: 'rewrite'
+  backend:
+    addr: 5001
+    proto: http

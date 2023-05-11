@@ -1,5 +1,5 @@
 import { gql, useLazyQuery } from "@apollo/client"
-import { Box, Button, Container, List, ListItemButton, Typography } from "@mui/material"
+import { Box, Button, Container, Typography } from "@mui/material"
 import { useCallback, useContext, useState, useMemo } from "react"
 import * as React from 'react';
 import ListItem from '@mui/material/ListItem';
@@ -9,10 +9,9 @@ import Avatar from '@mui/material/Avatar';
 import TextField from '@mui/material/TextField';
 import SpotifyWebApi from 'spotify-web-api-node'
 
-import { TAutocompleteEntry, TPlaylistEntry } from '../../../shared/types'
+import { TAutocompleteEntry, TPlaylistEntry } from '../../../../shared/types'
 import { ELocalStorageItems, getLocalStorage } from "utilities"
 import { context } from "context"
-import { Link } from "react-router-dom";
 
 const AUTOCOMPLETE_QUERY = gql`
 query Autocomplete($query: String!) {
@@ -147,25 +146,21 @@ const Playlist = ({ artistId }: { artistId: string }) => {
     )
 }
 
-const Algorithms = () => {
-    return (
-        <List>
-            <ListItem disablePadding>
-                <Link to="/a/elevated_artist">Elevated Artist</Link>
-            </ListItem>
-        </List>
-    )
-}
-
 const Home = () => {
-    const { state } = useContext(context)
+    const [artistId, setArtistId] = useState('')
+
+    const resultSelectedCallback = useCallback((value: string) => {
+        setArtistId(value)
+    }, [])
 
     return (
         <Container>
-            <Typography variant="h2" gutterBottom>Welcome!</Typography>
-            {!(state.user) && <Typography variant="h3">Please login.</Typography>}
+            <Typography variant="h2" gutterBottom>
+                Elevated Artist
+            </Typography>
+            <SearchBox resultSelectedCallback={resultSelectedCallback} />
+            <Playlist artistId={artistId} />
 
-            {(state.user) && <Algorithms />}
         </Container>
     )
 }

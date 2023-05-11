@@ -5,8 +5,14 @@
     "spotify-web-api-node": "^5.0.2"
   },
   "scripts": {
-    "start": "concurrently -n frontend,backend,mongo -c \"bgBlue.bold,bgMagenta.bold\" \"cd frontend && yarn start\" \"cd backend && yarn start\" \"docker compose up\""
+    "start": "concurrently -n frontend,backend,mongo -c \"bgBlue.bold,bgMagenta.bold\" \"cd frontend && yarn start\" \"cd backend && yarn start\" \"docker compose up\"",
+    "tunnel": "ngrok start --all --config=ngrok.yml"
   },
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "devDependencies": {
     "@types/spotify-web-api-node": "^5.0.7"
   }
