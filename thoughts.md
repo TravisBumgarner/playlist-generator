@@ -12,6 +12,7 @@
 # Next Steps
 
 - [ ] Setup user auth for saving songs to playlist
+- [ ] Can't refresh routes outside of homepage.
 
 # Random notes
 
