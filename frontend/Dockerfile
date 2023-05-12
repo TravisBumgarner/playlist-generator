@@ -2,7 +2,7 @@ FROM mhart/alpine-node:16 AS builder
 WORKDIR /app
 COPY . .
 RUN yarn
-RUN yarn run build
+RUN yarn run bundle
 
 FROM mhart/alpine-node
 RUN yarn global add serve

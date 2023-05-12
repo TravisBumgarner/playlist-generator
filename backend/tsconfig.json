@@ -15,6 +15,7 @@
         "sourceMap": true,
         "strictNullChecks": true,
         "esModuleInterop": true,
+        "outDir": "build/"
     },
     "exclude": [
         "node_modules"

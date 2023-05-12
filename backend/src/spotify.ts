@@ -38,7 +38,7 @@ export const handleSpotifyUserRedirect = async (query: express.Request['query'])
             urlSearchParams.append('refresh_token', refresh_token)
         }
 
-        return `http://localhost:3001?${urlSearchParams.toString()}`
+        return `${config.frontendUrl}?${urlSearchParams.toString()}`
     } catch (e) {
         logger(e)
         return null
