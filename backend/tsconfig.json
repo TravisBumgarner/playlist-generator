@@ -6,15 +6,20 @@
         "paths": {
             "*": [
                 "types/*"
-            ]
+            ],
+            "@shared": [
+                "../shared/index.d.ts"
+            ],
         },
         "module": "commonjs",
-        "noImplicitAny": true,
+        "noImplicitAny": false, 
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
         "strictNullChecks": true,
         "esModuleInterop": true,
+        "skipLibCheck": true,
+        "outDir": "build/"
     },
     "exclude": [
         "node_modules"
