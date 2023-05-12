@@ -24,6 +24,7 @@
   "devDependencies": {
     "@types/react-dom": "^18.0.10",
     "@types/react-modal": "^3.13.1",
+    "@types/spotify-web-api-node": "^5.0.7",
     "css-loader": "^6.7.3",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.2",
@@ -35,6 +36,8 @@
   },
   "scripts": {
     "start": "export NODE_ENV=local && webpack serve --config=webpack.js",
-    "build": " rm -rf ./build; mkdir ./build; webpack --mode=production --config=webpack.js"
+    "build": " rm -rf ./build; mkdir ./build; webpack --mode=production --config=webpack.js",
+    "deploy": "gcloud config set project silly-side-projects && gcloud builds submit --tag gcr.io/silly-side-projects/playlist-generator-frontend && gcloud run deploy playlist-generator-frontend --image gcr.io/silly-side-projects/playlist-generator-frontend --platform managed --region us-east1",
+    "ship-it": "yarn run build && yarn run deploy"
   }
 }

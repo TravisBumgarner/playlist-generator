@@ -9,7 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import TextField from '@mui/material/TextField';
 import SpotifyWebApi from 'spotify-web-api-node'
 
-import { TAutocompleteEntry, TPlaylistEntry } from '../../../shared/types'
+import { TAutocompleteEntry, TPlaylistEntry } from '@shared'
 import { ELocalStorageItems, getLocalStorage } from "utilities"
 import { context } from "context"
 import { Link } from "react-router-dom";
