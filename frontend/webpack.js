@@ -10,8 +10,8 @@ const PLUGIN_VARS = {
     __LOGGING_LEVEL__: "'local'",
   },
   production: {
-    __API_WS_ENDPOINT__: "''",
-    __API_HTTP_ENDPOINT__: "''",
+    __API_WS_ENDPOINT__: "'https://playlists-api.sillysideprojects.com/graphql'",
+    __API_HTTP_ENDPOINT__: "'https://playlists-api.sillysideprojects.com/graphql'",
     __LOGGING_LEVEL__: "'sentry'",
   }
 }

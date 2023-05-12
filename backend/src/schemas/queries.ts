@@ -2,7 +2,7 @@ import { GraphQLEnumType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObject
 import { v4 as uuidv4 } from 'uuid'
 
 import getSpotifyClient, { getSpotifyUserTokenWithRefresh } from '../spotify'
-import { TAutocompleteEntry } from '../../../shared/types'
+import { TAutocompleteEntry } from '../types'
 import config from '../config'
 
 
