@@ -2,7 +2,7 @@
   "name": "yes-backend",
   "author": "Travis Bumgarner",
   "scripts": {
-    "start": "nodemon ./src/app.ts",
+    "start": "nodemon ./src/index.ts",
     "start-production": "node build/index.js",
     "build": "rm -rf ./build && tsc",
     "deploy": "export NODE_ENV=production && yarn run build && gcloud config set project silly-side-projects && gcloud builds submit --tag gcr.io/silly-side-projects/playlist-generator-backend && gcloud run deploy playlist-generator-backend --image gcr.io/silly-side-projects/playlist-generator-backend --platform managed --region us-east1"

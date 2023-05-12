@@ -6,5 +6,5 @@ tunnels:
   #   proto: http
   #   host_header: 'rewrite'
   backend:
-    addr: 5001
+    addr: 8080
     proto: http
