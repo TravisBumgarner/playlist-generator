@@ -35,6 +35,14 @@ query createEnergizingPlaylist($artistId: String!) {
   }
 `
 
+const SAVE_PLAYLIST_QUERY = gql`
+query savePlaylist($accessToken: String! $playlistTitle: String! $uris: [String]!) {
+    savePlaylist(accessToken: $accessToken, playlistTitle: $playlistTitle, uris: $uris) 
+  }
+`
+
+
+
 const PlaylistItem = (data: TPlaylistEntry) => {
     const handleClick = useCallback(() => alert(data.id), [])
     return (
@@ -100,7 +108,9 @@ const SearchBox = ({ resultSelectedCallback }: { resultSelectedCallback: (artist
 const Playlist = ({ artistId }: { artistId: string }) => {
     const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
     const [createEnergizingPlaylist] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
+    const [savePlaylist] = useLazyQuery<{ savePlaylist: boolean }>(SAVE_PLAYLIST_QUERY)
     const { dispatch } = useContext(context)
+    const [playlistTitle, setPlaylistTitle] = useState('')
 
     const handleCreatePlaylistSubmit = useCallback(async () => {
         setPlaylistEntries([])
@@ -113,19 +123,17 @@ const Playlist = ({ artistId }: { artistId: string }) => {
     const handleSavePlaylistSubmit = useCallback(async () => {
         const uris = playlistEntries.map(({ uri }) => uri)
 
-        const spotifyApi = new SpotifyWebApi({});
         const accessToken = getLocalStorage(ELocalStorageItems.AccessToken)
         if (!accessToken) { //TODO - could warn sooner
             dispatch({ type: "ADD_MESSAGE", data: { message: "You need to login first" } })
             return
         }
-        await spotifyApi.setAccessToken(accessToken)
-
-        const playlist = await spotifyApi.createPlaylist('My Programatic Playlist')
-
-        await spotifyApi.addTracksToPlaylist(playlist.body.id, uris)
-
-        dispatch({ type: "ADD_MESSAGE", data: { message: `Success! Open Spotify https://open.spotify.com/playlist/${playlist.body.uri}` } })
+        const playlistUri = await savePlaylist({ variables: { uris, playlistTitle, accessToken } })
+        if (playlistUri) {
+            dispatch({ type: "ADD_MESSAGE", data: { message: `Success! Open Spotify https://open.spotify.com/playlist/${playlistUri}` } })
+        } else {
+            dispatch({ type: "ADD_MESSAGE", data: { message: `Failed to save playlist` } })
+        }
 
 
         setPlaylistEntries([])
@@ -139,7 +147,18 @@ const Playlist = ({ artistId }: { artistId: string }) => {
         {
             playlistEntries.length === 0
                 ? (<Button onClick={handleCreatePlaylistSubmit}>Create Energizing Playlist!</Button>)
-                : (<Button onClick={handleSavePlaylistSubmit}>Save it to Travis's Playlist</Button>)
+                : (<Box>
+                    <TextField
+                        label="Title"
+                        type="title"
+                        value={playlistTitle}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setPlaylistTitle(event.target.value);
+                        }}
+                    />
+                    <Button onClick={handleSavePlaylistSubmit}>Save it to your Spotify</Button>
+
+                </Box>)
         }
         {Playlist}
     </Box>

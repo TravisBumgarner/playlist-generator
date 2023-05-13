@@ -45,7 +45,6 @@ export const handleSpotifyUserRedirect = async (query: express.Request['query'])
     }
 }
 
-
 const getSpotifyClientToken = async () => {
     const response = await axios.post('https://accounts.spotify.com/api/token', {
         grant_type: 'client_credentials',

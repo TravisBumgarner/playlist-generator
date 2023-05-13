@@ -1,4 +1,4 @@
-import { GraphQLEnumType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLBoolean, GraphQLEnumType, GraphQLInt, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 import { v4 as uuidv4 } from 'uuid'
 
 import getSpotifyClient, { getSpotifyUserTokenWithRefresh } from '../spotify'
@@ -182,6 +182,38 @@ const createEnergizingPlaylist = {
     }
 }
 
+type CreatePlaylistArgs = {
+    uris: string[],
+    accessToken: string,
+    playlistTitle: string
+}
+
+const savePlaylist = {
+    type: GraphQLString,
+    description: 'Save a collection of tracks to spotify',
+    args: {
+        playlistTitle: { type: new GraphQLNonNull(GraphQLString) },
+        accessToken: { type: new GraphQLNonNull(GraphQLString) },
+        uris: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+    },
+    resolve: async (_: any, { uris, accessToken, playlistTitle }: CreatePlaylistArgs) => {
+        try {
+            const client = await getSpotifyClient()
+            client.setAccessToken(accessToken)
+            console.log(playlistTitle)
+            const playlist = await client.createPlaylist(playlistTitle)
+            console.log(playlist)
+            await client.addTracksToPlaylist(playlist.body.id, uris)
+            return playlist.body.uri
+        } catch (error: any) {
+            console.log(error)
+            console.log(error.name)
+            console.log(error.message)
+            return null
+        }
+    }
+}
+
 const RootQueryType = new GraphQLObjectType({
     name: 'Query',
     description: 'Root Query',
@@ -190,7 +222,8 @@ const RootQueryType = new GraphQLObjectType({
         autocomplete,
         createEnergizingPlaylist,
         getSpotifyRedirectURI,
-        refreshToken
+        refreshToken,
+        savePlaylist
     }),
 })
 
