@@ -1,5 +1,5 @@
-import { Container, Typography } from "@mui/material"
-import { Link } from "react-router-dom"
+import { Container, Typography } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 const Error = () => (
     <Container>

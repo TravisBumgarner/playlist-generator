@@ -201,7 +201,7 @@ const savePlaylist = {
             const client = await getSpotifyClient()
             client.setAccessToken(accessToken)
             console.log(playlistTitle)
-            const playlist = await client.createPlaylist(playlistTitle)
+            const playlist = await client.createPlaylist(playlistTitle || "No title supplied")
             console.log(playlist)
             await client.addTracksToPlaylist(playlist.body.id, uris)
             return playlist.body.uri

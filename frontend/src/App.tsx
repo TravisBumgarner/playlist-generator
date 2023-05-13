@@ -1,16 +1,15 @@
-import { CssBaseline } from "@mui/material"
-import { ApolloClient, HttpLink, InMemoryCache, ApolloProvider, split, gql, useLazyQuery } from '@apollo/client'
+import { CssBaseline } from '@mui/material'
+import { gql, useLazyQuery } from '@apollo/client'
 
 import { Record, String, Array } from 'runtypes'
-import { useNavigate, useParams } from "react-router"
-import { useCallback, useContext, useEffect } from "react"
-import axios from "axios"
-import { useSearchParams } from "react-router-dom"
+import { useNavigate } from 'react-router'
+import { useCallback, useContext, useEffect } from 'react'
+import axios from 'axios'
+import { useSearchParams } from 'react-router-dom'
 
-import { Alert, Router, Navigation } from "./components"
-import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from "utilities"
-import { context } from "context"
-
+import { Alert, Router, Navigation } from './components'
+import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
+import { context } from 'context'
 
 const REFRESH_TOKEN_QUERY = gql`
 query RefreshToken($refreshToken: String!) {
@@ -24,36 +23,36 @@ query RefreshToken($refreshToken: String!) {
 
 const App = () => {
   const [searchParams] = useSearchParams()
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const { dispatch, state } = useContext(context)
   const [refreshToken] = useLazyQuery<{ refreshToken: { refreshToken: string, accessToken: string, expiresIn: string } }>(REFRESH_TOKEN_QUERY)
 
   useEffect(() => {
     // TODO - maybe a better way to redirect users home if they log out.
     if (!state.user) navigate('/')
-  }, [window.location, state.user])
+  }, [state.user, navigate])
 
   const getUserDetails = useCallback(async () => {
-    const accessToken = getLocalStorage(ELocalStorageItems.AccessToken)
+    const accessToken = (getLocalStorage(ELocalStorageItems.AccessToken)) as string
     if (!accessToken) {
-      logger("No access token")
+      logger('No access token')
       dispatch({
-        type: "ADD_MESSAGE",
-        data: { message: "Please login again" }
+        type: 'ADD_MESSAGE',
+        data: { message: 'Please login again' }
       })
     }
     const response = await axios({
       method: 'GET',
       url: 'https://api.spotify.com/v1/me',
       headers: {
-        'Authorization': `Bearer ${accessToken}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
 
     const User = Record({
       display_name: String,
       images: Array(Record({
-        url: String,
+        url: String
       })),
       uri: String
     })
@@ -64,7 +63,7 @@ const App = () => {
       displayName: display_name,
       image: images.length > 0 ? images[0].url : null
     }
-  }, [])
+  }, [dispatch])
 
   const updateTokenLocalStorage = useCallback((args: { accessToken: string, expiresIn: string, refreshToken: string }) => {
     const expiresAt = new Date()
@@ -84,27 +83,14 @@ const App = () => {
       updateTokenLocalStorage({
         accessToken: accessTokenSearchParam,
         refreshToken: refreshTokenParam,
-        expiresIn: expiresInParam,
+        expiresIn: expiresInParam
       })
-      navigate('.', { replace: true });
-      getUserDetails().then(data => dispatch({ type: "LOGIN", data })) // TODO - Could be optimized later.
+      navigate('.', { replace: true })
+      getUserDetails().then(data => { dispatch({ type: 'LOGIN', data }) }).catch((e) => { logger(e) }) // TODO - Could be optimized later.
       return true
     }
     return false
-  }, [])
-
-  const checkStorageForToken = useCallback(() => {
-    const accessTokenLocalStorage = getLocalStorage(ELocalStorageItems.AccessToken)
-    if (accessTokenLocalStorage) {
-      const expiresAtLocalStorage = new Date(getLocalStorage(ELocalStorageItems.ExpiresAt))
-      const isTokenInvalid = expiresAtLocalStorage < new Date() || !(expiresAtLocalStorage instanceof Date)
-      if (isTokenInvalid) {
-        getUserDetails().then(data => dispatch({ type: "LOGIN", data })) // TODO - Could be optimized later.
-      } else {
-        refreshTokenInStorage()
-      }
-    }
-  }, [])
+  }, [dispatch, getUserDetails, navigate, updateTokenLocalStorage, searchParams])
 
   const refreshTokenInStorage = useCallback(() => {
     const refreshTokenLocalStorage = getLocalStorage(ELocalStorageItems.RefreshToken)
@@ -117,18 +103,31 @@ const App = () => {
         return
       }
       updateTokenLocalStorage(data.refreshToken)
-      getUserDetails().then(data => dispatch({ type: "LOGIN", data })) // TODO - Could be optimized later.
+      getUserDetails().then(data => { dispatch({ type: 'LOGIN', data }) }).catch((e) => { logger(e) }) // TODO - Could be optimized later.
     }).catch(() => {
       logout(dispatch)
     })
-  }, [])
+  }, [dispatch, getUserDetails, refreshToken, updateTokenLocalStorage])
+
+  const checkStorageForToken = useCallback(() => {
+    const accessTokenLocalStorage = getLocalStorage(ELocalStorageItems.AccessToken)
+    if (accessTokenLocalStorage) {
+      const expiresAtLocalStorage = new Date(getLocalStorage(ELocalStorageItems.ExpiresAt))
+      const isTokenInvalid = expiresAtLocalStorage < new Date() || !(expiresAtLocalStorage instanceof Date)
+      if (isTokenInvalid) {
+        getUserDetails().then(data => { dispatch({ type: 'LOGIN', data }) }).catch((e) => { logger(e) }) // TODO - Could be optimized later.
+      } else {
+        refreshTokenInStorage()
+      }
+    }
+  }, [dispatch, getUserDetails, refreshTokenInStorage])
 
   useEffect(() => {
     const inUrl = checkUrlForToken()
     if (inUrl) return
 
     checkStorageForToken()
-  }, [])
+  }, [checkStorageForToken, checkUrlForToken])
   return (
     <>
       <CssBaseline />
