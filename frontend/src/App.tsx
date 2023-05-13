@@ -3,7 +3,7 @@ import { gql, useLazyQuery } from '@apollo/client'
 
 import { Record, String, Array } from 'runtypes'
 import { useNavigate } from 'react-router'
-import { useCallback, useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { useSearchParams } from 'react-router-dom'
 
@@ -26,6 +26,7 @@ const App = () => {
   const navigate = useNavigate()
   const { dispatch, state } = useContext(context)
   const [refreshToken] = useLazyQuery<{ refreshToken: { refreshToken: string, accessToken: string, expiresIn: string } }>(REFRESH_TOKEN_QUERY)
+  const [hasAppInitialized, setHasAppInitialized] = useState(false)
 
   useEffect(() => {
     // TODO - maybe a better way to redirect users home if they log out.
@@ -123,11 +124,14 @@ const App = () => {
   }, [dispatch, getUserDetails, refreshTokenInStorage])
 
   useEffect(() => {
+    if (hasAppInitialized) return
+
     const inUrl = checkUrlForToken()
     if (inUrl) return
 
     checkStorageForToken()
-  }, [checkStorageForToken, checkUrlForToken])
+    setHasAppInitialized(true)
+  }, [checkStorageForToken, checkUrlForToken, hasAppInitialized])
   return (
     <>
       <CssBaseline />

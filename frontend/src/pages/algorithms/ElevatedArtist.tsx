@@ -138,7 +138,6 @@ const Playlist = ({ artistId }: { artistId: string }) => {
   }, [playlistEntries, dispatch, playlistTitle, savePlaylist])
 
   const Playlist = useMemo(() => {
-    console.log('sdg')
     return playlistEntries.map(result => <PlaylistItem key={result.uri} {...result} />)
   }, [playlistEntries])
 
