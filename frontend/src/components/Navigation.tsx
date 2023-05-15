@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useMemo, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
@@ -7,14 +7,37 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 import HomeIcon from '@mui/icons-material/Home'
-import { Link as RouterLink } from 'react-router-dom'
+import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 
 import { context } from 'context'
 
+const ALROGITHM_ROUTES: Array<{ text: string, href: string }> = [
+  {
+    text: 'Progressively Energetic',
+    href: '/a/progressively_energetic'
+  }
+]
+
 const Navigation = () => {
-  const { state, dispatch } = React.useContext(context)
+  const { state, dispatch } = useContext(context)
+
+  const algorithmRoutes = useMemo(() => {
+    if (!state.user) return null
+
+    return ALROGITHM_ROUTES.map(({ text, href }) => {
+      return (
+        <ListItem disablePadding key={text} >
+          <ListItemButton href={href}>
+            <ListItemIcon>
+              <PlaylistPlayIcon />
+            </ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItemButton>
+        </ListItem >
+      )
+    })
+  }, [state.user])
 
   const toggleDrawer = () =>
     (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -53,14 +76,7 @@ const Navigation = () => {
         </List>
         <Divider />
         <List>
-          <ListItem disablePadding >
-            <ListItemButton href="/a/progressively_energetic">
-              <ListItemIcon>
-                <PlaylistPlayIcon />
-              </ListItemIcon>
-              <ListItemText primary="Progressively Energetic" />
-            </ListItemButton>
-          </ListItem>
+          {algorithmRoutes}
         </List>
       </Box>
     </Drawer>

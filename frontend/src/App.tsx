@@ -1,4 +1,4 @@
-import { CssBaseline, LinkProps, ThemeProvider, createTheme } from '@mui/material'
+import { CssBaseline, type LinkProps, ThemeProvider, createTheme } from '@mui/material'
 import { gql, useLazyQuery } from '@apollo/client'
 import { Link as RouterLink, type LinkProps as RouterLinkProps, useSearchParams } from 'react-router-dom'
 import { Record, String, Array } from 'runtypes'
