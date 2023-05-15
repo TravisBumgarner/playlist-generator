@@ -1,5 +1,5 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Container, ListItemButton } from '@mui/material'
 import { useCallback, useState, useMemo } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -19,19 +19,7 @@ query Autocomplete($query: String!) {
   }
 `
 
-const AutocompleteItem = ({ data, resultSelectedCallback }: { data: TAutocompleteEntry, resultSelectedCallback: (artistId: string) => void }) => {
-  const handleClick = useCallback(() => { resultSelectedCallback(data.id) }, [data.id, resultSelectedCallback])
-  return (
-    <ListItem onClick={handleClick}>
-      <ListItemAvatar>
-        <Avatar alt={data.name} src={data.image} />
-      </ListItemAvatar>
-      <ListItemText primary={data.name} />
-    </ListItem >
-  )
-}
-
-const Search = ({ resultSelectedCallback }: { resultSelectedCallback: (artistId: string) => void }) => {
+const Search = ({ resultSelectedCallback, label }: { label: string, resultSelectedCallback: (data: TAutocompleteEntry) => void }) => {
   const [autocomplete] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<TAutocompleteEntry[]>([])
@@ -44,28 +32,42 @@ const Search = ({ resultSelectedCallback }: { resultSelectedCallback: (artistId:
     }
   }, [query, autocomplete])
 
-  const handleResultSelected = useCallback((artistId: string) => {
-    resultSelectedCallback(artistId)
-    setResults([])
-  }, [resultSelectedCallback])
-
   const AutocompleteItemsList = useMemo(() => {
-    return results.map(data => <AutocompleteItem resultSelectedCallback={handleResultSelected} key={data.id} data={data} />)
-  }, [results, handleResultSelected])
+    return results.map(data => {
+      const handleClick = () => {
+        resultSelectedCallback(data)
+      }
+
+      return (
+        <ListItem key={data.id} >
+          <ListItemButton onClick={handleClick}>
+            <ListItemAvatar>
+              <Avatar alt={data.name} src={data.image} />
+            </ListItemAvatar>
+            <ListItemText primary={data.name} />
+          </ListItemButton>
+        </ListItem >
+      )
+    })
+  }, [resultSelectedCallback, results])
 
   return (
-    <Box>
+    <Container sx={{ maxWidth: '500px' }}>
       <TextField
-        label="Artist"
+        fullWidth
+        label={label}
         type="search"
         value={query}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           setQuery(event.target.value)
         }}
+        margin="dense"
       />
-      <Button onClick={handleSubmit} variant="contained">Search</Button>
-      {AutocompleteItemsList}
-    </Box>
+      <Button fullWidth onClick={handleSubmit} variant="contained">Search</Button>
+      <Box sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
+        {AutocompleteItemsList}
+      </Box>
+    </Container>
   )
 }
 

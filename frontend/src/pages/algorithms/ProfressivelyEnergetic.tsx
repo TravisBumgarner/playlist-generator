@@ -1,10 +1,10 @@
 import { gql, useLazyQuery } from '@apollo/client'
 import { Box, Button, Container, Typography } from '@mui/material'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import TextField from '@mui/material/TextField'
 
 import { Search, Playlist } from 'sharedComponents'
-import { type TPlaylistEntry } from '../../sharedTypes'
+import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
 import { ELocalStorageItems, getLocalStorage } from 'utilities'
 import { context } from 'context'
 import { useNavigate } from 'react-router'
@@ -30,22 +30,26 @@ query savePlaylist($accessToken: String! $playlistTitle: String! $uris: [String]
 const ProgressivelyEnergetic = () => {
   const [savePlaylist] = useLazyQuery<{ savePlaylist: boolean }>(SAVE_PLAYLIST_QUERY)
   const [playlistTitle, setPlaylistTitle] = useState('')
-  const [artistId, setArtistId] = useState('')
+  const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
   const [createEnergizingPlaylist] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const { dispatch } = useContext(context)
   const navigate = useNavigate()
 
   const handleCreatePlaylistSubmit = useCallback(async () => {
+    if (!selectedArtist) {
+      return
+    }
+
     setPlaylistEntries([])
-    const result = await createEnergizingPlaylist({ variables: { artistId } })
+    const result = await createEnergizingPlaylist({ variables: { artistId: selectedArtist.id } })
     if ((result.data?.createEnergizingPlaylist) != null) {
       setPlaylistEntries(result.data?.createEnergizingPlaylist)
     }
-  }, [artistId, createEnergizingPlaylist])
+  }, [selectedArtist, createEnergizingPlaylist])
 
-  const resultSelectedCallback = useCallback((value: string) => {
-    setArtistId(value)
+  const resultSelectedCallback = useCallback((value: TAutocompleteEntry) => {
+    setSelectedArtist(value)
   }, [])
 
   const handleSavePlaylistSubmit = useCallback(async () => {
@@ -65,15 +69,25 @@ const ProgressivelyEnergetic = () => {
     }
 
     setPlaylistEntries([])
-  }, [playlistEntries, dispatch, playlistTitle, savePlaylist])
+  }, [playlistEntries, dispatch, playlistTitle, savePlaylist, navigate])
 
-  return (
-    <Container>
-      <Typography variant="h2" gutterBottom>
-        Progressively Energetic
-      </Typography>
-      <Button onClick={handleCreatePlaylistSubmit}>Create Energizing Playlist!</Button>
-      <Box>
+  const content = useMemo(() => {
+    if (!selectedArtist) {
+      return (<Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />)
+    }
+
+    if (playlistEntries.length === 0) {
+      return (
+        <Box>
+          <Typography variant="h2" gutterBottom>
+            Selected Artist: {selectedArtist.name}
+            <Button onClick={handleCreatePlaylistSubmit}>Create Energizing Playlist!</Button>
+          </Typography>
+        </Box>
+      )
+    }
+    return (
+      <>
         <TextField
           label="Title"
           type="title"
@@ -83,11 +97,17 @@ const ProgressivelyEnergetic = () => {
           }}
         />
         <Button onClick={handleSavePlaylistSubmit}>Save it to your Spotify</Button>
+        <Playlist playlistEntries={playlistEntries} />
+      </>
+    )
+  }, [handleSavePlaylistSubmit, handleCreatePlaylistSubmit, playlistEntries, playlistTitle, resultSelectedCallback, selectedArtist])
 
-      </Box>
-      <Search resultSelectedCallback={resultSelectedCallback} />
-      <Playlist playlistEntries={playlistEntries} />
-
+  return (
+    <Container>
+      <Typography variant="h2" gutterBottom>
+        Progressively Energetic
+      </Typography>
+      {content}
     </Container>
   )
 }

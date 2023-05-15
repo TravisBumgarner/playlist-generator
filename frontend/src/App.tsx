@@ -3,7 +3,7 @@ import { gql, useLazyQuery } from '@apollo/client'
 import { Link as RouterLink, type LinkProps as RouterLinkProps, useSearchParams } from 'react-router-dom'
 import { Record, String, Array } from 'runtypes'
 import { useNavigate } from 'react-router'
-import { forwardRef, useCallback, useContext, useEffect, useState } from 'react'
+import { forwardRef, useCallback, useContext, useState } from 'react'
 import axios from 'axios'
 import useAsyncEffect from 'use-async-effect'
 
