@@ -27,7 +27,7 @@
         "src/sharedTypes/index.ts"
       ],
       "theme": [
-        "src/theme.ts"
+        "src/theme.tsx"
       ],
       "utilities": [
         "src/utilities.ts"

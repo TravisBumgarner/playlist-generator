@@ -47,7 +47,7 @@ module.exports = {
     alias: {
       sharedComponents: path.resolve(__dirname, 'src/sharedComponents/'),
       sharedTypes: path.resolve(__dirname, 'src/sharedTypes/index.ts'),
-      theme: path.resolve(__dirname, 'src/theme.ts'),
+      theme: path.resolve(__dirname, 'src/theme.tsx'),
       utilities: path.resolve(__dirname, 'src/utilities.ts'),
       context: path.resolve(__dirname, 'src/Context.tsx')
     }

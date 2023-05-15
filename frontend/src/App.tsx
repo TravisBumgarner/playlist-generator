@@ -1,15 +1,16 @@
-import { CssBaseline, type LinkProps, ThemeProvider, createTheme } from '@mui/material'
+import { CssBaseline, ThemeProvider } from '@mui/material'
 import { gql, useLazyQuery } from '@apollo/client'
-import { Link as RouterLink, type LinkProps as RouterLinkProps, useSearchParams } from 'react-router-dom'
 import { Record, String, Array } from 'runtypes'
 import { useNavigate } from 'react-router'
-import { forwardRef, useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import axios from 'axios'
 import useAsyncEffect from 'use-async-effect'
 
+import { theme } from 'theme'
 import { Alert, Router, Header, Navigation } from './components'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
 import { context } from 'context'
+import { useSearchParams } from 'react-router-dom'
 
 const REFRESH_TOKEN_QUERY = gql`
 query RefreshToken($refreshToken: String!) {
@@ -20,28 +21,6 @@ query RefreshToken($refreshToken: String!) {
     }
   }
 `
-
-const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
->((props, ref) => {
-  const { href, ...other } = props
-  return <RouterLink ref={ref} to={href} {...other} />
-})
-LinkBehavior.displayName = 'LinkBehavior'
-
-const theme = createTheme({
-  components: {
-    MuiLink: {
-      defaultProps: {
-        component: LinkBehavior
-      } as LinkProps
-    },
-    MuiButtonBase: {
-      defaultProps: {
-        LinkComponent: LinkBehavior
-      }
-    }
-  }
-})
 
 const App = () => {
   const [searchParams] = useSearchParams()
