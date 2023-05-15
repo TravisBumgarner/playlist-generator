@@ -7,7 +7,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { useSearchParams } from 'react-router-dom'
 
-import { Alert, Router, Navigation } from './components'
+import { Alert, Router, Header, Navigation } from './components'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
 import { context } from 'context'
 
@@ -135,6 +135,7 @@ const App = () => {
   return (
     <>
       <CssBaseline />
+      <Header />
       <Navigation />
       <Alert />
       <Router />

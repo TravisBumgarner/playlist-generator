@@ -163,7 +163,7 @@ const Playlist = ({ artistId }: { artistId: string }) => {
   )
 }
 
-const Home = () => {
+const ProgressivelyEnergetic = () => {
   const [artistId, setArtistId] = useState('')
 
   const resultSelectedCallback = useCallback((value: string) => {
@@ -182,4 +182,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default ProgressivelyEnergetic

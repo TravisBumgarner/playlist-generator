@@ -12,12 +12,14 @@ interface State {
     image: string | null
     uri: string
   } | null
+  isMenuOpen: boolean
 }
 
 const EMPTY_STATE: State = {
   message: null,
   hasErrored: false,
-  user: null
+  user: null,
+  isMenuOpen: false
 }
 
 interface Login {
@@ -37,6 +39,10 @@ interface HasErrored {
   type: 'HAS_ERRORED'
 }
 
+interface ToggleMenu {
+  type: 'TOGGLE_MENU'
+}
+
 interface AddMessage {
   type: 'ADD_MESSAGE'
   data: {
@@ -54,6 +60,7 @@ type Action =
   | HasErrored
   | Login
   | Logout
+  | ToggleMenu
 
 const context = createContext({
   state: EMPTY_STATE,
@@ -66,6 +73,9 @@ const context = createContext({
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
+    case 'TOGGLE_MENU': {
+      return { ...state, isMenuOpen: !state.isMenuOpen }
+    }
     case 'HAS_ERRORED': {
       return { ...state, hasErrored: true }
     }

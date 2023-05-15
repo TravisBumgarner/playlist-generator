@@ -8,7 +8,7 @@ const Algorithms = () => {
   return (
     <List>
       <ListItem disablePadding>
-        <Link to="/a/elevated_artist">Elevated Artist</Link>
+        <Link to="/a/progressively_energetic">Progressively Energetic</Link>
       </ListItem>
     </List>
   )

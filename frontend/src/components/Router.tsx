@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router'
 
 import { context } from 'context'
 import { Home, Error } from '../pages'
-import { ElevatedArtist } from '../pages/algorithms'
+import { ProgressivelyEnergetic } from '../pages/algorithms'
 
 const Router = () => {
   const { state } = useContext(context)
@@ -13,11 +13,11 @@ const Router = () => {
   }
 
   return (
-        <Routes>
-            <Route path="/error" element={<Error />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/a/elevated_artist" element={<ElevatedArtist />} />
-        </Routes>
+    <Routes>
+      <Route path="/error" element={<Error />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/a/progressively_energetic" element={<ProgressivelyEnergetic />} />
+    </Routes>
   )
 }
 

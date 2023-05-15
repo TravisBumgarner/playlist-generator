@@ -1,5 +1,5 @@
-import ElevatedArtist from './ElevatedArtist'
+import ProgressivelyEnergetic from './ProfressivelyEnergetic'
 
 export {
-  ElevatedArtist
+  ProgressivelyEnergetic
 }
