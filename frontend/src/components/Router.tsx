@@ -1,9 +1,23 @@
 import { useContext } from 'react'
 import { Routes, Route } from 'react-router'
+import { Navigate } from 'react-router-dom'
 
 import { context } from 'context'
 import { Home, Error } from '../pages'
 import { ProgressivelyEnergetic } from '../pages/algorithms'
+
+interface ConditionalRouteProps {
+  authedComponent: JSX.Element
+  unauthedComponent?: JSX.Element
+}
+
+const ConditionalRoute = ({ authedComponent, unauthedComponent }: ConditionalRouteProps) => {
+  const { state } = useContext(context)
+  if (state.user) {
+    return authedComponent
+  }
+  return unauthedComponent ?? <Navigate to="/" />
+}
 
 const Router = () => {
   const { state } = useContext(context)
@@ -16,7 +30,13 @@ const Router = () => {
     <Routes>
       <Route path="/error" element={<Error />} />
       <Route path="/" element={<Home />} />
-      <Route path="/a/progressively_energetic" element={<ProgressivelyEnergetic />} />
+      <Route path="/a/progressively_energetic" element={(
+        <ConditionalRoute
+          authedComponent={<ProgressivelyEnergetic />}
+          unauthedComponent={<Home />}
+        />
+      )}
+      />
     </Routes>
   )
 }

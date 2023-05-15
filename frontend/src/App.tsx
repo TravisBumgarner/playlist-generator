@@ -46,14 +46,9 @@ const theme = createTheme({
 const App = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { dispatch, state } = useContext(context)
+  const { dispatch } = useContext(context)
   const [refreshToken] = useLazyQuery<{ refreshToken: { refreshToken: string, accessToken: string, expiresIn: string } }>(REFRESH_TOKEN_QUERY)
   const [hasAppInitialized, setHasAppInitialized] = useState(false)
-
-  useEffect(() => {
-    // TODO - maybe a better way to redirect users home if they log out.
-    if (!state.user) navigate('/')
-  }, [state.user, navigate])
 
   const getUserDetails = useCallback(async () => {
     const accessToken = (getLocalStorage(ELocalStorageItems.AccessToken)) as string
