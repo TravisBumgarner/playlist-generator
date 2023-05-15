@@ -9,6 +9,8 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 import HomeIcon from '@mui/icons-material/Home'
+import { Link as RouterLink } from 'react-router-dom'
+
 import { context } from 'context'
 
 const Navigation = () => {
@@ -41,7 +43,7 @@ const Navigation = () => {
       >
         <List>
           <ListItem disablePadding >
-            <ListItemButton component="a" href="/">
+            <ListItemButton href="/">
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
@@ -52,7 +54,7 @@ const Navigation = () => {
         <Divider />
         <List>
           <ListItem disablePadding >
-            <ListItemButton component="a" href="/progressively_energetic">
+            <ListItemButton href="/a/progressively_energetic">
               <ListItemIcon>
                 <PlaylistPlayIcon />
               </ListItemIcon>

@@ -1,11 +1,10 @@
-import { CssBaseline } from '@mui/material'
+import { CssBaseline, LinkProps, ThemeProvider, createTheme } from '@mui/material'
 import { gql, useLazyQuery } from '@apollo/client'
-
+import { Link as RouterLink, type LinkProps as RouterLinkProps, useSearchParams } from 'react-router-dom'
 import { Record, String, Array } from 'runtypes'
 import { useNavigate } from 'react-router'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { forwardRef, useCallback, useContext, useEffect, useState } from 'react'
 import axios from 'axios'
-import { useSearchParams } from 'react-router-dom'
 
 import { Alert, Router, Header, Navigation } from './components'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
@@ -20,6 +19,28 @@ query RefreshToken($refreshToken: String!) {
     }
   }
 `
+
+const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
+>((props, ref) => {
+  const { href, ...other } = props
+  return <RouterLink ref={ref} to={href} {...other} />
+})
+LinkBehavior.displayName = 'LinkBehavior'
+
+const theme = createTheme({
+  components: {
+    MuiLink: {
+      defaultProps: {
+        component: LinkBehavior
+      } as LinkProps
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        LinkComponent: LinkBehavior
+      }
+    }
+  }
+})
 
 const App = () => {
   const [searchParams] = useSearchParams()
@@ -133,13 +154,13 @@ const App = () => {
     setHasAppInitialized(true)
   }, [checkStorageForToken, checkUrlForToken, hasAppInitialized])
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Header />
       <Navigation />
       <Alert />
       <Router />
-    </>
+    </ThemeProvider>
   )
 }
 
