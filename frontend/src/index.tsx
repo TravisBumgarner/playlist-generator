@@ -21,7 +21,7 @@ const splitLink = split(
     const definition = getMainDefinition(query)
     return (
       definition.kind === 'OperationDefinition' &&
-            definition.operation === 'subscription'
+      definition.operation === 'subscription'
     )
   },
   wsLink,
@@ -36,11 +36,11 @@ const apolloClient = new ApolloClient({
 const container = document.getElementById('root') as unknown as HTMLElement
 const root = createRoot(container)
 root.render(
+  <BrowserRouter>
     <ResultsContext>
-        <BrowserRouter>
-            <ApolloProvider client={apolloClient}>
-                <App />
-            </ApolloProvider>
-        </BrowserRouter>
+      <ApolloProvider client={apolloClient}>
+        <App />
+      </ApolloProvider>
     </ResultsContext>
+  </BrowserRouter>
 )

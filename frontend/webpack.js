@@ -7,12 +7,12 @@ const PLUGIN_VARS = {
   local: {
     __API_WS_ENDPOINT__: "'ws://localhost:8080/graphql'",
     __API_HTTP_ENDPOINT__: "'http://localhost:8080/graphql'",
-    __LOGGING_LEVEL__: "'local'",
+    __LOGGING_LEVEL__: "'local'"
   },
   production: {
     __API_WS_ENDPOINT__: "'https://playlists-api.sillysideprojects.com/graphql'",
     __API_HTTP_ENDPOINT__: "'https://playlists-api.sillysideprojects.com/graphql'",
-    __LOGGING_LEVEL__: "'sentry'",
+    __LOGGING_LEVEL__: "'sentry'"
   }
 }
 
@@ -22,25 +22,25 @@ const getEnvVariables = () => {
 
 const envVariables = getEnvVariables()
 
-
 module.exports = {
   entry: './src/index.tsx',
   output: {
-    filename: 'app.bundle.js',
+    filename: 'app.[contenthash].js',
     path: path.resolve(__dirname, 'build'),
+    publicPath: '/'
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/,
+        exclude: /node_modules/
       },
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
-      },
-    ],
+        use: ['style-loader', 'css-loader']
+      }
+    ]
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
@@ -50,14 +50,13 @@ module.exports = {
       theme: path.resolve(__dirname, 'src/theme.ts'),
       utilities: path.resolve(__dirname, 'src/utilities.ts'),
       context: path.resolve(__dirname, 'src/Context.tsx')
-    },
+    }
   },
-  devtool: 'source-map',
   devServer: {
     compress: true,
     port: 3001,
     hot: true,
-    historyApiFallback: true,
+    historyApiFallback: true
   },
   plugins: [
     new webpack.DefinePlugin(envVariables),
@@ -65,9 +64,9 @@ module.exports = {
       template: './src/static/index.template.ejs',
       favicon: './src/static/favicon.png',
       inject: 'body',
-      title: "Playlist Generator"
-    }),
+      title: 'Playlist Generator'
+    })
   ],
   devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development'
 }

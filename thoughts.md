@@ -2,11 +2,12 @@
 # Next Steps
 
 - [x] Setup user auth for saving songs to playlist
+- [x] Can't refresh routes outside of homepage.
+- [ ] Add auto auth on page load
 - [ ] Cleanup UI
   - [ ] Elevated Artist
   - [x] Add Menu
 - [x] Need to sort out navigation
-- [ ] Can't refresh routes outside of homepage.
 - [ ] Add way to share links, and a shareable app for tweaking params
 - [ ] Add two more playlists to get at that rule of threes
 
