@@ -19,7 +19,8 @@
     "react-router": "^6.4.0",
     "react-router-dom": "^6.6.1",
     "runtypes": "^6.6.0",
-    "spotify-web-api-node": "^5.0.2"
+    "spotify-web-api-node": "^5.0.2",
+    "use-async-effect": "^2.2.7"
   },
   "devDependencies": {
     "@types/react-dom": "^18.0.10",

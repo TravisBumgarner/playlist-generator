@@ -4,7 +4,8 @@
 - [x] Setup user auth for saving songs to playlist
 - [x] Can't refresh routes outside of homepage.
 - [ ] Add auto auth on page load
-- [ ] Cleanup UI
+- [ ] Adda auth router
+ - [ ] Cleanup UI
   - [ ] Elevated Artist
   - [x] Add Menu
 - [x] Need to sort out navigation

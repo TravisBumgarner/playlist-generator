@@ -5,9 +5,10 @@ import { Record, String, Array } from 'runtypes'
 import { useNavigate } from 'react-router'
 import { forwardRef, useCallback, useContext, useEffect, useState } from 'react'
 import axios from 'axios'
+import useAsyncEffect from 'use-async-effect'
 
 import { Alert, Router, Header, Navigation } from './components'
-import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
+import { ELocalStorageItems, getLocalStorage, logger, setLocalStorage } from 'utilities'
 import { context } from 'context'
 
 const REFRESH_TOKEN_QUERY = gql`
@@ -80,11 +81,8 @@ const App = () => {
     })
 
     const { display_name, images, uri } = User.check(response.data)
-    return {
-      uri,
-      displayName: display_name,
-      image: images.length > 0 ? images[0].url : null
-    }
+    dispatch({ type: 'LOGIN', data: { displayName: display_name, image: images.length > 0 ? images[0].url : '', uri } })
+    setHasAppInitialized(true)
   }, [dispatch])
 
   const updateTokenLocalStorage = useCallback((args: { accessToken: string, expiresIn: string, refreshToken: string }) => {
@@ -96,11 +94,12 @@ const App = () => {
     setLocalStorage(ELocalStorageItems.RefreshToken, args.refreshToken)
   }, [])
 
-  const checkUrlForToken = useCallback(() => {
+  const checkUrlForTokenAndSetLocalStorage = useCallback(() => {
     // On app load, if url searchParams includes access_token after Spotify redirect, set it as local storage.
     const accessTokenSearchParam = searchParams.get('access_token')
     const refreshTokenParam = searchParams.get('refresh_token')
     const expiresInParam = searchParams.get('expires_in')
+
     if (accessTokenSearchParam && refreshTokenParam && expiresInParam) {
       updateTokenLocalStorage({
         accessToken: accessTokenSearchParam,
@@ -108,51 +107,53 @@ const App = () => {
         expiresIn: expiresInParam
       })
       navigate('.', { replace: true })
-      getUserDetails().then(data => { dispatch({ type: 'LOGIN', data }) }).catch((e) => { logger(e) }) // TODO - Could be optimized later.
       return true
     }
     return false
-  }, [dispatch, getUserDetails, navigate, updateTokenLocalStorage, searchParams])
+  }, [navigate, updateTokenLocalStorage, searchParams])
 
-  const refreshTokenInStorage = useCallback(() => {
+  const refreshTokenInStorage = useCallback(async () => {
     const refreshTokenLocalStorage = getLocalStorage(ELocalStorageItems.RefreshToken)
     if (!refreshTokenLocalStorage) {
-      logout(dispatch)
+      return false
     }
-    refreshToken({ variables: { refreshToken: refreshTokenLocalStorage } }).then(({ data }) => {
-      if (!data) {
-        logout(dispatch)
-        return
-      }
-      updateTokenLocalStorage(data.refreshToken)
-      getUserDetails().then(data => { dispatch({ type: 'LOGIN', data }) }).catch((e) => { logger(e) }) // TODO - Could be optimized later.
-    }).catch(() => {
-      logout(dispatch)
-    })
-  }, [dispatch, getUserDetails, refreshToken, updateTokenLocalStorage])
+    const response = await refreshToken({ variables: { refreshToken: refreshTokenLocalStorage } })
+    if (!response.data) {
+      return false
+    }
 
-  const checkStorageForToken = useCallback(() => {
+    updateTokenLocalStorage(response.data.refreshToken)
+    return true
+  }, [refreshToken, updateTokenLocalStorage])
+
+  const checkTokenValidInStorage = useCallback(async (): Promise<'valid' | 'expired' | 'does_not_exist'> => {
     const accessTokenLocalStorage = getLocalStorage(ELocalStorageItems.AccessToken)
     if (accessTokenLocalStorage) {
       const expiresAtLocalStorage = new Date(getLocalStorage(ELocalStorageItems.ExpiresAt))
       const isTokenInvalid = expiresAtLocalStorage < new Date() || !(expiresAtLocalStorage instanceof Date)
-      if (isTokenInvalid) {
-        getUserDetails().then(data => { dispatch({ type: 'LOGIN', data }) }).catch((e) => { logger(e) }) // TODO - Could be optimized later.
-      } else {
-        refreshTokenInStorage()
-      }
+      return isTokenInvalid ? 'valid' : 'expired'
     }
-  }, [dispatch, getUserDetails, refreshTokenInStorage])
+    return 'does_not_exist'
+  }, [])
 
-  useEffect(() => {
-    if (hasAppInitialized) return
+  useAsyncEffect(async (isMounted) => {
+    if (hasAppInitialized || !isMounted) return
 
-    const inUrl = checkUrlForToken()
-    if (inUrl) return
+    const inUrl = checkUrlForTokenAndSetLocalStorage()
 
-    checkStorageForToken()
-    setHasAppInitialized(true)
-  }, [checkStorageForToken, checkUrlForToken, hasAppInitialized])
+    if (!inUrl) {
+      const status = await checkTokenValidInStorage()
+      if (status === 'does_not_exist') {
+        return
+      }
+
+      if (status === 'expired') {
+        await refreshTokenInStorage()
+      }
+
+      await getUserDetails()
+    }
+  }, [checkUrlForTokenAndSetLocalStorage, hasAppInitialized])
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

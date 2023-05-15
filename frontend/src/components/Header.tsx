@@ -3,33 +3,21 @@ import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import { gql, useLazyQuery } from '@apollo/client'
 import LogoutIcon from '@mui/icons-material/Logout'
 import LoginIcon from '@mui/icons-material/Login'
 import { Avatar } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 
 import { context } from 'context'
-import { logout } from 'utilities'
-
-const GET_SPOTIFY_REDIRECT_URI_QUERY = gql`
-query GetSpotifyRedirectURI {
-    getSpotifyRedirectURI
-  }
-`
+import { logout, login } from 'utilities'
 
 const Header = () => {
-  const [login] = useLazyQuery<{ getSpotifyRedirectURI: string }>(GET_SPOTIFY_REDIRECT_URI_QUERY)
+  // const [login] = useLazyQuery<{ getSpotifyRedirectURI: string }>(GET_SPOTIFY_REDIRECT_URI_QUERY)
   const { dispatch, state } = useContext(context)
 
   const handleLogin = useCallback(async () => {
-    const redirectURI = await login()
-    if (redirectURI.data) {
-      window.open(redirectURI.data.getSpotifyRedirectURI, '_self')
-    } else {
-      dispatch({ type: 'ADD_MESSAGE', data: { message: 'Login failed' } })
-    }
-  }, [dispatch, login])
+    await login(dispatch)
+  }, [dispatch])
 
   const handleLogout = useCallback(() => {
     logout(dispatch)
