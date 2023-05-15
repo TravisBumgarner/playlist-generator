@@ -1,14 +1,9 @@
 import { gql, useLazyQuery } from '@apollo/client'
 import { Box, Button, Container, Typography } from '@mui/material'
-import { useCallback, useContext, useState, useMemo } from 'react'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Avatar from '@mui/material/Avatar'
+import { useCallback, useContext, useState } from 'react'
 import TextField from '@mui/material/TextField'
 
-import { Search } from 'sharedComponents'
-
+import { Search, Playlist } from 'sharedComponents'
 import { type TPlaylistEntry } from '../../sharedTypes'
 import { ELocalStorageItems, getLocalStorage } from 'utilities'
 import { context } from 'context'
@@ -31,26 +26,13 @@ query savePlaylist($accessToken: String! $playlistTitle: String! $uris: [String]
   }
 `
 
-const PlaylistItem = (data: TPlaylistEntry) => {
-  const handleClick = useCallback(() => { alert(data.id) }, [
-    data.id
-  ])
-  return (
-    <ListItem onClick={handleClick}>
-      <ListItemAvatar>
-        <Avatar alt={data.name} />
-      </ListItemAvatar>
-      <ListItemText primary={data.name} secondary={data.artists} />
-    </ListItem >
-  )
-}
-
-const Playlist = ({ artistId }: { artistId: string }) => {
-  const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
-  const [createEnergizingPlaylist] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
+const ProgressivelyEnergetic = () => {
   const [savePlaylist] = useLazyQuery<{ savePlaylist: boolean }>(SAVE_PLAYLIST_QUERY)
-  const { dispatch } = useContext(context)
   const [playlistTitle, setPlaylistTitle] = useState('')
+  const [artistId, setArtistId] = useState('')
+  const [createEnergizingPlaylist] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
+  const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
+  const { dispatch } = useContext(context)
 
   const handleCreatePlaylistSubmit = useCallback(async () => {
     setPlaylistEntries([])
@@ -59,6 +41,10 @@ const Playlist = ({ artistId }: { artistId: string }) => {
       setPlaylistEntries(result.data?.createEnergizingPlaylist)
     }
   }, [artistId, createEnergizingPlaylist])
+
+  const resultSelectedCallback = useCallback((value: string) => {
+    setArtistId(value)
+  }, [])
 
   const handleSavePlaylistSubmit = useCallback(async () => {
     const uris = playlistEntries.map(({ uri }) => uri)
@@ -76,48 +62,28 @@ const Playlist = ({ artistId }: { artistId: string }) => {
     }
 
     setPlaylistEntries([])
-  }, [playlistEntries, dispatch, playlistTitle, savePlaylist])
-
-  const Playlist = useMemo(() => {
-    return playlistEntries.map(result => <PlaylistItem key={result.uri} {...result} />)
-  }, [playlistEntries])
-
-  return (<Box>
-    {
-      playlistEntries.length === 0
-        ? (<Button onClick={handleCreatePlaylistSubmit}>Create Energizing Playlist!</Button>)
-        : (<Box>
-          <TextField
-            label="Title"
-            type="title"
-            value={playlistTitle}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setPlaylistTitle(event.target.value)
-            }}
-          />
-          <Button onClick={handleSavePlaylistSubmit}>Save it to your Spotify</Button>
-
-        </Box>)
-    }
-    {Playlist}
-  </Box>
-  )
-}
-
-const ProgressivelyEnergetic = () => {
-  const [artistId, setArtistId] = useState('')
-
-  const resultSelectedCallback = useCallback((value: string) => {
-    setArtistId(value)
-  }, [])
+  }, [dispatch, playlistEntries, dispatch, playlistTitle, savePlaylist])
 
   return (
     <Container>
       <Typography variant="h2" gutterBottom>
         Progressively Energetic
       </Typography>
+      <Button onClick={handleCreatePlaylistSubmit}>Create Energizing Playlist!</Button>
+      <Box>
+        <TextField
+          label="Title"
+          type="title"
+          value={playlistTitle}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setPlaylistTitle(event.target.value)
+          }}
+        />
+        <Button onClick={handleSavePlaylistSubmit}>Save it to your Spotify</Button>
+
+      </Box>
       <Search resultSelectedCallback={resultSelectedCallback} />
-      <Playlist artistId={artistId} />
+      <Playlist playlistEntries={playlistEntries} />
 
     </Container>
   )
