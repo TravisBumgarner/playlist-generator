@@ -8,7 +8,7 @@ import axios from 'axios'
 import useAsyncEffect from 'use-async-effect'
 
 import { Alert, Router, Header, Navigation } from './components'
-import { ELocalStorageItems, getLocalStorage, logger, setLocalStorage } from 'utilities'
+import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
 import { context } from 'context'
 
 const REFRESH_TOKEN_QUERY = gql`
@@ -59,24 +59,29 @@ const App = () => {
         data: { message: 'Please login again' }
       })
     }
-    const response = await axios({
-      method: 'GET',
-      url: 'https://api.spotify.com/v1/me',
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: 'https://api.spotify.com/v1/me',
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
 
-    const User = Record({
-      display_name: String,
-      images: Array(Record({
-        url: String
-      })),
-      uri: String
-    })
+      const User = Record({
+        display_name: String,
+        images: Array(Record({
+          url: String
+        })),
+        uri: String
+      })
 
-    const { display_name, images, uri } = User.check(response.data)
-    dispatch({ type: 'LOGIN', data: { displayName: display_name, image: images.length > 0 ? images[0].url : '', uri } })
+      const { display_name, images, uri } = User.check(response.data)
+      dispatch({ type: 'LOGIN', data: { displayName: display_name, image: images.length > 0 ? images[0].url : '', uri } })
+    } catch (e) {
+      logger(e)
+      logout(dispatch)
+    }
     setHasAppInitialized(true)
   }, [dispatch])
 

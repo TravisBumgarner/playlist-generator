@@ -7,6 +7,7 @@ import { Search, Playlist } from 'sharedComponents'
 import { type TPlaylistEntry } from '../../sharedTypes'
 import { ELocalStorageItems, getLocalStorage } from 'utilities'
 import { context } from 'context'
+import { useNavigate } from 'react-router'
 
 const CREATE_ENERGIZING_PLAYLIST_QUERY = gql`
 query createEnergizingPlaylist($artistId: String!) {
@@ -33,6 +34,7 @@ const ProgressivelyEnergetic = () => {
   const [createEnergizingPlaylist] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const { dispatch } = useContext(context)
+  const navigate = useNavigate()
 
   const handleCreatePlaylistSubmit = useCallback(async () => {
     setPlaylistEntries([])
@@ -50,8 +52,9 @@ const ProgressivelyEnergetic = () => {
     const uris = playlistEntries.map(({ uri }) => uri)
 
     const accessToken = getLocalStorage(ELocalStorageItems.AccessToken)
-    if (!accessToken) { // TODO - could warn sooner
+    if (!accessToken) {
       dispatch({ type: 'ADD_MESSAGE', data: { message: 'You need to login first' } })
+      navigate('/')
       return
     }
     const response = await savePlaylist({ variables: { uris, playlistTitle, accessToken } })
@@ -62,7 +65,7 @@ const ProgressivelyEnergetic = () => {
     }
 
     setPlaylistEntries([])
-  }, [dispatch, playlistEntries, dispatch, playlistTitle, savePlaylist])
+  }, [playlistEntries, dispatch, playlistTitle, savePlaylist])
 
   return (
     <Container>
