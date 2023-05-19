@@ -74,6 +74,7 @@ const PlaylistType = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLString) },
         name: { type: new GraphQLNonNull(GraphQLString) },
         artists: { type: new GraphQLNonNull(GraphQLString) },
+        image: { type: new GraphQLNonNull(GraphQLString) },
         album: { type: new GraphQLNonNull(GraphQLString) },
         uri: { type: new GraphQLNonNull(GraphQLString) },
     }),
@@ -155,6 +156,7 @@ const getRecommendations = async (options: GetRecommendationsOptions) => {
                 id,
                 artists: artists.map(artist => artist.name).join(', '),
                 album: album.name,
+                image: album.images.length > 0 ? album.images[0].url : '',
                 name,
                 uri
             }

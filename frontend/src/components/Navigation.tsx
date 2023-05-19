@@ -12,7 +12,7 @@ import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 
 import { context } from 'context'
 
-const ALROGITHM_ROUTES: Array<{ text: string, href: string }> = [
+export const ALROGITHM_ROUTES: Array<{ text: string, href: string }> = [
   {
     text: 'Progressively Energetic',
     href: '/a/progressively_energetic'

@@ -15,9 +15,9 @@ const Loading = () => {
   }, [displayLength])
 
   return (
-        <Container>
-            <Typography variant="body1">{FULL_MESSAGE.slice(0, displayLength)}</Typography>
-        </Container>
+    <Container>
+      <Typography alignContent="center" variant="body1">{FULL_MESSAGE.slice(0, displayLength)}</Typography>
+    </Container>
   )
 }
 

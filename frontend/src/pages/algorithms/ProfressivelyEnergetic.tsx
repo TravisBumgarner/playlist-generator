@@ -1,9 +1,9 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Box, Button, Container, Typography } from '@mui/material'
+import { Button, Container, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import TextField from '@mui/material/TextField'
 
-import { Search, Playlist } from 'sharedComponents'
+import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
 import { ELocalStorageItems, getLocalStorage } from 'utilities'
 import { context } from 'context'
@@ -17,6 +17,7 @@ query createEnergizingPlaylist($artistId: String!) {
         album
         artists
         uri
+        image
     }
   }
 `
@@ -31,26 +32,21 @@ const ProgressivelyEnergetic = () => {
   const [savePlaylist] = useLazyQuery<{ savePlaylist: boolean }>(SAVE_PLAYLIST_QUERY)
   const [playlistTitle, setPlaylistTitle] = useState('')
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createEnergizingPlaylist] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
+  const [createEnergizingPlaylist, { loading, called, data }] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const { dispatch } = useContext(context)
   const navigate = useNavigate()
 
-  const handleCreatePlaylistSubmit = useCallback(async () => {
-    if (!selectedArtist) {
-      return
-    }
-
+  const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
+    setSelectedArtist(value)
     setPlaylistEntries([])
-    const result = await createEnergizingPlaylist({ variables: { artistId: selectedArtist.id } })
+    setPlaylistTitle(`Progressively Energetic with ${value.name}`)
+
+    const result = await createEnergizingPlaylist({ variables: { artistId: value.id } })
     if ((result.data?.createEnergizingPlaylist) != null) {
       setPlaylistEntries(result.data?.createEnergizingPlaylist)
     }
-  }, [selectedArtist, createEnergizingPlaylist])
-
-  const resultSelectedCallback = useCallback((value: TAutocompleteEntry) => {
-    setSelectedArtist(value)
-  }, [])
+  }, [createEnergizingPlaylist])
 
   const handleSavePlaylistSubmit = useCallback(async () => {
     const uris = playlistEntries.map(({ uri }) => uri)
@@ -76,39 +72,46 @@ const ProgressivelyEnergetic = () => {
       return (<Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />)
     }
 
-    if (playlistEntries.length === 0) {
+    if (called && loading) {
       return (
-        <Box>
+        <>
+          <Loading />
+        </>
+      )
+    }
+
+    if (!data) {
+      return (
+        <>
           <Typography variant="h2" gutterBottom>
-            Selected Artist: {selectedArtist.name}
-            <Button onClick={handleCreatePlaylistSubmit}>Create Energizing Playlist!</Button>
+            Fetching
           </Typography>
-        </Box>
+        </>
       )
     }
     return (
       <>
         <TextField
-          label="Title"
+          fullWidth
+          label="Title this Playlist"
           type="title"
           value={playlistTitle}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setPlaylistTitle(event.target.value)
           }}
         />
-        <Button onClick={handleSavePlaylistSubmit}>Save it to your Spotify</Button>
+        <Button fullWidth onClick={handleSavePlaylistSubmit}>Save it to your Spotify</Button>
         <Playlist playlistEntries={playlistEntries} />
       </>
     )
-  }, [handleSavePlaylistSubmit, handleCreatePlaylistSubmit, playlistEntries, playlistTitle, resultSelectedCallback, selectedArtist])
+  }, [handleSavePlaylistSubmit, called, data, loading, playlistEntries, playlistTitle, resultSelectedCallback, selectedArtist])
 
   return (
-    <Container>
-      <Typography variant="h2" gutterBottom>
-        Progressively Energetic
-      </Typography>
-      {content}
-    </Container>
+    <Container sx={{ marginTop: '2rem' }}>
+      <Container sx={{ maxWidth: '500px', width: '500px' }}>
+        {content}
+      </Container>
+    </Container >
   )
 }
 

@@ -11,4 +11,5 @@ export type TPlaylistEntry = {
     name: string,
     album: string
     uri: string
+    image: string
 }

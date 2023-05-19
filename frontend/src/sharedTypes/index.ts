@@ -11,4 +11,5 @@ export interface TPlaylistEntry {
   name: string
   album: string
   uri: string
+  image: string
 }

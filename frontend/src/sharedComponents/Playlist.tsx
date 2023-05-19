@@ -10,7 +10,7 @@ const PlaylistItem = (data: TPlaylistEntry) => {
   return (
     <ListItem>
       <ListItemAvatar>
-        <Avatar alt={data.name} />
+        <Avatar alt={data.name} src={data.image} />
       </ListItemAvatar>
       <ListItemText primary={data.name} secondary={data.artists} />
     </ListItem >
@@ -22,7 +22,7 @@ const Playlist = ({ playlistEntries }: { playlistEntries: TPlaylistEntry[] }) =>
     return playlistEntries.map(result => <PlaylistItem key={result.uri} {...result} />)
   }, [playlistEntries])
 
-  return (<Box>
+  return (<Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
     {Playlist}
   </Box>
   )

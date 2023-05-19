@@ -1,5 +1,5 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Box, Button, Container, ListItemButton } from '@mui/material'
+import { Box, Button, Container, ListItemButton, Typography } from '@mui/material'
 import { useCallback, useState, useMemo } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -8,6 +8,7 @@ import Avatar from '@mui/material/Avatar'
 import TextField from '@mui/material/TextField'
 
 import { type TAutocompleteEntry } from '../sharedTypes'
+import Loading from './Loading'
 
 const AUTOCOMPLETE_QUERY = gql`
 query Autocomplete($query: String!) {
@@ -20,7 +21,7 @@ query Autocomplete($query: String!) {
 `
 
 const Search = ({ resultSelectedCallback, label }: { label: string, resultSelectedCallback: (data: TAutocompleteEntry) => void }) => {
-  const [autocomplete] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
+  const [autocomplete, { loading, called }] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<TAutocompleteEntry[]>([])
 
@@ -33,6 +34,30 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
   }, [query, autocomplete])
 
   const AutocompleteItemsList = useMemo(() => {
+    if (!called) {
+      return (
+        <Container>
+          <Typography textAlign="center">Search for an artist for your playlist</Typography>
+        </Container>
+      )
+    }
+
+    if (loading) {
+      return (
+        <Container>
+          <Loading />
+        </Container>
+      )
+    }
+
+    if (called && !loading && results.length === 0) {
+      return (
+        <Container>
+          <Typography textAlign="center">Could not find anything, try again.</Typography>
+        </Container>
+      )
+    }
+
     return results.map(data => {
       const handleClick = () => {
         resultSelectedCallback(data)
@@ -52,7 +77,7 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
   }, [resultSelectedCallback, results])
 
   return (
-    <Container sx={{ maxWidth: '500px' }}>
+    <Container>
       <TextField
         fullWidth
         label={label}
@@ -63,8 +88,8 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
         }}
         margin="dense"
       />
-      <Button fullWidth onClick={handleSubmit} variant="contained">Search</Button>
-      <Box sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
+      <Button disabled={query.length === 0} fullWidth onClick={handleSubmit} variant="contained">Search</Button>
+      <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
         {AutocompleteItemsList}
       </Box>
     </Container>

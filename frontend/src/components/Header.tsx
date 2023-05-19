@@ -7,13 +7,20 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import LoginIcon from '@mui/icons-material/Login'
 import { Avatar } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
+import { useLocation } from 'react-router'
 
 import { context } from 'context'
 import { logout, login } from 'utilities'
+import { ALROGITHM_ROUTES } from './Navigation'
 
 const Header = () => {
-  // const [login] = useLazyQuery<{ getSpotifyRedirectURI: string }>(GET_SPOTIFY_REDIRECT_URI_QUERY)
   const { dispatch, state } = useContext(context)
+  const { pathname } = useLocation()
+
+  const subtitle = useMemo(() => {
+    const match = ALROGITHM_ROUTES.find(({ href }) => href === pathname)
+    return match ? `: ${match.text}` : ''
+  }, [pathname])
 
   const handleLogin = useCallback(async () => {
     await login(dispatch)
@@ -78,7 +85,7 @@ const Header = () => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Playlist Generator
+          Playlist Generator{subtitle}
         </Typography>
         {state.user ? AuthedUser : Login}
       </Toolbar>
