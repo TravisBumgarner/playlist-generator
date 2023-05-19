@@ -176,8 +176,8 @@ const createEnergizingPlaylist = {
         artistId: { type: new GraphQLNonNull(GraphQLString) },
     },
     resolve: async (_: any, { artistId }: CreateEnergizingPlaylistArgs) => {
-        const promises = await Promise.all([0.25, 0.5, 0.75].map(async (minEnergy) => {
-            const options = { seed_artists: artistId, market: Markets.US, limit: 5, min_energy: 0, max_energy: 1 }
+        const promises = await Promise.all([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9].map(async (minEnergy) => {
+            const options = { seed_artists: artistId, market: Markets.US, limit: 10, min_energy: minEnergy, max_energy: minEnergy + 0.1 }
             return getRecommendations(options)
         }))
         return promises.flat()
