@@ -1,8 +1,10 @@
-import client, { useLazyQuery, gql, ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client'
+import { gql, ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client'
 import { type Action } from 'context'
 import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
+
+import { useEffect, useState } from 'react'
 
 type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>
 type Exactly<T, K extends keyof T> = Pick<T, K>
@@ -76,6 +78,22 @@ const login = async (dispatch: (value: Action) => void) => {
   dispatch({ type: 'LOGOUT' })
 }
 
+function useDebounce<T> (value: T, delay?: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const timer = setTimeout(() => { setDebouncedValue(value) }, delay ?? 500)
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
+
+export default useDebounce
+
 export {
   logger,
   type AtLeast,
@@ -85,5 +103,6 @@ export {
   deleteLocalStorage,
   ELocalStorageItems,
   login,
-  logout
+  logout,
+  useDebounce
 }

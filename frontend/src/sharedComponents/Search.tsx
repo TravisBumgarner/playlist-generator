@@ -1,14 +1,16 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Box, Button, Container, ListItemButton, Typography } from '@mui/material'
-import { useCallback, useState, useMemo } from 'react'
+import { Box, Container, ListItemButton, Typography } from '@mui/material'
+import { useState, useMemo } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
 import TextField from '@mui/material/TextField'
+import useAsyncEffect from 'use-async-effect'
 
 import { type TAutocompleteEntry } from '../sharedTypes'
 import Loading from './Loading'
+import useDebounce from 'utilities'
 
 const AUTOCOMPLETE_QUERY = gql`
 query Autocomplete($query: String!) {
@@ -24,14 +26,17 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
   const [autocomplete, { loading, called }] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<TAutocompleteEntry[]>([])
+  const debouncedQuery = useDebounce<string>(query, 500)
 
-  const handleSubmit = useCallback(async () => {
+  useAsyncEffect(async () => {
+    if (query.length === 0) return
+
     setResults([])
     const result = await autocomplete({ variables: { query } })
     if ((result.data?.autocomplete) != null) {
       setResults(result.data?.autocomplete)
     }
-  }, [query, autocomplete])
+  }, [debouncedQuery])
 
   const AutocompleteItemsList = useMemo(() => {
     if (!called) {
@@ -88,7 +93,6 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
         }}
         margin="dense"
       />
-      <Button disabled={query.length === 0 || loading} fullWidth onClick={handleSubmit} variant="contained">Search</Button>
       <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
         {AutocompleteItemsList}
       </Box>
