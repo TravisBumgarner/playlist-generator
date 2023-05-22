@@ -1,24 +1,32 @@
-import { Container, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-
-const FULL_MESSAGE = 'Loading...'
+import { IconButton, css } from '@mui/material'
+import LoopIcon from '@mui/icons-material/Loop'
 
 const Loading = () => {
-  const [displayLength, setDisplayLength] = useState<number>(FULL_MESSAGE.length)
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setDisplayLength((prev) => (prev === FULL_MESSAGE.length ? 0 : prev + 2))
-    }, 125)
-
-    return () => { clearInterval(intervalId) }
-  }, [displayLength])
-
   return (
-    <Container>
-      <Typography alignContent="center" variant="body1">{FULL_MESSAGE.slice(0, displayLength)}</Typography>
-    </Container>
+    <IconButton
+      size="large"
+      edge="start"
+      color="inherit"
+      aria-label="menu"
+      sx={{ mr: 2 }}>
+      <LoopIcon
+
+        css={iconCSS}
+      />
+    </IconButton>
   )
 }
+
+const iconCSS = css`
+  animation: rotating 2s linear infinite;
+  @keyframes rotating {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+}
+`
 
 export default Loading

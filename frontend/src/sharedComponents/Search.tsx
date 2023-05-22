@@ -74,7 +74,7 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
         </ListItem >
       )
     })
-  }, [resultSelectedCallback, results])
+  }, [resultSelectedCallback, results, called, loading])
 
   return (
     <Container>
@@ -88,7 +88,7 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
         }}
         margin="dense"
       />
-      <Button disabled={query.length === 0} fullWidth onClick={handleSubmit} variant="contained">Search</Button>
+      <Button disabled={query.length === 0 || loading} fullWidth onClick={handleSubmit} variant="contained">Search</Button>
       <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
         {AutocompleteItemsList}
       </Box>

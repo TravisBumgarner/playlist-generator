@@ -11,18 +11,20 @@ import { useLocation } from 'react-router'
 
 import { context } from 'context'
 import { logout, login } from 'utilities'
-import { ALROGITHM_ROUTES } from './Navigation'
+import { ALGORITHM_ROUTES } from './Navigation'
+import { Loading } from 'sharedComponents'
 
 const Header = () => {
   const { dispatch, state } = useContext(context)
   const { pathname } = useLocation()
 
   const subtitle = useMemo(() => {
-    const match = ALROGITHM_ROUTES.find(({ href }) => href === pathname)
+    const match = ALGORITHM_ROUTES.find(({ href }) => href === pathname)
     return match ? `: ${match.text}` : ''
   }, [pathname])
 
   const handleLogin = useCallback(async () => {
+    dispatch({ type: 'LOGIN_INITIATED' })
     await login(dispatch)
   }, [dispatch])
 
@@ -31,17 +33,19 @@ const Header = () => {
   }, [dispatch])
 
   const Login = useMemo(() => {
-    return (<IconButton
-      size="large"
-      edge="start"
-      color="inherit"
-      aria-label="menu"
-      sx={{ mr: 2 }}
-      onClick={handleLogin}
-    >
-      <LoginIcon />
-    </IconButton>)
-  }, [handleLogin])
+    return (state.isLoggingIn
+      ? <Loading />
+      : <IconButton
+        size="large"
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+        sx={{ mr: 2 }}
+        onClick={handleLogin}
+      >
+        <LoginIcon />
+      </IconButton>)
+  }, [handleLogin, state.isLoggingIn])
 
   const handleMenuClick = useCallback(() => {
     dispatch({ type: 'TOGGLE_MENU' })

@@ -1,15 +1,27 @@
-import { Container, List, Typography } from '@mui/material'
+import { Container, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import { useContext } from 'react'
 import ListItem from '@mui/material/ListItem'
 import { context } from 'context'
-import { Link } from 'react-router-dom'
+import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
+
+import { ALGORITHM_ROUTES } from '../components/Navigation'
 
 const Algorithms = () => {
   return (
     <List>
-      <ListItem disablePadding>
-        <Link to="/a/progressively_energetic">Progressively Energetic</Link>
-      </ListItem>
+      {
+        ALGORITHM_ROUTES.map(({ text, href, description }) => {
+          return (
+            <ListItem disablePadding key={text} >
+              <ListItemButton href={href}>
+                <ListItemIcon>
+                  <PlaylistPlayIcon />
+                </ListItemIcon>
+                <ListItemText primary={text} secondary={description} />
+              </ListItemButton>
+            </ListItem >
+          )
+        })}
     </List>
   )
 }

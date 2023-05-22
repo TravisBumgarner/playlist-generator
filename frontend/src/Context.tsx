@@ -13,13 +13,15 @@ interface State {
     uri: string
   } | null
   isMenuOpen: boolean
+  isLoggingIn: boolean
 }
 
 const EMPTY_STATE: State = {
   message: null,
   hasErrored: false,
   user: null,
-  isMenuOpen: false
+  isMenuOpen: false,
+  isLoggingIn: true
 }
 
 interface Login {
@@ -29,6 +31,10 @@ interface Login {
     uri: string
     image: string | null
   }
+}
+
+interface LoginInitiated {
+  type: 'LOGIN_INITIATED'
 }
 
 interface Logout {
@@ -61,6 +67,7 @@ type Action =
   | Login
   | Logout
   | ToggleMenu
+  | LoginInitiated
 
 const context = createContext({
   state: EMPTY_STATE,
@@ -86,10 +93,10 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, message: null }
     }
     case 'LOGIN': {
-      return { ...state, user: { ...action.data } }
+      return { ...state, user: { ...action.data }, isLoggingIn: false }
     }
     case 'LOGOUT': {
-      return { ...state, user: null }
+      return { ...state, user: null, isLoggingIn: false }
     }
     default: {
       logger(`Swallowing action: ${JSON.stringify(action)}`)

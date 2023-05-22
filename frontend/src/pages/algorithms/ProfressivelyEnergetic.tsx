@@ -35,6 +35,7 @@ const ProgressivelyEnergetic = () => {
   const [createEnergizingPlaylist, { loading, called, data }] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const { dispatch } = useContext(context)
+  const [isSavingPlaylist, setIsSavingPlaylist] = useState(false)
   const navigate = useNavigate()
 
   const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
@@ -49,6 +50,7 @@ const ProgressivelyEnergetic = () => {
   }, [createEnergizingPlaylist])
 
   const handleSavePlaylistSubmit = useCallback(async () => {
+    setIsSavingPlaylist(true)
     const uris = playlistEntries.map(({ uri }) => uri)
 
     const accessToken = getLocalStorage(ELocalStorageItems.AccessToken)
@@ -60,11 +62,12 @@ const ProgressivelyEnergetic = () => {
     const response = await savePlaylist({ variables: { uris, playlistTitle, accessToken } })
     if (response) {
       dispatch({ type: 'ADD_MESSAGE', data: { message: 'Success! Open Spotify https://open.spotify.com/playlist/' } })
+      setPlaylistEntries([])
     } else {
       dispatch({ type: 'ADD_MESSAGE', data: { message: 'Failed to save playlist' } })
     }
 
-    setPlaylistEntries([])
+    setIsSavingPlaylist(false)
   }, [playlistEntries, dispatch, playlistTitle, savePlaylist, navigate])
 
   const content = useMemo(() => {
@@ -100,11 +103,16 @@ const ProgressivelyEnergetic = () => {
             setPlaylistTitle(event.target.value)
           }}
         />
-        <Button fullWidth onClick={handleSavePlaylistSubmit}>Save it to your Spotify</Button>
-        <Playlist playlistEntries={playlistEntries} />
+        <Button disabled={isSavingPlaylist} fullWidth onClick={handleSavePlaylistSubmit}>Save it to your Spotify</Button>
+        {
+          isSavingPlaylist
+            ? <Loading />
+            : <Playlist playlistEntries={playlistEntries} />
+        }
+
       </>
     )
-  }, [handleSavePlaylistSubmit, called, data, loading, playlistEntries, playlistTitle, resultSelectedCallback, selectedArtist])
+  }, [handleSavePlaylistSubmit, called, data, loading, isSavingPlaylist, playlistEntries, playlistTitle, resultSelectedCallback, selectedArtist])
 
   return (
     <Container sx={{ marginTop: '2rem' }}>

@@ -12,10 +12,11 @@ import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 
 import { context } from 'context'
 
-export const ALROGITHM_ROUTES: Array<{ text: string, href: string }> = [
+export const ALGORITHM_ROUTES: Array<{ text: string, href: string, description: string }> = [
   {
     text: 'Progressively Energetic',
-    href: '/a/progressively_energetic'
+    href: '/a/progressively_energetic',
+    description: 'Pick an artist. Generate a playlist of songs related to that artist. The songs will start mellow and end with lots of energy.'
   }
 ]
 
@@ -25,7 +26,7 @@ const Navigation = () => {
   const algorithmRoutes = useMemo(() => {
     if (!state.user) return null
 
-    return ALROGITHM_ROUTES.map(({ text, href }) => {
+    return ALGORITHM_ROUTES.map(({ text, href }) => {
       return (
         <ListItem disablePadding key={text} >
           <ListItemButton href={href}>
