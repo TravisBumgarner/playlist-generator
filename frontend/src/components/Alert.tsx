@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Alert as AlertMUI, Button, Collapse } from '@mui/material'
+import { Alert as AlertMUI, Box, Button, Link } from '@mui/material'
 import { css } from '@emotion/react'
 
 import { context } from 'context'
@@ -16,27 +16,25 @@ const AlertPositionerCSS = css`
 `
 
 const Alert = () => {
-    const { state, dispatch } = useContext(context)
+  const { state, dispatch } = useContext(context)
 
-    const handleSubmit = () => {
-        dispatch({ type: 'DELETE_MESSAGE' })
-    }
+  const handleSubmit = () => {
+    dispatch({ type: 'DELETE_ALERT' })
+  }
 
-    if (!state.message) return null
+  if (!state.alert) return null
 
-    return (
-        <div css={AlertPositionerCSS}>
-            <Collapse>
-                <AlertMUI
-                    action={
-                        <Button color="inherit" size="small" onClick={handleSubmit}>
-                            Close
-                        </Button>
-                    }
-                    severity="error">{state.message.body}</AlertMUI>
-            </Collapse>
-        </div >
-    )
+  return (
+    <Box css={AlertPositionerCSS}>
+      <AlertMUI
+        action={
+          <Button color="inherit" size="small" onClick={handleSubmit}>
+            Close
+          </Button>
+        }
+        severity={state.alert.severity}>{state.alert.text} {state.alert.url && <Link target="_blank" href={state.alert.url}>Open Playlist</Link>}</AlertMUI>
+    </Box >
+  )
 }
 
 export default Alert

@@ -1,19 +1,21 @@
-import { IconButton, css } from '@mui/material'
+import { Container, IconButton, css } from '@mui/material'
 import LoopIcon from '@mui/icons-material/Loop'
 
 const Loading = () => {
   return (
-    <IconButton
-      size="large"
-      edge="start"
-      color="inherit"
-      aria-label="menu"
-      sx={{ mr: 2 }}>
-      <LoopIcon
+    <Container css={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <IconButton
+        size="large"
+        edge="start"
+        color="inherit"
+        aria-label="menu"
+        sx={{ mr: 2 }}>
+        <LoopIcon
 
-        css={iconCSS}
-      />
-    </IconButton>
+          css={iconCSS}
+        />
+      </IconButton>
+    </Container>
   )
 }
 

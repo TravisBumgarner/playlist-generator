@@ -5,23 +5,15 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import LogoutIcon from '@mui/icons-material/Logout'
 import LoginIcon from '@mui/icons-material/Login'
-import { Avatar } from '@mui/material'
+import { Avatar, Link } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
-import { useLocation } from 'react-router'
 
 import { context } from 'context'
 import { logout, login } from 'utilities'
-import { ALGORITHM_ROUTES } from './Navigation'
 import { Loading } from 'sharedComponents'
 
 const Header = () => {
   const { dispatch, state } = useContext(context)
-  const { pathname } = useLocation()
-
-  const subtitle = useMemo(() => {
-    const match = ALGORITHM_ROUTES.find(({ href }) => href === pathname)
-    return match ? `: ${match.text}` : ''
-  }, [pathname])
 
   const handleLogin = useCallback(async () => {
     dispatch({ type: 'LOGIN_INITIATED' })
@@ -88,8 +80,10 @@ const Header = () => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Playlist Generator{subtitle}
+        <Typography variant="h6" component="h1" sx={{ flexGrow: 1 }}>
+          <Link css={{ color: 'white' }} href="/">
+            Playlist Generator
+          </Link>
         </Typography>
         {state.user ? AuthedUser : Login}
       </Toolbar>

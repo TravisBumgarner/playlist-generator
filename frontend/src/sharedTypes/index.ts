@@ -5,11 +5,22 @@ export interface TAutocompleteEntry {
   id: string
 }
 
+export interface TArtist {
+  name: string
+  href: string
+}
+
+export interface TAlbum {
+  name: string
+  href: string
+}
+
 export interface TPlaylistEntry {
   id: string
-  artists: string
+  artists: TArtist[]
   name: string
-  album: string
+  album: TAlbum
   uri: string
+  href: string
   image: string
 }

@@ -1,5 +1,5 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Box, Container, ListItemButton, Typography } from '@mui/material'
+import { Box, Container, List, ListItemButton, Typography } from '@mui/material'
 import { useState, useMemo } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -38,11 +38,11 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
     }
   }, [debouncedQuery])
 
-  const AutocompleteItemsList = useMemo(() => {
+  const Results = useMemo(() => {
     if (!called) {
       return (
         <Container>
-          <Typography textAlign="center">Search for an artist for your playlist</Typography>
+          <Typography textAlign="center">Search for an artist to generate your playlist.</Typography>
         </Container>
       )
     }
@@ -63,7 +63,7 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
       )
     }
 
-    return results.map(data => {
+    const ListItems = results.map(data => {
       const handleClick = () => {
         resultSelectedCallback(data)
       }
@@ -72,13 +72,19 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
         <ListItem key={data.id} >
           <ListItemButton onClick={handleClick}>
             <ListItemAvatar>
-              <Avatar alt={data.name} src={data.image} />
+              <Avatar variant="square" alt={data.name} src={data.image} />
             </ListItemAvatar>
             <ListItemText primary={data.name} />
           </ListItemButton>
         </ListItem >
       )
     })
+
+    return (
+      <List>
+        {ListItems}
+      </List>
+    )
   }, [resultSelectedCallback, results, called, loading])
 
   return (
@@ -88,13 +94,14 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
         label={label}
         type="search"
         value={query}
+        autoFocus
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           setQuery(event.target.value)
         }}
-        margin="dense"
+        margin="normal"
       />
-      <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
-        {AutocompleteItemsList}
+      <Box sx={{ overflowY: 'auto', maxHeight: '500px', height: '500px' }}>
+        {Results}
       </Box>
     </Container>
   )

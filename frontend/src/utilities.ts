@@ -72,7 +72,7 @@ const login = async (dispatch: (value: Action) => void) => {
   if (response.data) {
     window.open(response.data.getSpotifyRedirectURI, '_self')
   } else {
-    dispatch({ type: 'ADD_MESSAGE', data: { message: 'Login failed' } })
+    dispatch({ type: 'ADD_ALERT', data: { text: 'Login failed', severity: 'error' } })
   }
 
   dispatch({ type: 'LOGOUT' })

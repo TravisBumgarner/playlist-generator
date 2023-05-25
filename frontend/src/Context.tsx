@@ -3,8 +3,10 @@ import { useReducer, createContext } from 'react'
 import { logger } from 'utilities'
 
 interface State {
-  message: {
-    body: string
+  alert: {
+    text: string
+    severity: 'error' | 'warning' | 'info' | 'success'
+    url?: string
   } | null
   hasErrored: boolean
   user: {
@@ -17,11 +19,11 @@ interface State {
 }
 
 const EMPTY_STATE: State = {
-  message: null,
+  alert: null,
   hasErrored: false,
   user: null,
   isMenuOpen: false,
-  isLoggingIn: true
+  isLoggingIn: false
 }
 
 interface Login {
@@ -50,14 +52,16 @@ interface ToggleMenu {
 }
 
 interface AddMessage {
-  type: 'ADD_MESSAGE'
+  type: 'ADD_ALERT'
   data: {
-    message: string
+    text: string
+    severity: 'error' | 'warning' | 'info' | 'success'
+    url?: string
   }
 }
 
 interface DeleteMessage {
-  type: 'DELETE_MESSAGE'
+  type: 'DELETE_ALERT'
 }
 
 type Action =
@@ -86,14 +90,17 @@ const reducer = (state: State, action: Action): State => {
     case 'HAS_ERRORED': {
       return { ...state, hasErrored: true }
     }
-    case 'ADD_MESSAGE': {
-      return { ...state, message: { body: action.data.message } }
+    case 'ADD_ALERT': {
+      return { ...state, alert: { ...action.data } }
     }
-    case 'DELETE_MESSAGE': {
-      return { ...state, message: null }
+    case 'DELETE_ALERT': {
+      return { ...state, alert: null }
     }
     case 'LOGIN': {
       return { ...state, user: { ...action.data }, isLoggingIn: false }
+    }
+    case 'LOGIN_INITIATED': {
+      return { ...state, isLoggingIn: true }
     }
     case 'LOGOUT': {
       return { ...state, user: null, isLoggingIn: false }

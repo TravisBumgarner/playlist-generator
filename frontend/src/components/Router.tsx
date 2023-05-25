@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router'
 import { Navigate } from 'react-router-dom'
 
 import { context } from 'context'
-import { Home, Error } from '../pages'
+import { Home, Error, LandingPage } from '../pages'
 import { ProgressivelyEnergetic } from '../pages/algorithms'
 
 interface ConditionalRouteProps {
@@ -29,7 +29,13 @@ const Router = () => {
   return (
     <Routes>
       <Route path="/error" element={<Error />} />
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={(
+        <ConditionalRoute
+          authedComponent={<Home />}
+          unauthedComponent={<LandingPage />}
+        />
+      )}
+      />
       <Route path="/a/progressively_energetic" element={(
         <ConditionalRoute
           authedComponent={<ProgressivelyEnergetic />}

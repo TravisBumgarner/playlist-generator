@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Link, css } from '@mui/material'
 import { useMemo } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -6,13 +6,30 @@ import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
 import { type TPlaylistEntry } from 'sharedTypes'
 
+const playlistLinkCSS = css`
+  text-decoration: none;
+  color: black;
+  margin-right: 0.25rem;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
 const PlaylistItem = (data: TPlaylistEntry) => {
+  const Artists = useMemo(() => {
+    return data.artists.map(({ name, href }) => (<Link css={playlistLinkCSS} key={href} target="_blank" href={href}>{name}</Link>))
+  }, [data.artists])
+
   return (
     <ListItem>
       <ListItemAvatar>
-        <Avatar alt={data.name} src={data.image} />
+        <Link target="_blank" href={data.album.href}>
+          <Avatar variant="square" alt={data.name} src={data.image} />
+        </Link>
       </ListItemAvatar>
-      <ListItemText primary={data.name} secondary={data.artists} />
+
+      <ListItemText primary={<Link css={playlistLinkCSS} target="_blank" href={data.href}>{data.name}</Link>} secondary={Artists} />
     </ListItem >
   )
 }

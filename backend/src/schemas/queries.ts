@@ -67,16 +67,36 @@ const AutoCompleteType = new GraphQLObjectType({
     }),
 })
 
+const PlaylistAristType = new GraphQLObjectType({
+    name: 'PlaylistArtistResult',
+    description: 'This represents a playlist artist entry',
+    fields: () => ({
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        href: { type: new GraphQLNonNull(GraphQLString) },
+    }),
+})
+
+const PlaylistAlbumType = new GraphQLObjectType({
+    name: 'PlaylistAlbumResult',
+    description: 'This represents a playlist album entry',
+    fields: () => ({
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        href: { type: new GraphQLNonNull(GraphQLString) },
+    }),
+})
+
+
 const PlaylistType = new GraphQLObjectType({
     name: 'PlaylistResult',
     description: 'This represents a playlist entry',
     fields: () => ({
         id: { type: new GraphQLNonNull(GraphQLString) },
         name: { type: new GraphQLNonNull(GraphQLString) },
-        artists: { type: new GraphQLNonNull(GraphQLString) },
+        artists: { type: new GraphQLNonNull(new GraphQLList(PlaylistAristType)) },
         image: { type: new GraphQLNonNull(GraphQLString) },
-        album: { type: new GraphQLNonNull(GraphQLString) },
+        album: { type: new GraphQLNonNull(PlaylistAlbumType) },
         uri: { type: new GraphQLNonNull(GraphQLString) },
+        href: { type: new GraphQLNonNull(GraphQLString) },
     }),
 })
 
@@ -123,8 +143,6 @@ const autocomplete = {
     },
     resolve: async (_: any, { query, types }: SearchArgs) => {
         const client = await getSpotifyClient()
-        console.log('autocomplete', client.getAccessToken())
-
         const spotifyResults = await client.search(query, [types], { market: Markets.US, offset: 0, limit: 10 })
         const autocompleteResults = spotifyResults?.body?.artists?.items.map(({ id, images, name }) => {
             return {
@@ -148,17 +166,21 @@ type GetRecommendationsOptions = {
 
 const getRecommendations = async (options: GetRecommendationsOptions) => {
     const client = await getSpotifyClient()
-    console.log('getrecs', client.getAccessToken())
     try {
         const results = await client.getRecommendations(options)
-        return results.body?.tracks?.map(({ id, name, artists, album, uri }) => {
+        console.log(results.body.tracks[0])
+        return results.body?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
             return {
                 id,
-                artists: artists.map(artist => artist.name).join(', '),
-                album: album.name,
+                artists: artists.map(artist => ({ name: artist.name, href: artist.external_urls.spotify })),
+                album: {
+                    name: album.name,
+                    href: album.external_urls.spotify
+                },
                 image: album.images.length > 0 ? album.images[0].url : '',
                 name,
-                uri
+                uri,
+                href: spotify
             }
         })
     } catch (error: any) {
@@ -202,11 +224,10 @@ const savePlaylist = {
         try {
             const client = await getSpotifyClient()
             client.setAccessToken(accessToken)
-            console.log(playlistTitle)
             const playlist = await client.createPlaylist(playlistTitle || "No title supplied")
-            console.log(playlist)
+
             await client.addTracksToPlaylist(playlist.body.id, uris)
-            return playlist.body.uri
+            return playlist.body.external_urls.spotify
         } catch (error: any) {
             console.log(error)
             console.log(error.name)

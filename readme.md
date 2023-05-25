@@ -2,7 +2,7 @@
 
 1. `yarn` from root
 2. Start up `yarn tunnel`
-3. Copy forwarding for ngrok to `backend/.env`
-4. Copy forwarding for ngrok to Spotify https://developer.spotify.com/dashboard/901c16df18ad4cf894bf8c2cf98dc3e1
+3. Copy forwarding URL for ngrok to `backend/.env`, don't forget `/spotify_redirect`
+4. Copy same URL to Spotify https://developer.spotify.com/dashboard/726223a45ad04be18889eafe2825c57c/settings
 5. `yarn start` from the root
 

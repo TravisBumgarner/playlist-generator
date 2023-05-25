@@ -7,7 +7,7 @@ import axios from 'axios'
 import useAsyncEffect from 'use-async-effect'
 
 import { theme } from 'theme'
-import { Alert, Router, Header, Navigation } from './components'
+import { Alert, Router, Header, Navigation, SpotifyLogo } from './components'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
 import { context } from 'context'
 import { useSearchParams } from 'react-router-dom'
@@ -34,8 +34,8 @@ const App = () => {
     if (!accessToken) {
       logger('No access token')
       dispatch({
-        type: 'ADD_MESSAGE',
-        data: { message: 'Please login again' }
+        type: 'ADD_ALERT',
+        data: { text: 'Please login again', severity: 'info' }
       })
     }
     try {
@@ -140,6 +140,7 @@ const App = () => {
       <Navigation />
       <Alert />
       <Router />
+      <SpotifyLogo />
     </ThemeProvider>
   )
 }
