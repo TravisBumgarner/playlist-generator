@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom'
 
 import { context } from 'context'
 import { Home, Error, LandingPage } from '../pages'
-import { ProgressivelyEnergetic } from '../pages/algorithms'
+import { ALGORITHM_ROUTES } from '../algorithms'
 
 interface ConditionalRouteProps {
   authedComponent: JSX.Element
@@ -36,13 +36,18 @@ const Router = () => {
         />
       )}
       />
-      <Route path="/a/progressively_energetic" element={(
-        <ConditionalRoute
-          authedComponent={<ProgressivelyEnergetic />}
-          unauthedComponent={<Home />}
-        />
-      )}
-      />
+      {ALGORITHM_ROUTES.map(({ href, component, title, description }) => {
+        console.log(href)
+        return (
+          <Route key={href} path={href} element={(
+            <ConditionalRoute
+              authedComponent={component(title, description)}
+              unauthedComponent={<Home />}
+            />
+          )}
+          />
+        )
+      })}
     </Routes>
   )
 }

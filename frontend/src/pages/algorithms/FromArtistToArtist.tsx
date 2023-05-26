@@ -24,11 +24,9 @@ query createProgressivelyEnergeticPlaylist($artistId: String!) {
     }
   }
 `
-
 interface ProgressivelyEnergeticProps { title: string, description: string }
 const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticProps) => {
   console.log('ProgressivelyEnergetic', title, description)
-
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
   const [createProgressivelyEnergeticPlaylist, { loading, called, data }] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
