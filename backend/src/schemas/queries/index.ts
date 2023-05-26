@@ -5,7 +5,7 @@ import { TAutocompleteEntry } from '../../types'
 import { getSpotifyRedirectURI, refreshToken } from './auth'
 import { savePlaylist } from './playlists'
 import { autocomplete } from './autocomplete'
-import { createEnergizingPlaylist } from './progressivelyEnergetic'
+import { createProgressivelyEnergeticPlaylist } from './progressivelyEnergetic'
 
 // They're f'ing case sensative -_-
 
@@ -27,7 +27,7 @@ const RootQueryType = new GraphQLObjectType({
     fields: () => ({
         ping,
         autocomplete,
-        createEnergizingPlaylist,
+        createProgressivelyEnergeticPlaylist,
         getSpotifyRedirectURI,
         refreshToken,
         savePlaylist

@@ -110,4 +110,39 @@ const getSpotifyClient = async () => {
 
 }
 
+
+type GetRecommendationsOptions = {
+    seed_artists: string[] | string
+    market: string,
+    limit: number,
+    min_energy: number,
+    max_energy: number
+}
+export const getRecommendations = async (options: GetRecommendationsOptions) => {
+    const client = await getSpotifyClient()
+    try {
+        const results = await client.getRecommendations(options)
+        return results.body?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
+            return {
+                id,
+                artists: artists.map(artist => ({ name: artist.name, href: artist.external_urls.spotify })),
+                album: {
+                    name: album.name,
+                    href: album.external_urls.spotify
+                },
+                image: album.images.length > 0 ? album.images[0].url : '',
+                name,
+                uri,
+                href: spotify
+            }
+        })
+    } catch (error: any) {
+        console.log(error)
+        console.log(error.name)
+        console.log(error.message)
+        return []
+    }
+}
+
+
 export default getSpotifyClient

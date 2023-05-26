@@ -6,9 +6,9 @@ import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
 import { useAlgorithmRoute } from '../../algorithms'
 
-const CREATE_ENERGIZING_PLAYLIST_QUERY = gql`
-query createEnergizingPlaylist($artistId: String!) {
-    createEnergizingPlaylist(artistId: $artistId) {
+const CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY = gql`
+query createProgressivelyEnergeticPlaylist($artistId: String!) {
+    createProgressivelyEnergeticPlaylist(artistId: $artistId) {
         name
         id
         album {
@@ -28,7 +28,7 @@ query createEnergizingPlaylist($artistId: String!) {
 
 const ProgressivelyEnergetic = () => {
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createEnergizingPlaylist, { loading, called, data }] = useLazyQuery<{ createEnergizingPlaylist: TPlaylistEntry[] }>(CREATE_ENERGIZING_PLAYLIST_QUERY)
+  const [createProgressivelyEnergeticPlaylist, { loading, called, data }] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
 
   const algorithm = useAlgorithmRoute()
@@ -45,11 +45,11 @@ const ProgressivelyEnergetic = () => {
   const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
     setSelectedArtist(value)
 
-    const result = await createEnergizingPlaylist({ variables: { artistId: value.id } })
-    if ((result.data?.createEnergizingPlaylist) != null) {
-      setPlaylistEntries(result.data?.createEnergizingPlaylist)
+    const result = await createProgressivelyEnergeticPlaylist({ variables: { artistId: value.id } })
+    if ((result.data?.createProgressivelyEnergeticPlaylist) != null) {
+      setPlaylistEntries(result.data?.createProgressivelyEnergeticPlaylist)
     }
-  }, [createEnergizingPlaylist])
+  }, [createProgressivelyEnergeticPlaylist])
 
   const content = useMemo(() => {
     if (!selectedArtist) {
