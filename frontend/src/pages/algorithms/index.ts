@@ -1,4 +1,4 @@
-import ProgressivelyEnergetic from './ProfressivelyEnergetic'
+import ProgressivelyEnergetic from './ProgressivelyEnergetic'
 
 export {
   ProgressivelyEnergetic

@@ -1,6 +1,6 @@
 import { gql, useLazyQuery } from '@apollo/client'
 import { Box, Container, List, ListItemButton, Typography } from '@mui/material'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
@@ -23,7 +23,7 @@ query Autocomplete($query: String!) {
 `
 
 const Search = ({ resultSelectedCallback, label }: { label: string, resultSelectedCallback: (data: TAutocompleteEntry) => void }) => {
-  const [autocomplete, { loading, called }] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
+  const [autocomplete, { loading }] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<TAutocompleteEntry[]>([])
   const debouncedQuery = useDebounce<string>(query, 500)
@@ -38,8 +38,14 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
     }
   }, [debouncedQuery])
 
+  useEffect(() => {
+    if (debouncedQuery.length === 0) {
+      setResults([])
+    }
+  }, [debouncedQuery])
+
   const Results = useMemo(() => {
-    if (!called) {
+    if (debouncedQuery.length === 0) {
       return (
         <Container>
           <Typography textAlign="center">Search for an artist to generate your playlist.</Typography>
@@ -55,7 +61,7 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
       )
     }
 
-    if (called && !loading && results.length === 0) {
+    if (query && !loading && results.length === 0) {
       return (
         <Container>
           <Typography textAlign="center">Could not find anything, try again.</Typography>
@@ -85,7 +91,7 @@ const Search = ({ resultSelectedCallback, label }: { label: string, resultSelect
         {ListItems}
       </List>
     )
-  }, [resultSelectedCallback, results, called, loading])
+  }, [resultSelectedCallback, results, query, loading])
 
   return (
     <Container>

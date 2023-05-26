@@ -168,7 +168,6 @@ const getRecommendations = async (options: GetRecommendationsOptions) => {
     const client = await getSpotifyClient()
     try {
         const results = await client.getRecommendations(options)
-        console.log(results.body.tracks[0])
         return results.body?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
             return {
                 id,
