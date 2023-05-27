@@ -1,13 +1,13 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Container, Typography } from '@mui/material'
+import { Button, Container, Typography } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
 
-const CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY = gql`
-query createProgressivelyEnergeticPlaylist($artistId: String!) {
-    createProgressivelyEnergeticPlaylist(artistId: $artistId) {
+const CREATE_FROM_ARTIST_TO_ARTIST = gql`
+query createFromArtistToArtist($artistIdStart: String!, $artistIdEnd: String!) {
+    createFromArtistToArtist(artistIdStart: $artistIdStart, artistIdEnd: $artistIdEnd) {
         name
         id
         album {
@@ -24,13 +24,16 @@ query createProgressivelyEnergeticPlaylist($artistId: String!) {
     }
   }
 `
+
 interface ProgressivelyEnergeticProps { title: string, description: string }
 const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticProps) => {
   console.log('ProgressivelyEnergetic', title, description)
+
   const [selectedArtistStart, setSelectedArtistStart] = useState<{ id: string, name: string } | null>(null)
   const [selectedArtistEnd, setSelectedArtistEnd] = useState<{ id: string, name: string } | null>(null)
-  const [createProgressivelyEnergeticPlaylist, { loading, called, data }] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY)
-  const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
+  const [createFromArtistToArtist] = useLazyQuery<{ createFromArtistToArtist: TPlaylistEntry[] }>(CREATE_FROM_ARTIST_TO_ARTIST)
+  const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const resetState = useCallback(() => {
     setSelectedArtistStart(null)
@@ -50,17 +53,30 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
     setSelectedArtistEnd(value)
   }, [])
 
+  const handleSubmit = useCallback(async () => {
+    setIsLoading(true)
+    if (!selectedArtistStart || !selectedArtistEnd) return
+
+    const result = await createFromArtistToArtist({ variables: { artistIdStart: selectedArtistStart.id, artistIdEnd: selectedArtistEnd.id } })
+    if ((result.data?.createFromArtistToArtist) != null) {
+      setPlaylistEntries(result.data?.createFromArtistToArtist)
+    }
+
+    setIsLoading(false)
+  }, [selectedArtistStart, selectedArtistEnd, createFromArtistToArtist])
+
   const content = useMemo(() => {
-    if (selectedArtistStart === null || selectedArtistEnd === null) {
+    if (selectedArtistStart === null || selectedArtistEnd === null || playlistEntries === null) {
       return (
         <>
           <Search label={'Starting Artist'} resultSelectedCallback={resultSelectedCallbackStart} />
           <Search label={'Ending Artist'} resultSelectedCallback={resultSelectedCallbackEnd} />
+          <Button disabled={selectedArtistStart === null && selectedArtistEnd === null} onClick={handleSubmit}>Submit</Button>
         </>
       )
     }
 
-    if (called && loading) {
+    if (isLoading) {
       return (
         <>
           <Loading />
@@ -68,19 +84,18 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
       )
     }
 
-    if (!data) {
+    if (playlistEntries && playlistEntries.length === 0) {
       return (
-        <>
-          <Typography variant="h2" gutterBottom>
-            Fetching
-          </Typography>
-        </>
+        <Typography>
+          No results found
+        </Typography>
       )
     }
+
     return (
       <Playlist onCreateCallback={onCreateCallback} initialTitle={`From ${selectedArtistStart.name} to ${selectedArtistEnd.name}`} playlistEntries={playlistEntries} />
     )
-  }, [called, data, loading, playlistEntries, resultSelectedCallbackStart, resultSelectedCallbackEnd, selectedArtistEnd, selectedArtistStart, onCreateCallback])
+  }, [playlistEntries, handleSubmit, resultSelectedCallbackStart, resultSelectedCallbackEnd, selectedArtistStart, selectedArtistEnd, onCreateCallback, isLoading])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>

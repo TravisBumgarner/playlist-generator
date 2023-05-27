@@ -64,7 +64,7 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
       return (
         <>
           <Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button disabled={selectedArtist === null} onClick={handleSubmit}>Submit</Button>
         </>
       )
     }
