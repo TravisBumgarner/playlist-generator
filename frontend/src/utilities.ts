@@ -78,22 +78,6 @@ const login = async (dispatch: (value: Action) => void) => {
   dispatch({ type: 'LOGOUT' })
 }
 
-function useDebounce<T> (value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
-
-  useEffect(() => {
-    const timer = setTimeout(() => { setDebouncedValue(value) }, delay ?? 500)
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [value, delay])
-
-  return debouncedValue
-}
-
-export default useDebounce
-
 export {
   logger,
   type AtLeast,
@@ -103,6 +87,5 @@ export {
   deleteLocalStorage,
   ELocalStorageItems,
   login,
-  logout,
-  useDebounce
+  logout
 }

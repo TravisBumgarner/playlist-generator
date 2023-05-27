@@ -81,14 +81,15 @@ const Playlist = ({ playlistEntries, initialTitle, onCreateCallback }: PlaylistP
   }, [playlistEntries, playlistTitle, savePlaylist, navigate, dispatch, onCreateCallback])
 
   const Playlist = useMemo(() => {
-    return playlistEntries.map(result => <PlaylistItem key={result.uri} {...result} />)
+    // Sometimes duplicate songs come back in a playlist. Currently it doesn't look possible to dedup a playlist and keep its integrity.
+    return playlistEntries.map((result, index) => <PlaylistItem key={`${result.uri}_${index}`} {...result} />)
   }, [playlistEntries])
 
   if (isSavingPlaylist) {
     return <Loading />
   }
 
-  return (<Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
+  return (<Box>
     <TextField
       fullWidth
       label="Title this Playlist"
@@ -108,7 +109,9 @@ const Playlist = ({ playlistEntries, initialTitle, onCreateCallback }: PlaylistP
       css={{ margin: '1rem 0' }}
       variant='contained' disabled={isSavingPlaylist} onClick={handleSavePlaylistSubmit}>Save it to your Spotify
     </Button>
-    {Playlist}
+    <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '50vh' }}>
+      {Playlist}
+    </Box>
   </Box>
   )
 }

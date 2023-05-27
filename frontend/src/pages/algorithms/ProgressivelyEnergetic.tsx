@@ -1,5 +1,5 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Container, Typography } from '@mui/material'
+import { Button, Container, Typography } from '@mui/material'
 import { useCallback, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
@@ -30,12 +30,13 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
   console.log('ProgressivelyEnergetic', title, description)
 
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createProgressivelyEnergeticPlaylist, { loading, called, data }] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY)
-  const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
+  const [createProgressivelyEnergeticPlaylist] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY)
+  const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const resetState = useCallback(() => {
     setSelectedArtist(null)
-    setPlaylistEntries([])
+    setPlaylistEntries(null)
   }, [])
 
   const onCreateCallback = useCallback(() => {
@@ -44,19 +45,31 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
 
   const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
     setSelectedArtist(value)
+  }, [])
 
-    const result = await createProgressivelyEnergeticPlaylist({ variables: { artistId: value.id } })
+  const handleSubmit = useCallback(async () => {
+    setIsLoading(true)
+    if (!selectedArtist) return
+
+    const result = await createProgressivelyEnergeticPlaylist({ variables: { artistId: selectedArtist.id } })
     if ((result.data?.createProgressivelyEnergeticPlaylist) != null) {
       setPlaylistEntries(result.data?.createProgressivelyEnergeticPlaylist)
     }
-  }, [createProgressivelyEnergeticPlaylist])
+
+    setIsLoading(false)
+  }, [selectedArtist, createProgressivelyEnergeticPlaylist])
 
   const content = useMemo(() => {
-    if (!selectedArtist) {
-      return (<Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />)
+    if (selectedArtist === null || playlistEntries === null) {
+      return (
+        <>
+          <Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />
+          <Button onClick={handleSubmit}>Submit</Button>
+        </>
+      )
     }
 
-    if (called && loading) {
+    if (isLoading) {
       return (
         <>
           <Loading />
@@ -64,19 +77,18 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
       )
     }
 
-    if (!data) {
+    if (playlistEntries && playlistEntries.length === 0) {
       return (
-        <>
-          <Typography variant="h2" gutterBottom>
-            Fetching
-          </Typography>
-        </>
+        <Typography>
+          No results found
+        </Typography>
       )
     }
+
     return (
       <Playlist onCreateCallback={onCreateCallback} initialTitle={`Progressively Energetic with ${selectedArtist.name}`} playlistEntries={playlistEntries} />
     )
-  }, [called, data, loading, playlistEntries, resultSelectedCallback, selectedArtist, onCreateCallback])
+  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, onCreateCallback, isLoading])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>

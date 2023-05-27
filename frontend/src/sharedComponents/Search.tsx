@@ -1,16 +1,13 @@
-import { gql, useLazyQuery } from '@apollo/client'
-import { Box, Container, List, ListItemButton, Typography } from '@mui/material'
-import { useState, useMemo, useEffect } from 'react'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import Avatar from '@mui/material/Avatar'
+import * as React from 'react'
 import TextField from '@mui/material/TextField'
-import useAsyncEffect from 'use-async-effect'
-
-import { type TAutocompleteEntry } from '../sharedTypes'
-import Loading from './Loading'
-import useDebounce from 'utilities'
+import Autocomplete from '@mui/material/Autocomplete'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import { debounce } from '@mui/material/utils'
+import { gql, useLazyQuery } from '@apollo/client'
+import { type TAutocompleteEntry } from 'sharedTypes'
+import { logger } from 'utilities'
+import { Avatar } from '@mui/material'
 
 const AUTOCOMPLETE_QUERY = gql`
 query Autocomplete($query: String!) {
@@ -22,95 +19,105 @@ query Autocomplete($query: String!) {
   }
 `
 
-const Search = ({ resultSelectedCallback, label }: { label: string, resultSelectedCallback: (data: TAutocompleteEntry) => void }) => {
-  const [autocomplete, { loading }] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState<TAutocompleteEntry[]>([])
-  const debouncedQuery = useDebounce<string>(query, 500)
+interface SearchV2Params {
+  label: string
+  resultSelectedCallback: (data: TAutocompleteEntry) => void
+}
+const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
+  const [selected, setSelected] = React.useState<TAutocompleteEntry | null>(null)
+  const [query, setQuery] = React.useState('')
+  const [options, setOptions] = React.useState<readonly TAutocompleteEntry[]>([])
 
-  useAsyncEffect(async () => {
-    if (query.length === 0) return
+  const [autocomplete] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
 
-    setResults([])
-    const result = await autocomplete({ variables: { query } })
-    if ((result.data?.autocomplete) != null) {
-      setResults(result.data?.autocomplete)
-    }
-  }, [debouncedQuery])
+  const fetch = React.useMemo(
+    () =>
+      debounce(
+        (
+          request: string,
+          handleResults: (results?: readonly TAutocompleteEntry[]) => void
+        ) => {
+          autocomplete({ variables: { query: request } }).then(result => {
+            if ((result.data?.autocomplete) != null) {
+              handleResults(result.data?.autocomplete)
+            } else {
+              return []
+            }
+          }).catch(e => {
+            logger('failed to autocomplete')
+          })
+        },
+        400
+      ),
+    [autocomplete]
+  )
 
-  useEffect(() => {
-    if (debouncedQuery.length === 0) {
-      setResults([])
-    }
-  }, [debouncedQuery])
+  React.useEffect(() => {
+    let active = true
 
-  const Results = useMemo(() => {
-    if (debouncedQuery.length === 0) {
-      return (
-        <Container>
-          <Typography textAlign="center">Search for an artist to generate your playlist.</Typography>
-        </Container>
-      )
-    }
-
-    if (loading) {
-      return (
-        <Container>
-          <Loading />
-        </Container>
-      )
-    }
-
-    if (query && !loading && results.length === 0) {
-      return (
-        <Container>
-          <Typography textAlign="center">Could not find anything, try again.</Typography>
-        </Container>
-      )
+    if (query === '') {
+      setOptions(selected ? [selected] : [])
+      return undefined
     }
 
-    const ListItems = results.map(data => {
-      const handleClick = () => {
-        resultSelectedCallback(data)
+    fetch(query, (results?: readonly TAutocompleteEntry[]) => {
+      if (active) {
+        let newOptions: readonly TAutocompleteEntry[] = []
+
+        if (selected) {
+          newOptions = [selected]
+        }
+
+        if (results) {
+          newOptions = [...newOptions, ...results]
+        }
+
+        setOptions(newOptions)
       }
-
-      return (
-        <ListItem key={data.id} >
-          <ListItemButton onClick={handleClick}>
-            <ListItemAvatar>
-              <Avatar variant="square" alt={data.name} src={data.image} />
-            </ListItemAvatar>
-            <ListItemText primary={data.name} />
-          </ListItemButton>
-        </ListItem >
-      )
     })
 
-    return (
-      <List>
-        {ListItems}
-      </List>
-    )
-  }, [resultSelectedCallback, results, query, loading])
+    return () => {
+      active = false
+    }
+  }, [selected, query, fetch])
 
   return (
-    <Container>
-      <TextField
-        fullWidth
-        label={label}
-        type="search"
-        value={query}
-        autoFocus
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setQuery(event.target.value)
-        }}
-        margin="normal"
-      />
-      <Box sx={{ overflowY: 'auto', maxHeight: '500px', height: '500px' }}>
-        {Results}
-      </Box>
-    </Container>
+    <Autocomplete
+      fullWidth
+      getOptionLabel={(option) => option.name}
+      options={options}
+      autoComplete
+      value={selected}
+      noOptionsText="No Results"
+      onChange={(event: any, newValue: TAutocompleteEntry | null) => {
+        setOptions(newValue ? [newValue, ...options] : options)
+        newValue && resultSelectedCallback(newValue)
+        setSelected(newValue)
+      }}
+      onInputChange={(event, newInputValue) => {
+        setQuery(newInputValue)
+      }}
+      renderInput={(params) => (
+        <TextField {...params} label={label} fullWidth margin='normal' />
+      )}
+      renderOption={(props, option) => {
+        return (
+          <li {...props}>
+            <Grid container alignItems="center">
+              <Grid item sx={{ display: 'flex', width: 44 }}>
+                <Avatar variant="square" alt={option.name} src={option.image} />
+              </Grid>
+              <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
+                <Typography variant="body2" color="text.secondary">
+                  {option.name}
+                </Typography>
+              </Grid>
+            </Grid>
+          </li>
+        )
+      }}
+    />
   )
 }
 
-export default Search
+export default SearchV2

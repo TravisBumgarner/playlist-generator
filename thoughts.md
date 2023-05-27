@@ -9,8 +9,9 @@
   - [ ] Elevated Artist
   - [x] Add Menu
 - [x] Need to sort out navigation
-- [ ] Add way to share links, and a shareable app for tweaking params
+- [x] Add way to share links, and a shareable app for tweaking params
 - [ ] Add two more playlists to get at that rule of threes
+    - [ ] Finish coding out playlists two and three
 
 # Post Deploy
 - [ ] Implement TS Project References

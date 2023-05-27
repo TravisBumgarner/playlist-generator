@@ -9,7 +9,7 @@ type CreateProgressivelyEnergeticPlaylistArgs = {
 
 
 export const createProgressivelyEnergeticPlaylist = {
-  type: new GraphQLList(PlaylistType),
+type: new GraphQLList(PlaylistType),
   description: 'Start with an artist, and create a playlist of increasingly energetic songs',
   args: {
     artistId: { type: new GraphQLNonNull(GraphQLString) },

@@ -27,12 +27,14 @@ query createProgressivelyEnergeticPlaylist($artistId: String!) {
 interface ProgressivelyEnergeticProps { title: string, description: string }
 const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticProps) => {
   console.log('ProgressivelyEnergetic', title, description)
-  const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
+  const [selectedArtistStart, setSelectedArtistStart] = useState<{ id: string, name: string } | null>(null)
+  const [selectedArtistEnd, setSelectedArtistEnd] = useState<{ id: string, name: string } | null>(null)
   const [createProgressivelyEnergeticPlaylist, { loading, called, data }] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
 
   const resetState = useCallback(() => {
-    setSelectedArtist(null)
+    setSelectedArtistStart(null)
+    setSelectedArtistEnd(null)
     setPlaylistEntries([])
   }, [])
 
@@ -40,18 +42,22 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
     resetState()
   }, [resetState])
 
-  const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
-    setSelectedArtist(value)
+  const resultSelectedCallbackStart = useCallback(async (value: TAutocompleteEntry) => {
+    setSelectedArtistStart(value)
+  }, [])
 
-    const result = await createProgressivelyEnergeticPlaylist({ variables: { artistId: value.id } })
-    if ((result.data?.createProgressivelyEnergeticPlaylist) != null) {
-      setPlaylistEntries(result.data?.createProgressivelyEnergeticPlaylist)
-    }
-  }, [createProgressivelyEnergeticPlaylist])
+  const resultSelectedCallbackEnd = useCallback(async (value: TAutocompleteEntry) => {
+    setSelectedArtistEnd(value)
+  }, [])
 
   const content = useMemo(() => {
-    if (!selectedArtist) {
-      return (<Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />)
+    if (selectedArtistStart === null || selectedArtistEnd === null) {
+      return (
+        <>
+          <Search label={'Starting Artist'} resultSelectedCallback={resultSelectedCallbackStart} />
+          <Search label={'Ending Artist'} resultSelectedCallback={resultSelectedCallbackEnd} />
+        </>
+      )
     }
 
     if (called && loading) {
@@ -72,9 +78,9 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
       )
     }
     return (
-      <Playlist onCreateCallback={onCreateCallback} initialTitle={`Progressively Energetic with ${selectedArtist.name}`} playlistEntries={playlistEntries} />
+      <Playlist onCreateCallback={onCreateCallback} initialTitle={`From ${selectedArtistStart.name} to ${selectedArtistEnd.name}`} playlistEntries={playlistEntries} />
     )
-  }, [called, data, loading, playlistEntries, resultSelectedCallback, selectedArtist, onCreateCallback])
+  }, [called, data, loading, playlistEntries, resultSelectedCallbackStart, resultSelectedCallbackEnd, selectedArtistEnd, selectedArtistStart, onCreateCallback])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>

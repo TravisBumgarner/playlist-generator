@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router'
 import { Navigate } from 'react-router-dom'
 
 import { context } from 'context'
-import { Home, Error, LandingPage } from '../pages'
+import { Home, Error, LandingPage, NotFound } from '../pages'
 import { ALGORITHM_ROUTES } from '../algorithms'
 
 interface ConditionalRouteProps {
@@ -48,6 +48,8 @@ const Router = () => {
           />
         )
       })}
+      <Route path="*" element={<NotFound />} />
+
     </Routes>
   )
 }

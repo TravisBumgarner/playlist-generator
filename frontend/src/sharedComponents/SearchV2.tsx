@@ -1,8 +1,6 @@
 import * as React from 'react'
-import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { debounce } from '@mui/material/utils'
@@ -23,27 +21,14 @@ query Autocomplete($query: String!) {
 
 interface SearchV2Params {
   label: string
+  resultSelectedCallback: (data: TAutocompleteEntry) => void
 }
-export default function SearchV2({ label }: SearchV2Params) {
+const SearchV2 = ({ label }: SearchV2Params) => {
   const [selected, setSelected] = React.useState<TAutocompleteEntry | null>(null)
   const [query, setQuery] = React.useState('')
   const [options, setOptions] = React.useState<readonly TAutocompleteEntry[]>([])
 
   const [autocomplete] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
-
-  const autocompleteWrapper = (input: string, handleResults: (results?: readonly TAutocompleteEntry[]) => void) => {
-    autocomplete({ variables: { query: input } }).then(result => {
-      if ((result.data?.autocomplete) != null) {
-        handleResults(result.data?.autocomplete)
-      } else {
-        return []
-      }
-    }).catch(e => {
-      logger('failed to autocomplete')
-    })
-
-    return []
-  }
 
   const fetch = React.useMemo(
     () =>
@@ -52,14 +37,19 @@ export default function SearchV2({ label }: SearchV2Params) {
           request: string,
           handleResults: (results?: readonly TAutocompleteEntry[]) => void
         ) => {
-          autocompleteWrapper(
-            request,
-            handleResults
-          )
+          autocomplete({ variables: { query: request } }).then(result => {
+            if ((result.data?.autocomplete) != null) {
+              handleResults(result.data?.autocomplete)
+            } else {
+              return []
+            }
+          }).catch(e => {
+            logger('failed to autocomplete')
+          })
         },
         400
       ),
-    []
+    [autocomplete]
   )
 
   React.useEffect(() => {
@@ -94,14 +84,9 @@ export default function SearchV2({ label }: SearchV2Params) {
   return (
     <Autocomplete
       fullWidth
-      getOptionLabel={(option) =>
-        typeof option === 'string' ? option : option.name
-      }
-      filterOptions={(x) => x}
+      getOptionLabel={(option) => option.name}
       options={options}
       autoComplete
-      includeInputInList
-      filterSelectedOptions
       value={selected}
       noOptionsText="No Results"
       onChange={(event: any, newValue: TAutocompleteEntry | null) => {
@@ -133,3 +118,5 @@ export default function SearchV2({ label }: SearchV2Params) {
     />
   )
 }
+
+export default SearchV2
