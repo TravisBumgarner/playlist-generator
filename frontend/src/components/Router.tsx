@@ -37,12 +37,11 @@ const Router = () => {
       )}
       />
       {ALGORITHM_ROUTES.map(({ href, component, title, description }) => {
-        console.log(href)
         return (
           <Route key={href} path={href} element={(
             <ConditionalRoute
               authedComponent={component(title, description)}
-              unauthedComponent={<Home />}
+              unauthedComponent={<LandingPage />}
             />
           )}
           />

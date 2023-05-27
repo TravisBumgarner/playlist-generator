@@ -1,13 +1,14 @@
 import { gql, useLazyQuery } from '@apollo/client'
 import { Button, Container, Typography } from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
+import { context } from 'context'
 
 const CREATE_FROM_ARTIST_TO_ARTIST = gql`
-query createFromArtistToArtist($artistIdStart: String!, $artistIdEnd: String!) {
-    createFromArtistToArtist(artistIdStart: $artistIdStart, artistIdEnd: $artistIdEnd) {
+query createFromArtistToArtist($artistIdStart: String!, $artistIdEnd: String!, $market: String!) {
+    createFromArtistToArtist(artistIdStart: $artistIdStart, artistIdEnd: $artistIdEnd, market: $market) {
         name
         id
         album {
@@ -25,10 +26,9 @@ query createFromArtistToArtist($artistIdStart: String!, $artistIdEnd: String!) {
   }
 `
 
-interface ProgressivelyEnergeticProps { title: string, description: string }
-const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticProps) => {
-  console.log('ProgressivelyEnergetic', title, description)
-
+interface FromArtistToArtistParams { title: string, description: string }
+const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) => {
+  const { state, dispatch } = useContext(context)
   const [selectedArtistStart, setSelectedArtistStart] = useState<{ id: string, name: string } | null>(null)
   const [selectedArtistEnd, setSelectedArtistEnd] = useState<{ id: string, name: string } | null>(null)
   const [createFromArtistToArtist] = useLazyQuery<{ createFromArtistToArtist: TPlaylistEntry[] }>(CREATE_FROM_ARTIST_TO_ARTIST)
@@ -57,13 +57,18 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
     setIsLoading(true)
     if (!selectedArtistStart || !selectedArtistEnd) return
 
-    const result = await createFromArtistToArtist({ variables: { artistIdStart: selectedArtistStart.id, artistIdEnd: selectedArtistEnd.id } })
+    if (!state.user) {
+      dispatch({ type: 'ADD_ALERT', data: { text: 'User is not logged in', severity: 'error' } })
+      return
+    }
+
+    const result = await createFromArtistToArtist({ variables: { artistIdStart: selectedArtistStart.id, artistIdEnd: selectedArtistEnd.id, market: state.user.market } })
     if ((result.data?.createFromArtistToArtist) != null) {
       setPlaylistEntries(result.data?.createFromArtistToArtist)
     }
 
     setIsLoading(false)
-  }, [selectedArtistStart, selectedArtistEnd, createFromArtistToArtist])
+  }, [selectedArtistStart, selectedArtistEnd, createFromArtistToArtist, dispatch, state.user])
 
   const content = useMemo(() => {
     if (selectedArtistStart === null || selectedArtistEnd === null || playlistEntries === null) {
@@ -108,4 +113,4 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
   )
 }
 
-export default ProgressivelyEnergetic
+export default FromArtistToArtist

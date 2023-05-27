@@ -4,8 +4,6 @@ import { createClient } from 'graphql-ws'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
 
-import { useEffect, useState } from 'react'
-
 type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>
 type Exactly<T, K extends keyof T> = Pick<T, K>
 

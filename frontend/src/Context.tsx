@@ -13,6 +13,7 @@ interface State {
     displayName: string
     image: string | null
     uri: string
+    market: string
   } | null
   isMenuOpen: boolean
   isLoggingIn: boolean
@@ -32,6 +33,7 @@ interface Login {
     displayName: string
     uri: string
     image: string | null
+    market: string
   }
 }
 

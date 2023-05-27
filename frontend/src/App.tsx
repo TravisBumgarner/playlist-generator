@@ -47,18 +47,31 @@ const App = () => {
         }
       })
 
+      console.log(response.data)
+
       const User = Record({
         display_name: String,
         images: Array(Record({
           url: String
         })),
-        uri: String
+        uri: String,
+        country: String
       })
 
-      const { display_name, images, uri } = User.check(response.data)
-      dispatch({ type: 'LOGIN', data: { displayName: display_name, image: images.length > 0 ? images[0].url : '', uri } })
+      console.log(response.data)
+      const parsed = User.check(response.data)
+      const user = {
+        displayName: parsed.display_name,
+        image:
+          parsed.images.length > 0 ? parsed.images[0].url : '',
+        uri: parsed.uri,
+        market: parsed.country
+      }
+
+      dispatch({ type: 'LOGIN', data: user })
     } catch (e) {
       logger(e)
+      dispatch({ type: 'ADD_ALERT', data: { text: 'Something went wrong', severity: 'error' } })
       logout(dispatch)
     }
     setHasAppInitialized(true)

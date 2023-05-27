@@ -1,13 +1,14 @@
 import { gql, useLazyQuery } from '@apollo/client'
 import { Button, Container, Typography } from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
+import { context } from 'context'
 
 const CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY = gql`
 query createProgressivelyEnergeticPlaylist($artistId: String!) {
-    createProgressivelyEnergeticPlaylist(artistId: $artistId) {
+  createProgressivelyEnergeticPlaylist(market: $market, artistId: $artistId) {
         name
         id
         album {
@@ -27,8 +28,7 @@ query createProgressivelyEnergeticPlaylist($artistId: String!) {
 
 interface ProgressivelyEnergeticProps { title: string, description: string }
 const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticProps) => {
-  console.log('ProgressivelyEnergetic', title, description)
-
+  const { state, dispatch } = useContext(context)
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
   const [createProgressivelyEnergeticPlaylist] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
@@ -51,13 +51,18 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
     setIsLoading(true)
     if (!selectedArtist) return
 
-    const result = await createProgressivelyEnergeticPlaylist({ variables: { artistId: selectedArtist.id } })
+    if (!state.user) {
+      dispatch({ type: 'ADD_ALERT', data: { text: 'User is not logged in', severity: 'error' } })
+      return
+    }
+
+    const result = await createProgressivelyEnergeticPlaylist({ variables: { artistId: selectedArtist.id, market: state.user.market } })
     if ((result.data?.createProgressivelyEnergeticPlaylist) != null) {
       setPlaylistEntries(result.data?.createProgressivelyEnergeticPlaylist)
     }
 
     setIsLoading(false)
-  }, [selectedArtist, createProgressivelyEnergeticPlaylist])
+  }, [selectedArtist, createProgressivelyEnergeticPlaylist, state.user, dispatch])
 
   const content = useMemo(() => {
     if (selectedArtist === null || playlistEntries === null) {

@@ -32,6 +32,3 @@ export const PlaylistType = new GraphQLObjectType({
   }),
 })
 
-export enum EMarkets {
-  US = "US"
-}
