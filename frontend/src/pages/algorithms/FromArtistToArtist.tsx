@@ -6,9 +6,9 @@ import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
 import { context } from 'context'
 
-const CREATE_FROM_ARTIST_TO_ARTIST = gql`
-query createFromArtistToArtist($artistIdStart: String!, $artistIdEnd: String!, $market: String!) {
-    createFromArtistToArtist(artistIdStart: $artistIdStart, artistIdEnd: $artistIdEnd, market: $market) {
+const CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST = gql`
+query createFromArtistToArtistPlaylist($artistIdStart: String!, $artistIdEnd: String!, $market: String!) {
+  createFromArtistToArtistPlaylist(artistIdStart: $artistIdStart, artistIdEnd: $artistIdEnd, market: $market) {
         name
         id
         album {
@@ -31,7 +31,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
   const { state, dispatch } = useContext(context)
   const [selectedArtistStart, setSelectedArtistStart] = useState<{ id: string, name: string } | null>(null)
   const [selectedArtistEnd, setSelectedArtistEnd] = useState<{ id: string, name: string } | null>(null)
-  const [createFromArtistToArtist] = useLazyQuery<{ createFromArtistToArtist: TPlaylistEntry[] }>(CREATE_FROM_ARTIST_TO_ARTIST)
+  const [createFromArtistToArtist] = useLazyQuery<{ createFromArtistToArtistPlaylist: TPlaylistEntry[] }>(CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST)
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -63,15 +63,15 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
     }
 
     const result = await createFromArtistToArtist({ variables: { artistIdStart: selectedArtistStart.id, artistIdEnd: selectedArtistEnd.id, market: state.user.market } })
-    if ((result.data?.createFromArtistToArtist) != null) {
-      setPlaylistEntries(result.data?.createFromArtistToArtist)
+    if ((result.data?.createFromArtistToArtistPlaylist) != null) {
+      setPlaylistEntries(result.data?.createFromArtistToArtistPlaylist)
     }
 
     setIsLoading(false)
   }, [selectedArtistStart, selectedArtistEnd, createFromArtistToArtist, dispatch, state.user])
 
   const content = useMemo(() => {
-    if (selectedArtistStart === null || selectedArtistEnd === null || playlistEntries === null) {
+    if (selectedArtistStart === null || selectedArtistEnd === null || frEntries === null) {
       return (
         <>
           <Search label={'Starting Artist'} resultSelectedCallback={resultSelectedCallbackStart} />

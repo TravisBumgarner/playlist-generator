@@ -8,10 +8,11 @@ import { gql, useLazyQuery } from '@apollo/client'
 import { type TAutocompleteEntry } from 'sharedTypes'
 import { logger } from 'utilities'
 import { Avatar } from '@mui/material'
+import { context } from 'context'
 
 const AUTOCOMPLETE_QUERY = gql`
-query Autocomplete($query: String!) {
-    autocomplete(query: $query, types: artist) {
+query Autocomplete($query: String!, $market: String!) {
+    autocomplete(query: $query, types: artist, market: $market) {
         name
         id
         image
@@ -24,6 +25,7 @@ interface SearchV2Params {
   resultSelectedCallback: (data: TAutocompleteEntry) => void
 }
 const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
+  const { state } = React.useContext(context)
   const [selected, setSelected] = React.useState<TAutocompleteEntry | null>(null)
   const [query, setQuery] = React.useState('')
   const [options, setOptions] = React.useState<readonly TAutocompleteEntry[]>([])
@@ -37,7 +39,7 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
           request: string,
           handleResults: (results?: readonly TAutocompleteEntry[]) => void
         ) => {
-          autocomplete({ variables: { query: request } }).then(result => {
+          autocomplete({ variables: { query: request, market: state.user!.market } }).then(result => {
             if ((result.data?.autocomplete) != null) {
               handleResults(result.data?.autocomplete)
             } else {
@@ -49,7 +51,7 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
         },
         400
       ),
-    [autocomplete]
+    [autocomplete, state.user]
   )
 
   React.useEffect(() => {

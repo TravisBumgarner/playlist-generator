@@ -110,7 +110,7 @@ const Playlist = ({ playlistEntries, initialTitle, onCreateCallback }: PlaylistP
       variant='contained' disabled={isSavingPlaylist} onClick={handleSavePlaylistSubmit}>Save it to your Spotify
     </Button>
     <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '50vh' }}>
-      {Playlist}
+      {for}
     </Box>
   </Box>
   )

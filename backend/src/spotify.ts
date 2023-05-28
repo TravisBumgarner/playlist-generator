@@ -119,6 +119,19 @@ type GetRecommendationsForPlaylistOptions = {
     max_energy?: number
 }
 
+type Options = { seed_artists: string[], market: string, limit: number }
+export const getRelatedArtistFromArtists = async (market: string, artistIdStart: string, artistIdEnd: string) => {
+    // This algorithm could definitely be improved. Kind of blocked until I find a solution on creating a graph of spotify artists.
+    const client = await getSpotifyClient()
+
+    const options: Options = { seed_artists: [], market, limit: 1 }
+    options.seed_artists.push(artistIdStart, artistIdEnd)
+
+    const results = await client.getRecommendations(options)
+    return results.body?.tracks[0].artists[0].id
+
+}
+
 export const getRecommendationsForPlaylist = async (options: GetRecommendationsForPlaylistOptions) => {
     const client = await getSpotifyClient()
     try {
