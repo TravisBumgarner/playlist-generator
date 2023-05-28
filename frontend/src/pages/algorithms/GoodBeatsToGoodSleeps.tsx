@@ -37,7 +37,7 @@ interface GoodBeatsToGoodSleepsProps { title: string, description: string }
 const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps) => {
   const { state, dispatch } = useContext(context)
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createGoodBeatsToGoodSleepsPlaylist] = useLazyQuery<{ createGoodBeatsToGoodSleepsPlaylist: TPlaylistEntry[] }>(CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY, {fetchPolicy: 'network-only'})
+  const [createGoodBeatsToGoodSleepsPlaylist] = useLazyQuery<{ createGoodBeatsToGoodSleepsPlaylist: TPlaylistEntry[] }>(CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [whiteNoise, setWhiteNoise] = useState(EWhiteNoise.Brown)
@@ -56,7 +56,6 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
   }, [])
 
   const handleChange = useCallback((event: SelectChangeEvent<EWhiteNoise>) => {
-    console.log('setting value', event.target.value)
     setWhiteNoise(event.target.value as EWhiteNoise)
   }, [])
 

@@ -26,15 +26,12 @@ const main = async (seedArtists: string[]) => {
 
     try {
         while (artistIDsToSearch.size > 0) {
-            console.log(`artistIDsToSearch: ${artistIDsToSearch.size}, artistIDsSearched: ${artistIDsSearched.size}`)
-
             const { value: artistId, done } = iterable.next()
             if (done) break
 
             artistIDsToSearch.delete(artistId)
             const results = await client.getArtistRelatedArtists(artistId)
             if (!results.body.artists) {
-                console.log('Related artists did not exist', artistId)
                 continue
             }
             newGraph[artistId] = results.body.artists.map(({ id }) => id)

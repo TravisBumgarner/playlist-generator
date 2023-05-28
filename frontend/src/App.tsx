@@ -47,8 +47,6 @@ const App = () => {
         }
       })
 
-      console.log(response.data)
-
       const User = Record({
         display_name: String,
         images: Array(Record({
@@ -58,7 +56,6 @@ const App = () => {
         country: String
       })
 
-      console.log(response.data)
       const parsed = User.check(response.data)
       const user = {
         displayName: parsed.display_name,
