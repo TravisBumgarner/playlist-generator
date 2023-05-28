@@ -104,7 +104,7 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
       )}
       renderOption={(props, option) => {
         return (
-          <li {...props}>
+          <li {...props} key={option.id}>
             <Grid container alignItems="center">
               <Grid item sx={{ display: 'flex', width: 44 }}>
                 <Avatar variant="square" alt={option.name} src={option.image} />

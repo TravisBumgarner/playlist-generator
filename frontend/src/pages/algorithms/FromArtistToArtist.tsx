@@ -71,7 +71,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
   }, [selectedArtistStart, selectedArtistEnd, createFromArtistToArtist, dispatch, state.user])
 
   const content = useMemo(() => {
-    if (selectedArtistStart === null || selectedArtistEnd === null || frEntries === null) {
+    if (selectedArtistStart === null || selectedArtistEnd === null || playlistEntries === null) {
       return (
         <>
           <Search label={'Starting Artist'} resultSelectedCallback={resultSelectedCallbackStart} />
