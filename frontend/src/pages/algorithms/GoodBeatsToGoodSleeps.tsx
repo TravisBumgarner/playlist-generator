@@ -1,14 +1,14 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Button, Container, Typography } from '@mui/material'
+import { Button, Container, InputLabel, MenuItem, Select, type SelectChangeEvent, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
 import { context } from 'context'
 
-const CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY = gql`
-query createProgressivelyEnergeticPlaylist($artistId: String!, $market: String!) {
-  createProgressivelyEnergeticPlaylist(market: $market, artistId: $artistId) {
+const CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY = gql`
+query createGoodBeatsToGoodSleepsPlaylist($artistId: String!, $market: String!) {
+  createGoodBeatsToGoodSleepsPlaylist(market: $market, artistId: $artistId) {
         name
         id
         album {
@@ -26,13 +26,21 @@ query createProgressivelyEnergeticPlaylist($artistId: String!, $market: String!)
   }
 `
 
-interface ProgressivelyEnergeticProps { title: string, description: string }
-const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticProps) => {
+enum EWhiteNoise {
+  White = 'White',
+  Brown = 'Brown',
+  Pink = 'Pink',
+  Blue = 'Blue',
+}
+
+interface GoodBeatsToGoodSleepsProps { title: string, description: string }
+const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps) => {
   const { state, dispatch } = useContext(context)
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createProgressivelyEnergeticPlaylist] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY, { fetchPolicy: 'network-only' })
+  const [createGoodBeatsToGoodSleepsPlaylist] = useLazyQuery<{ createGoodBeatsToGoodSleepsPlaylist: TPlaylistEntry[] }>(CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY, {fetchPolicy: 'network-only'})
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [whiteNoise, setWhiteNoise] = useState(EWhiteNoise.Brown)
 
   const resetState = useCallback(() => {
     setSelectedArtist(null)
@@ -47,6 +55,11 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
     setSelectedArtist(value)
   }, [])
 
+  const handleChange = useCallback((event: SelectChangeEvent<EWhiteNoise>) => {
+    console.log('setting value', event.target.value)
+    setWhiteNoise(event.target.value as EWhiteNoise)
+  }, [])
+
   const handleSubmit = useCallback(async () => {
     setIsLoading(true)
     if (!selectedArtist) return
@@ -56,19 +69,33 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
       return
     }
 
-    const result = await createProgressivelyEnergeticPlaylist({ variables: { artistId: selectedArtist.id, market: state.user.market } })
-    if ((result.data?.createProgressivelyEnergeticPlaylist) != null) {
-      setPlaylistEntries(result.data?.createProgressivelyEnergeticPlaylist)
+    const result = await createGoodBeatsToGoodSleepsPlaylist({ variables: { artistId: selectedArtist.id, market: state.user.market } })
+    if ((result.data?.createGoodBeatsToGoodSleepsPlaylist) != null) {
+      setPlaylistEntries(result.data?.createGoodBeatsToGoodSleepsPlaylist)
     }
 
     setIsLoading(false)
-  }, [selectedArtist, createProgressivelyEnergeticPlaylist, state.user, dispatch])
+  }, [selectedArtist, createGoodBeatsToGoodSleepsPlaylist, state.user, dispatch])
 
   const content = useMemo(() => {
     if (selectedArtist === null || playlistEntries === null) {
       return (
         <>
           <Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />
+          <InputLabel id="white-noise-selector">Noise Color</InputLabel>
+          <Select
+            fullWidth
+            labelId="white-noise-selector"
+            value={whiteNoise}
+            label="White Noise"
+            onChange={handleChange}
+          >
+            <MenuItem value={EWhiteNoise.Blue}>{EWhiteNoise.Blue}</MenuItem>
+            <MenuItem value={EWhiteNoise.Brown}>{EWhiteNoise.Brown}</MenuItem>
+            <MenuItem value={EWhiteNoise.White}>{EWhiteNoise.White}</MenuItem>
+            <MenuItem value={EWhiteNoise.Pink}>{EWhiteNoise.Pink}</MenuItem>
+          </Select>
+
           <Button disabled={selectedArtist === null} onClick={handleSubmit}>Submit</Button>
         </>
       )
@@ -91,9 +118,9 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
     }
 
     return (
-      <Playlist onCreateCallback={onCreateCallback} initialTitle={`Progressively Energetic with ${selectedArtist.name}`} playlistEntries={playlistEntries} />
+      <Playlist onCreateCallback={onCreateCallback} initialTitle={`Good Beats to Good Sleeps ${selectedArtist.name}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, onCreateCallback, isLoading])
+  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, onCreateCallback, isLoading, whiteNoise, handleChange])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
@@ -106,4 +133,4 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
   )
 }
 
-export default ProgressivelyEnergetic
+export default GoodBetsToGoodSleeps

@@ -11,7 +11,7 @@ type CreateProgressivelyEnergeticPlaylistArgs = {
 
 export const createProgressivelyEnergeticPlaylist = {
   type: new GraphQLList(PlaylistType),
-  description: 'Start with an artist, and create a playlist of increasingly energetic songs',
+  description: 'See frontend',
   args: {
     artistId: { type: new GraphQLNonNull(GraphQLString) },
     market: { type: new GraphQLNonNull(GraphQLString) },

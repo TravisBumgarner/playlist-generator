@@ -31,7 +31,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
   const { state, dispatch } = useContext(context)
   const [selectedArtistStart, setSelectedArtistStart] = useState<{ id: string, name: string } | null>(null)
   const [selectedArtistEnd, setSelectedArtistEnd] = useState<{ id: string, name: string } | null>(null)
-  const [createFromArtistToArtist] = useLazyQuery<{ createFromArtistToArtistPlaylist: TPlaylistEntry[] }>(CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST)
+  const [createFromArtistToArtist] = useLazyQuery<{ createFromArtistToArtistPlaylist: TPlaylistEntry[] }>(CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 

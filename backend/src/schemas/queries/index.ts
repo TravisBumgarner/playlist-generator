@@ -7,6 +7,7 @@ import { savePlaylist } from './playlists'
 import { autocomplete } from './autocomplete'
 import { createProgressivelyEnergeticPlaylist } from './progressivelyEnergetic'
 import { createFromArtistToArtistPlaylist } from './fromArtistToArtist'
+import { createGoodBeatsToGoodSleepsPlaylist } from './goodBeatsToGoodSleeps'
 
 // They're f'ing case sensative -_-
 
@@ -32,7 +33,8 @@ const RootQueryType = new GraphQLObjectType({
         getSpotifyRedirectURI,
         refreshToken,
         savePlaylist,
-        createFromArtistToArtistPlaylist
+        createFromArtistToArtistPlaylist, 
+        createGoodBeatsToGoodSleepsPlaylist
     }),
 })
 
