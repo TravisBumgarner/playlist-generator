@@ -3,7 +3,7 @@ import { Button, Container, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
+import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry } from 'Utilties'
 import { context } from 'context'
 
 const CREATE_FULL_CONTROL_PLAYLIST = gql`
@@ -30,7 +30,7 @@ interface FullControlParams { title: string, description: string }
 const FullControl = ({ title, description }: FullControlParams) => {
   const { state, dispatch } = useContext(context)
   const [selectedArist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createFullControl] = useLazyQuery<{ createFullControlPlaylist: TPlaylistEntry[] }>(CREATE_FULL_CONTROL_PLAYLIST, { fetchPolicy: 'network-only' })
+  const [createFullControl] = useLazyQuery<{ createFullControlPlaylist: TFullControl['Response'] }, TFullControl['Request']>(CREATE_FULL_CONTROL_PLAYLIST, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 

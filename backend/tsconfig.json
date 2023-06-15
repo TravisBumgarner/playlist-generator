@@ -3,11 +3,6 @@
         "resolveJsonModule": true,
         "strict": true,
         "baseUrl": ".",
-        "paths": {
-            "*": [
-                "types/*"
-            ]
-        },
         "module": "commonjs",
         "noImplicitAny": true,
         "removeComments": true,

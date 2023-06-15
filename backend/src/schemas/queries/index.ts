@@ -1,7 +1,5 @@
-import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 
-import getSpotifyClient from '../../spotify'
-import { TAutocompleteEntry } from '../../types'
 import { getSpotifyRedirectURI, refreshToken } from './auth'
 import { savePlaylist } from './playlists'
 import { autocomplete } from './autocomplete'

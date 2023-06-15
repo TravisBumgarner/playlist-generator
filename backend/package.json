@@ -28,7 +28,7 @@
     "ts-node": "^10.4.0",
     "uuid": "^9.0.0",
     "ws": "^8.13.0",
-    "utilties": "link:../utilities/build"
+    "utilties": "link:../utilities/src"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

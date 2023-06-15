@@ -2,13 +2,8 @@ import {  GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql'
 
 import { getRecommendationsForPlaylist, getRelatedArtistFromArtists } from '../../spotify'
 import { PlaylistType } from '../types'
-import { TPlaylistEntry } from '../../types'
+import { TFromArtistToArtist, TPlaylistEntry } from 'utilities'
 
-type FromArtistToArtistParams = {
-  artistIdStart: string,
-  artistIdEnd: string,
-  market: string
-}
 
 export const createFromArtistToArtistPlaylist = {
   type: new GraphQLList(PlaylistType),
@@ -18,7 +13,7 @@ export const createFromArtistToArtistPlaylist = {
     artistIdEnd: { type: new GraphQLNonNull(GraphQLString) },
     market: { type: new GraphQLNonNull(GraphQLString) },
   },
-  resolve: async (_: any, { artistIdStart, artistIdEnd, market }: FromArtistToArtistParams): Promise<TPlaylistEntry[]>  => {
+  resolve: async (_: any, { artistIdStart, artistIdEnd, market }: TFromArtistToArtist['Request']): Promise<TFromArtistToArtist['Response']>  => {
     // Ooh look at this possibility for a recursive solution.
     const artistIdMiddle = await getRelatedArtistFromArtists(market, artistIdStart, artistIdEnd)
 

@@ -1,12 +1,7 @@
 import { GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql'
 
 import getSpotifyClient from '../../spotify'
-
-type CreatePlaylistArgs = {
-  uris: string[],
-  accessToken: string,
-  playlistTitle: string
-}
+import { TCreatePlaylist } from 'utilities'
 
 export const savePlaylist = {
   type: GraphQLString,
@@ -16,7 +11,7 @@ export const savePlaylist = {
     accessToken: { type: new GraphQLNonNull(GraphQLString) },
     uris: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
   },
-  resolve: async (_: any, { uris, accessToken, playlistTitle }: CreatePlaylistArgs) => {
+  resolve: async (_: any, { uris, accessToken, playlistTitle }: TCreatePlaylist['Request']) => {
     try {
       const client = await getSpotifyClient()
       client.setAccessToken(accessToken)

@@ -1,7 +1,7 @@
 import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 
 import getSpotifyClient from '../../spotify'
-import { TAutocompleteEntry } from '../../types'
+import { TAutocomplete, TAutocompleteEntry } from 'utilities'
 
 const AutoCompleteType = new GraphQLObjectType({
   name: 'AutocompleteResult',
@@ -21,16 +21,6 @@ const SearchTypeEnum = new GraphQLEnumType({
   }
 })
 
-enum ESearchTypeEnum {
-  artist = 'artist'
-}
-
-type SearchArgs = {
-  types: ESearchTypeEnum,
-  query: string,
-  market: string
-}
-
 export const autocomplete = {
   type: new GraphQLList(AutoCompleteType),
   description: 'Get a list of items searched for autocomplete',
@@ -39,7 +29,7 @@ export const autocomplete = {
     query: { type: new GraphQLNonNull(GraphQLString) },
     market: { type: new GraphQLNonNull(GraphQLString) }
   },
-  resolve: async (_: any, { query, types, market }: SearchArgs) => {
+  resolve: async (_: any, { query, types, market }: TAutocomplete['Request']): Promise<TAutocomplete['Response']> => {
     const client = await getSpotifyClient()
     const spotifyResults = await client.search(query, [types], { market, offset: 0, limit: 10 })
     const autocompleteResults = spotifyResults?.body?.artists?.items.map(({ id, images, name }) => {

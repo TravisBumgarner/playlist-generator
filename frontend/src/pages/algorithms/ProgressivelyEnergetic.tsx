@@ -3,7 +3,7 @@ import { Button, Container, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
+import { type TProgressivelyEnergetic, type TAutocompleteEntry, type TPlaylistEntry } from 'Utilties'
 import { context } from 'context'
 
 const CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY = gql`
@@ -30,7 +30,7 @@ interface ProgressivelyEnergeticProps { title: string, description: string }
 const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticProps) => {
   const { state, dispatch } = useContext(context)
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createProgressivelyEnergeticPlaylist] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TPlaylistEntry[] }>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY, { fetchPolicy: 'network-only' })
+  const [createProgressivelyEnergeticPlaylist] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TProgressivelyEnergetic['Response'] }, TProgressivelyEnergetic['Request']>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 

@@ -3,7 +3,7 @@ import { Button, Container, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TAutocompleteEntry, type TPlaylistEntry } from '../../sharedTypes'
+import { type TFromArtistToArtist, type TAutocompleteEntry, type TPlaylistEntry } from 'Utilties'
 import { context } from 'context'
 
 const CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST = gql`
@@ -31,7 +31,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
   const { state, dispatch } = useContext(context)
   const [selectedArtistStart, setSelectedArtistStart] = useState<{ id: string, name: string } | null>(null)
   const [selectedArtistEnd, setSelectedArtistEnd] = useState<{ id: string, name: string } | null>(null)
-  const [createFromArtistToArtist] = useLazyQuery<{ createFromArtistToArtistPlaylist: TPlaylistEntry[] }>(CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST, { fetchPolicy: 'network-only' })
+  const [createFromArtistToArtist] = useLazyQuery<{ createFromArtistToArtistPlaylist: TFromArtistToArtist['Response'] }, TFromArtistToArtist['Request']>(CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 

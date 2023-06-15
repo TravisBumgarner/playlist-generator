@@ -4,7 +4,7 @@ import config from './config'
 import axios from 'axios'
 import SpotifyWebApi from 'spotify-web-api-node'
 import { logger } from './utilities'
-import { TPlaylistEntry } from './types'
+import { TPlaylistEntry } from 'utilties'
 
 const SpotifyToken = Record({
     access_token: String,

@@ -11,10 +11,6 @@ import { logger } from './utilities'
 import { handleSpotifyUserRedirect } from './spotify'
 import * as Foo from 'utilities'
 
-const foo: Foo.Foo = {
-  bar: 'bar',
-}
-
 const app = express()
 Sentry.init({
   dsn: 'https://838c24cda4bd47d09cfbe44a11406585@o196886.ingest.sentry.io/4505303436886016',
@@ -58,7 +54,8 @@ app.use(
 app.use(bodyParser.json())
 
 app.get('/ok', async (req: express.Request, res: express.Response) => {
-  res.send('pong!')
+  console.log(Foo)
+  res.send(`${Foo.foo}`)
 })
 
 app.get(

@@ -2,12 +2,7 @@ import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQ
 
 import { getRecommendationsForPlaylist } from '../../spotify'
 import { PlaylistType } from '../types'
-import { TPlaylistEntry } from '../../types'
-
-type GoodBeatsToGoodSleepsArgs = {
-  artistId: string,
-  market: string
-}
+import { TGoodBeatsToGoodSleeps, TPlaylistEntry } from 'utilities'
 
 export const createGoodBeatsToGoodSleepsPlaylist = {
   type: new GraphQLList(PlaylistType),
@@ -16,7 +11,7 @@ export const createGoodBeatsToGoodSleepsPlaylist = {
     artistId: { type: new GraphQLNonNull(GraphQLString) },
     market: { type: new GraphQLNonNull(GraphQLString) },
   },
-  resolve: async (_: any, { artistId, market }: GoodBeatsToGoodSleepsArgs): Promise<TPlaylistEntry[]> => {
+  resolve: async (_: any, { artistId, market }: TGoodBeatsToGoodSleeps['Request']): Promise<TGoodBeatsToGoodSleeps['Response']> => {
     const promises = await Promise.all([{ max: 0.7, min: 0.5 }, { max: 0.5, min: 0.3 }, { max: 0.3, min: 0 }].map(async ({ min, max }) => {
       // 3 different energies, 4 songs each, at 3 min each -> ~30 minutes of music before white noise
       const options = { seed_artists: artistId, market, limit: 10, min_energy: min, max_energy: max }
