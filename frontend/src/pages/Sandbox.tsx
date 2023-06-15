@@ -6,14 +6,9 @@ enum AvailableValue {
   Danceability = 'Danceability',
   Energy = 'Energy',
   Instrumentalness = 'Instrumentalness',
-  Key = 'Key',
-  Liveness = 'Liveness',
-  Loudness = 'Loudness',
-  Mode = 'Mode',
   Popularity = 'Popularity',
-  Speechiness = 'Speechiness',
-  TempoSignature = 'Temposignature',
-  Valence = 'Valence',
+  Tempo = 'Tempo',
+  Mood = 'Mood', // Valence
 }
 
 interface Item {
@@ -35,6 +30,10 @@ const Sandbox = () => {
     }
   }
 
+  const handleSubmit = () => {
+    console.log(items.filter(({ value }) => selectedValues.includes(value)))
+  }
+
   const handleStartChange = (index: number, value: string) => {
     const updatedItems = [...items]
     updatedItems[index].start = value
@@ -52,39 +51,62 @@ const Sandbox = () => {
       <Typography variant="h1">Sandbox</Typography>
       <Typography variant="body1">What would you like to control?</Typography>
       {Object.values(AvailableValue).map((value) => (
-        <Box key={value} sx={{ marginBottom: '1rem', display: 'flex', height: '60px' }}>
+        <Box key={value} sx={{ marginBottom: '1rem', display: 'flex', height: '70px', boxSizing: 'border-box' }}>
           <Button
             variant={selectedValues.includes(value) ? 'contained' : 'outlined'}
-            onClick={() => { handleClick(value) }}
+            onClick={() => {
+              handleClick(value)
+            }}
             sx={{ marginRight: '0.5rem', width: '250px' }}
           >
-            {selectedValues.includes(value) ? 'Disable' : 'Enable'} {value}
+            {value}
           </Button>
           {selectedValues.includes(value) && (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <InputLabel>Start playlist on</InputLabel>
-              <Select
-                value={items.find((item) => item.value === value)?.start ?? 'low'}
-                onChange={(event) => { handleStartChange(items.findIndex((item) => item.value === value), event.target.value) }}
-              >
-                <MenuItem value="low">Low</MenuItem>
-                <MenuItem value="medium">Medium</MenuItem>
-                <MenuItem value="high">High</MenuItem>
-              </Select>
-              <InputLabel>and end on</InputLabel>
-              <Select
-                value={items.find((item) => item.value === value)?.end ?? 'low'}
-                onChange={(event) => { handleEndChange(items.findIndex((item) => item.value === value), event.target.value) }}
-              >
-                <MenuItem value="low">Low</MenuItem>
-                <MenuItem value="medium">Medium</MenuItem>
-                <MenuItem value="high">High</MenuItem>
-              </Select>
-            </Box>
+            <>
+              <Box sx={{ flexGrow: 0.5 }}>
+                <InputLabel id="start">Start playlist</InputLabel>
+                <Select
+                  fullWidth
+                  labelId="start"
+                  value={items.find((item) => item.value === value)?.start}
+                  onChange={(event) => {
+                    handleStartChange(
+                      items.findIndex((item) => item.value === value),
+                      event.target.value
+                    )
+                  }}
+                >
+                  <MenuItem value="low">Low</MenuItem>
+                  <MenuItem value="medium">Medium</MenuItem>
+                  <MenuItem value="high">High</MenuItem>
+                </Select>
+              </Box>
+              <Box sx={{ flexGrow: 0.5 }}>
+                <InputLabel id="end">End Playlist</InputLabel>
+                <Select
+                  fullWidth
+                  labelId="end"
+                  value={items.find((item) => item.value === value)?.end}
+                  onChange={(event) => {
+                    handleEndChange(
+                      items.findIndex((item) => item.value === value),
+                      event.target.value
+                    )
+                  }}
+                >
+                  <MenuItem value="low">Low</MenuItem>
+                  <MenuItem value="medium">Medium</MenuItem>
+                  <MenuItem value="high">High</MenuItem>
+                </Select>
+              </Box>
+            </>
           )}
-        </Box>
+        </Box >
       ))}
-    </Container>
+      <Button disabled={selectedValues.length === 0} fullWidth variant="contained" onClick={handleSubmit}>
+        Submit
+      </Button>
+    </Container >
   )
 }
 
