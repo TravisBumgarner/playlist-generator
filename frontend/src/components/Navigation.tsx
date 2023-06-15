@@ -9,6 +9,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import HomeIcon from '@mui/icons-material/Home'
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
+import AddCommentIcon from '@mui/icons-material/AddComment'
 
 import { context } from 'context'
 import { ALGORITHM_ROUTES } from '../algorithms'
@@ -21,20 +22,20 @@ const Navigation = () => {
 
     return ALGORITHM_ROUTES.map(({ title: text, href }) => {
       return (
-        <ListItem disablePadding key={text} >
+        <ListItem disablePadding key={text}>
           <ListItemButton href={href}>
             <ListItemIcon>
               <PlaylistPlayIcon />
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItemButton>
-        </ListItem >
+        </ListItem>
       )
     })
   }, [state.user])
 
-  const toggleDrawer = () =>
-    (event: React.KeyboardEvent | React.MouseEvent) => {
+  const toggleDrawer =
+    () => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
         event.type === 'keydown' &&
         ((event as React.KeyboardEvent).key === 'Tab' ||
@@ -47,31 +48,48 @@ const Navigation = () => {
     }
 
   return (
-    <Drawer
-      anchor={'left'}
-      open={state.isMenuOpen}
-      onClose={toggleDrawer()}
-    >
+    <Drawer anchor={'left'} open={state.isMenuOpen} onClose={toggleDrawer()}>
       <Box
-        sx={{ width: 300 }}
+        sx={{
+          width: 300,
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexDirection: 'column',
+          height: '100%',
+        }}
         role="presentation"
         onClick={toggleDrawer()}
         onKeyDown={toggleDrawer()}
       >
-        <List>
-          <ListItem disablePadding >
-            <ListItemButton href="/">
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary="Home" />
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
-          {algorithmRoutes}
-        </List>
+        <Box>
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton href="/">
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Home" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>{algorithmRoutes}</List>
+        </Box>
+        <Box>
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton
+                target="_blank"
+                href="https://forms.gle/Sx34MTubf5vb8YFL7"
+              >
+                <ListItemIcon>
+                  <AddCommentIcon />
+                </ListItemIcon>
+                <ListItemText primary="Provide Feedback" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </Box>
       </Box>
     </Drawer>
   )

@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router'
 import { Navigate } from 'react-router-dom'
 
 import { context } from 'context'
-import { Home, Error, LandingPage, NotFound } from '../pages'
+import { Home, Error, LandingPage, NotFound, Sandbox } from '../pages'
 import { ALGORITHM_ROUTES } from '../algorithms'
 
 interface ConditionalRouteProps {
@@ -47,6 +47,7 @@ const Router = () => {
           />
         )
       })}
+      <Route path="/rudaruda" element={<Sandbox />} />
       <Route path="*" element={<NotFound />} />
 
     </Routes>

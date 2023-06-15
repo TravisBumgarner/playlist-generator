@@ -3,12 +3,12 @@ import { Button, Container, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TProgressivelyEnergetic, type TAutocompleteEntry, type TPlaylistEntry } from 'Utilties'
+import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry } from 'Utilties'
 import { context } from 'context'
 
-const CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY = gql`
-query createProgressivelyEnergeticPlaylist($artistId: String!, $market: String!) {
-  createProgressivelyEnergeticPlaylist(market: $market, artistId: $artistId) {
+const CREATE_FULL_CONTROL_PLAYLIST = gql`
+query createFullControlPlaylist($artistId: String!, $market: String!) {
+  createFullControlPlaylist(artistId: $artistId, market: $market) {
         name
         id
         album {
@@ -26,17 +26,17 @@ query createProgressivelyEnergeticPlaylist($artistId: String!, $market: String!)
   }
 `
 
-interface ProgressivelyEnergeticProps { title: string, description: string }
-const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticProps) => {
+interface FullControlParams { title: string, description: string }
+const FullControl = ({ title, description }: FullControlParams) => {
   const { state, dispatch } = useContext(context)
-  const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createProgressivelyEnergeticPlaylist] = useLazyQuery<{ createProgressivelyEnergeticPlaylist: TProgressivelyEnergetic['Response'] }, TProgressivelyEnergetic['Request']>(CREATE_PROGRESSIVELY_ENERGETIC_PLAYLIST_QUERY, { fetchPolicy: 'network-only' })
+  const [selectedArist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
+  const [createFullControl] = useLazyQuery<{ createFullControlPlaylist: TFullControl['Response'] }, TFullControl['Request']>(CREATE_FULL_CONTROL_PLAYLIST, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const resetState = useCallback(() => {
     setSelectedArtist(null)
-    setPlaylistEntries(null)
+    setPlaylistEntries([])
   }, [])
 
   const onCreateCallback = useCallback(() => {
@@ -49,27 +49,27 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
 
   const handleSubmit = useCallback(async () => {
     setIsLoading(true)
-    if (!selectedArtist) return
+    if (!selectedArist) return
 
     if (!state.user) {
       dispatch({ type: 'ADD_ALERT', data: { text: 'User is not logged in', severity: 'error' } })
       return
     }
 
-    const result = await createProgressivelyEnergeticPlaylist({ variables: { artistId: selectedArtist.id, market: state.user.market } })
-    if ((result.data?.createProgressivelyEnergeticPlaylist) != null) {
-      setPlaylistEntries(result.data?.createProgressivelyEnergeticPlaylist)
+    const result = await createFullControl({ variables: { artistId: selectedArist.id, market: state.user.market } })
+    if ((result.data?.createFullControlPlaylist) != null) {
+      setPlaylistEntries(result.data?.createFullControlPlaylist)
     }
 
     setIsLoading(false)
-  }, [selectedArtist, createProgressivelyEnergeticPlaylist, state.user, dispatch])
+  }, [selectedArist, createFullControl, dispatch, state.user])
 
   const content = useMemo(() => {
-    if (selectedArtist === null || playlistEntries === null) {
+    if (selectedArist === null || playlistEntries === null) {
       return (
         <>
-          <Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />
-          <Button disabled={selectedArtist === null} onClick={handleSubmit}>Submit</Button>
+          <Search label={'Select an Artist'} resultSelectedCallback={resultSelectedCallback} />
+          <Button disabled={selectedArist === null} onClick={handleSubmit}>Submit</Button>
         </>
       )
     }
@@ -91,9 +91,9 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
     }
 
     return (
-      <Playlist onCreateCallback={onCreateCallback} initialTitle={`Progressively Energetic with ${selectedArtist.name}`} playlistEntries={playlistEntries} />
+      <Playlist onCreateCallback={onCreateCallback} initialTitle={`Full Control with ${selectedArist.name}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, onCreateCallback, isLoading])
+  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArist, onCreateCallback, isLoading])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
@@ -106,4 +106,4 @@ const ProgressivelyEnergetic = ({ title, description }: ProgressivelyEnergeticPr
   )
 }
 
-export default ProgressivelyEnergetic
+export default FullControl

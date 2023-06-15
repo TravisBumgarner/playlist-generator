@@ -3,6 +3,11 @@
         "resolveJsonModule": true,
         "strict": true,
         "baseUrl": ".",
+        "paths": {
+            "*": [
+                "types/*"
+            ]
+        },
         "module": "commonjs",
         "noImplicitAny": true,
         "removeComments": true,
@@ -12,6 +17,9 @@
         "esModuleInterop": true,
         "outDir": "build/"
     },
+    "include": [
+        "src/**/*"
+    ],
     "exclude": [
         "node_modules"
     ]

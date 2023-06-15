@@ -4,6 +4,7 @@ import config from './config'
 import axios from 'axios'
 import SpotifyWebApi from 'spotify-web-api-node'
 import { logger } from './utilities'
+import { TPlaylistEntry } from 'utilties'
 
 const SpotifyToken = Record({
     access_token: String,
@@ -132,11 +133,11 @@ export const getRelatedArtistFromArtists = async (market: string, artistIdStart:
 
 }
 
-export const getRecommendationsForPlaylist = async (options: GetRecommendationsForPlaylistOptions) => {
+export const getRecommendationsForPlaylist = async (options: GetRecommendationsForPlaylistOptions): Promise<{ [key: string]: TPlaylistEntry }> => {
     const client = await getSpotifyClient()
     try {
         const results = await client.getRecommendations(options)
-        return results.body?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
+        const playlistTracks = results.body?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
             return {
                 id,
                 artists: artists.map(artist => ({ name: artist.name, href: artist.external_urls.spotify })),
@@ -150,11 +151,22 @@ export const getRecommendationsForPlaylist = async (options: GetRecommendationsF
                 href: spotify
             }
         })
+
+        if(playlistTracks.length === 0){
+            return {}
+        }
+        
+        // For whatever reason I can't get map/reduce to run at the same time without complaining.
+        return playlistTracks.reduce((accum, curr) => {
+            accum[curr.id] = curr
+            return accum
+        }, {} as { [key: string]: TPlaylistEntry })
+
     } catch (error: any) {
         console.log(error)
         console.log(error.name)
         console.log(error.message)
-        return []
+        return {}
     }
 }
 
