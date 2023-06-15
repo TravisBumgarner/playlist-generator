@@ -27,7 +27,8 @@
     "spotify-web-api-node": "^5.0.2",
     "ts-node": "^10.4.0",
     "uuid": "^9.0.0",
-    "ws": "^8.13.0"
+    "ws": "^8.13.0",
+    "utilties": "link:../utilities/build"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

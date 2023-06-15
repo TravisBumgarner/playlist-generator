@@ -9,6 +9,11 @@ import { WebSocketServer } from 'ws'
 import schema from './schemas'
 import { logger } from './utilities'
 import { handleSpotifyUserRedirect } from './spotify'
+import * as Foo from 'utilities'
+
+const foo: Foo.Foo = {
+  bar: 'bar',
+}
 
 const app = express()
 Sentry.init({
