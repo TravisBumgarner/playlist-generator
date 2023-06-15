@@ -2,7 +2,8 @@ import {
   FromArtistToArtist,
   ProgressivelyEnergetic,
   GoodBeatsToGoodSleeps,
-  ArtistMashup
+  ArtistMashup,
+  FullControl
 } from './pages/algorithms'
 
 interface TAlgorithm {
@@ -29,6 +30,15 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
       'Pick two artists. Generate a playlist of songs that starts with one and ends with the other.',
     component: (title, description) => (
       <FromArtistToArtist title={title} description={description} />
+    ),
+  },
+  {
+    title: 'Full Control',
+    href: '/a/full_control',
+    description:
+      'Pick an artist. Generate a playlist of songs where you can tweak every parameter.',
+    component: (title, description) => (
+      <FullControl title={title} description={description} />
     ),
   },
   {

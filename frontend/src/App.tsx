@@ -68,7 +68,8 @@ const App = () => {
       dispatch({ type: 'LOGIN', data: user })
     } catch (e) {
       logger(e)
-      dispatch({ type: 'ADD_ALERT', data: { text: 'Something went wrong', severity: 'error' } })
+      // This 401's if the user's not logged in.
+      // dispatch({ type: 'ADD_ALERT', data: { text: 'Something went wrong', severity: 'error' } })
       logout(dispatch)
     }
     setHasAppInitialized(true)

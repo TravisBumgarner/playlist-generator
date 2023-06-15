@@ -9,6 +9,7 @@ import { createProgressivelyEnergeticPlaylist } from './progressivelyEnergetic'
 import { createFromArtistToArtistPlaylist } from './fromArtistToArtist'
 import { createGoodBeatsToGoodSleepsPlaylist } from './goodBeatsToGoodSleeps'
 import { createArtistMashupPlaylist } from './artistMashup'
+import { createFullControlPlaylist } from './fullControl'
 
 const ping = {
     type: GraphQLString,
@@ -33,7 +34,8 @@ const RootQueryType = new GraphQLObjectType({
         savePlaylist,
         createFromArtistToArtistPlaylist, 
         createGoodBeatsToGoodSleepsPlaylist,
-        createArtistMashupPlaylist
+        createArtistMashupPlaylist,
+        createFullControlPlaylist
     }),
 })
 
