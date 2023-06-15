@@ -2,6 +2,7 @@ import {
   FromArtistToArtist,
   ProgressivelyEnergetic,
   GoodBeatsToGoodSleeps,
+  ArtistMashup
 } from './pages/algorithms'
 
 interface TAlgorithm {
@@ -12,6 +13,15 @@ interface TAlgorithm {
 }
 
 export const ALGORITHM_ROUTES: TAlgorithm[] = [
+  {
+    title: 'Artist Mashup',
+    href: '/a/artist_mashup',
+    description:
+      'Pick several artists. Generate a playlist of songs that jumps between recommended songs of each artist.',
+    component: (title, description) => (
+      <ArtistMashup title={title} description={description} />
+    ),
+  },
   {
     title: 'From Artist to Artist',
     href: '/a/from_artist_to_artist',

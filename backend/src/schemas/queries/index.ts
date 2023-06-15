@@ -8,9 +8,7 @@ import { autocomplete } from './autocomplete'
 import { createProgressivelyEnergeticPlaylist } from './progressivelyEnergetic'
 import { createFromArtistToArtistPlaylist } from './fromArtistToArtist'
 import { createGoodBeatsToGoodSleepsPlaylist } from './goodBeatsToGoodSleeps'
-
-// They're f'ing case sensative -_-
-
+import { createArtistMashupPlaylist } from './artistMashup'
 
 const ping = {
     type: GraphQLString,
@@ -34,7 +32,8 @@ const RootQueryType = new GraphQLObjectType({
         refreshToken,
         savePlaylist,
         createFromArtistToArtistPlaylist, 
-        createGoodBeatsToGoodSleepsPlaylist
+        createGoodBeatsToGoodSleepsPlaylist,
+        createArtistMashupPlaylist
     }),
 })
 
