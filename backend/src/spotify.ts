@@ -112,12 +112,17 @@ const getSpotifyClient = async () => {
 }
 
 
-type GetRecommendationsForPlaylistOptions = {
+export type GetRecommendationsForPlaylistOptions = {
     seed_artists: string[] | string
     market: string,
     limit: number,
     min_energy?: number,
-    max_energy?: number
+    max_energy?: number,
+    target_energy?: number,
+    target_danceability?: number,
+    target_popularity?: number,
+    target_tempo?: number,
+    target_valence?: number,
 }
 
 type Options = { seed_artists: string[], market: string, limit: number }
@@ -152,10 +157,10 @@ export const getRecommendationsForPlaylist = async (options: GetRecommendationsF
             }
         })
 
-        if(playlistTracks.length === 0){
+        if (playlistTracks.length === 0) {
             return {}
         }
-        
+
         // For whatever reason I can't get map/reduce to run at the same time without complaining.
         return playlistTracks.reduce((accum, curr) => {
             accum[curr.id] = curr

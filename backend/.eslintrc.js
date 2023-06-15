@@ -30,6 +30,7 @@ module.exports = {
         }
     ],
     rules: {
+        '@typescript-eslint/restrict-template-expressions': 'off',
         semi: ['error', 'never'],
         'import/extensions': ['off'],
         'max-len': ['warn', { code: 150 }],
