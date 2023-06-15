@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
-import { Container, Typography, Button, MenuItem, Select } from '@mui/material'
+import { Container, Typography, Button, MenuItem, Select, Box, InputLabel } from '@mui/material'
 
 enum AvailableValue {
-  Acousticness = 'acousticness',
-  Danceability = 'danceability',
-  Energy = 'energy',
-  Instrumentalness = 'instrumentalness',
-  Key = 'key',
-  Liveness = 'liveness',
-  Loudness = 'loudness',
-  Mode = 'mode',
-  Popularity = 'popularity',
-  Speechiness = 'speechiness',
-  TempoSignature = 'temposignature',
-  Valence = 'valence',
+  Acousticness = 'Acousticness',
+  Danceability = 'Danceability',
+  Energy = 'Energy',
+  Instrumentalness = 'Instrumentalness',
+  Key = 'Key',
+  Liveness = 'Liveness',
+  Loudness = 'Loudness',
+  Mode = 'Mode',
+  Popularity = 'Popularity',
+  Speechiness = 'Speechiness',
+  TempoSignature = 'Temposignature',
+  Valence = 'Valence',
 }
 
 interface Item {
@@ -31,7 +31,7 @@ const Sandbox = () => {
       setSelectedValues(selectedValues.filter((v) => v !== value))
     } else {
       setSelectedValues([...selectedValues, value])
-      setItems([...items, { value, start: 'low', end: 'low' }])
+      setItems([...items, { value, start: 'medium', end: 'medium' }])
     }
   }
 
@@ -52,36 +52,37 @@ const Sandbox = () => {
       <Typography variant="h1">Sandbox</Typography>
       <Typography variant="body1">What would you like to control?</Typography>
       {Object.values(AvailableValue).map((value) => (
-        <div key={value} style={{ marginBottom: '1rem' }}>
+        <Box key={value} sx={{ marginBottom: '1rem', display: 'flex', height: '60px' }}>
           <Button
             variant={selectedValues.includes(value) ? 'contained' : 'outlined'}
             onClick={() => { handleClick(value) }}
-            style={{ marginRight: '0.5rem' }}
+            sx={{ marginRight: '0.5rem', width: '250px' }}
           >
-            {value}
+            {selectedValues.includes(value) ? 'Disable' : 'Enable'} {value}
           </Button>
           {selectedValues.includes(value) && (
-            <div>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <InputLabel>Start playlist on</InputLabel>
               <Select
-                value={items.find((item) => item.value === value)?.start || 'low'}
+                value={items.find((item) => item.value === value)?.start ?? 'low'}
                 onChange={(event) => { handleStartChange(items.findIndex((item) => item.value === value), event.target.value) }}
-                style={{ marginRight: '0.5rem' }}
               >
                 <MenuItem value="low">Low</MenuItem>
                 <MenuItem value="medium">Medium</MenuItem>
                 <MenuItem value="high">High</MenuItem>
               </Select>
+              <InputLabel>and end on</InputLabel>
               <Select
-                value={items.find((item) => item.value === value)?.end || 'low'}
+                value={items.find((item) => item.value === value)?.end ?? 'low'}
                 onChange={(event) => { handleEndChange(items.findIndex((item) => item.value === value), event.target.value) }}
               >
                 <MenuItem value="low">Low</MenuItem>
                 <MenuItem value="medium">Medium</MenuItem>
                 <MenuItem value="high">High</MenuItem>
               </Select>
-            </div>
+            </Box>
           )}
-        </div>
+        </Box>
       ))}
     </Container>
   )
