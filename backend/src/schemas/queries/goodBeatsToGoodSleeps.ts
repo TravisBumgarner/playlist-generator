@@ -2,7 +2,7 @@ import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQ
 
 import { getRecommendationsForPlaylist } from '../../spotify'
 import { PlaylistType } from '../types'
-import { TGoodBeatsToGoodSleeps, TPlaylistEntry } from 'utilities'
+import { TGoodBeatsToGoodSleeps, TPlaylistEntry } from 'playlist-generator-utilities'
 
 export const createGoodBeatsToGoodSleepsPlaylist = {
   type: new GraphQLList(PlaylistType),
@@ -18,7 +18,7 @@ export const createGoodBeatsToGoodSleepsPlaylist = {
       const recs = await getRecommendationsForPlaylist(options)
       return recs
     }))
-    const dedupped = promises.reduce((accum, curr) => ({...accum, ...curr}), {} as { [key: string]: TPlaylistEntry })
+    const dedupped = promises.reduce((accum, curr) => ({ ...accum, ...curr }), {} as { [key: string]: TPlaylistEntry })
     const whiteNoise = {
       "id": "2RrTfwz7prB7ImgbxdWOcE",
       "name": "Brown Noise 3 Hours Long",

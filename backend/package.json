@@ -23,12 +23,12 @@
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.12.1",
     "mongodb": "^5.4.0",
+    "playlist-generator-utilities": "1.0.8",
     "runtypes": "^6.6.0",
     "spotify-web-api-node": "^5.0.2",
     "ts-node": "^10.4.0",
     "uuid": "^9.0.0",
-    "ws": "^8.13.0",
-    "utilties": "link:../utilities/build"
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

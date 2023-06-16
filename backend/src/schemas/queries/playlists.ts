@@ -1,7 +1,7 @@
 import { GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql'
 
 import getSpotifyClient from '../../spotify'
-import { TCreatePlaylist } from 'utilities'
+import { TCreatePlaylist } from 'playlist-generator-utilities'
 
 export const savePlaylist = {
   type: GraphQLString,

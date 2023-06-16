@@ -2,8 +2,8 @@ export type Foo = {
     bar: string;
 }
 
-export const foo = 5
-export default 5
+export const foo = 7
+export default 6
 
 export interface TAutocompleteEntry {
     image: string

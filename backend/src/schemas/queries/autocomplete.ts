@@ -1,7 +1,7 @@
 import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 
 import getSpotifyClient from '../../spotify'
-import { TAutocomplete, TAutocompleteEntry } from 'utilities'
+import { TAutocomplete, TAutocompleteEntry } from 'playlist-generator-utilities'
 
 const AutoCompleteType = new GraphQLObjectType({
   name: 'AutocompleteResult',

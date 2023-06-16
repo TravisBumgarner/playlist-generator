@@ -9,7 +9,6 @@ import { WebSocketServer } from 'ws'
 import schema from './schemas'
 import { logger } from './utilities'
 import { handleSpotifyUserRedirect } from './spotify'
-import * as Foo from 'utilities'
 
 const app = express()
 Sentry.init({
@@ -54,8 +53,7 @@ app.use(
 app.use(bodyParser.json())
 
 app.get('/ok', async (req: express.Request, res: express.Response) => {
-  console.log(Foo)
-  res.send(`${Foo.foo}`)
+  res.send('Pong!')
 })
 
 app.get(

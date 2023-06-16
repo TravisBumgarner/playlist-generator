@@ -3,7 +3,7 @@ import { Button, Container, Typography, MenuItem, Select, Box, InputLabel } from
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters } from 'Utilties'
+import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters } from 'playlist-generator-utilities'
 import { context } from 'context'
 
 interface FilterOptionInfo {

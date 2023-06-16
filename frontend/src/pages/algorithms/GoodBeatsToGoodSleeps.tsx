@@ -3,7 +3,7 @@ import { Button, Container, InputLabel, MenuItem, Select, type SelectChangeEvent
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TGoodBeatsToGoodSleeps, type TAutocompleteEntry, type TPlaylistEntry } from 'Utilties'
+import { type TGoodBeatsToGoodSleeps, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
 
 const CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY = gql`

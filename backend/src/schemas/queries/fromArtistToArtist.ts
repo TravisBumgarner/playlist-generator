@@ -1,9 +1,10 @@
-import {  GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql'
+import { GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql'
 
 import { getRecommendationsForPlaylist, getRelatedArtistFromArtists } from '../../spotify'
 import { PlaylistType } from '../types'
-import { TFromArtistToArtist, TPlaylistEntry } from 'utilities'
+import { TFromArtistToArtist, TPlaylistEntry, foo } from 'playlist-generator-utilities'
 
+const foobar: 7 = foo;
 
 export const createFromArtistToArtistPlaylist = {
   type: new GraphQLList(PlaylistType),
@@ -13,7 +14,7 @@ export const createFromArtistToArtistPlaylist = {
     artistIdEnd: { type: new GraphQLNonNull(GraphQLString) },
     market: { type: new GraphQLNonNull(GraphQLString) },
   },
-  resolve: async (_: any, { artistIdStart, artistIdEnd, market }: TFromArtistToArtist['Request']): Promise<TFromArtistToArtist['Response']>  => {
+  resolve: async (_: any, { artistIdStart, artistIdEnd, market }: TFromArtistToArtist['Request']): Promise<TFromArtistToArtist['Response']> => {
     // Ooh look at this possibility for a recursive solution.
     const artistIdMiddle = await getRelatedArtistFromArtists(market, artistIdStart, artistIdEnd)
 
@@ -29,7 +30,7 @@ export const createFromArtistToArtistPlaylist = {
     ]
 
     const promises = await Promise.all(artistIds.map(artistId => getRecommendationsForPlaylist({ seed_artists: artistId, market, limit: 20 })))
-    const dedupped = promises.reduce((accum, curr) => ({...accum, ...curr}), {} as { [key: string]: TPlaylistEntry })
+    const dedupped = promises.reduce((accum, curr) => ({ ...accum, ...curr }), {} as { [key: string]: TPlaylistEntry })
     return Object.values(dedupped)
   }
 }

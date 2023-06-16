@@ -4,7 +4,7 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TArtistMashup, type TAutocompleteEntry, type TPlaylistEntry } from 'utilties'
+import { type TArtistMashup, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
 
 const CREATE_FROM_ARTIST_MASHUP_PLAYLIST = gql`

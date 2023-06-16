@@ -3,7 +3,7 @@ import { Button, Container, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TFromArtistToArtist, type TAutocompleteEntry, type TPlaylistEntry } from 'Utilties'
+import { type TFromArtistToArtist, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
 
 const CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST = gql`
