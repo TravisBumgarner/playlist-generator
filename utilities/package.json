@@ -1,6 +1,6 @@
 {
   "name": "playlist-generator-utilities",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "main": "src/index.ts",
   "license": "MIT",
   "devDependencies": {
@@ -13,6 +13,6 @@
   "scripts": {
     "start": "nodemon --watch src --ext ts --exec \"npx tsc --declaration\"",
     "build": "npx tsc --declaration",
-    "deploy": "yarn publish"
+    "deploy": "yarn publish && cd ../frontend && yarn upgrade playlist-generator-utilities@latest && cd ../backend && yarn upgrade playlist-generator-utilities@latest"
   }
 }
