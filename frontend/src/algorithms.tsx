@@ -1,6 +1,5 @@
 import {
   FromArtistToArtist,
-  ProgressivelyEnergetic,
   GoodBeatsToGoodSleeps,
   ArtistMashup,
   FullControl
@@ -21,7 +20,7 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
       'Pick several artists. Generate a playlist of songs that jumps between recommended songs of each artist.',
     component: (title, description) => (
       <ArtistMashup title={title} description={description} />
-    ),
+    )
   },
   {
     title: 'From Artist to Artist',
@@ -30,7 +29,7 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
       'Pick two artists. Generate a playlist of songs that starts with one and ends with the other.',
     component: (title, description) => (
       <FromArtistToArtist title={title} description={description} />
-    ),
+    )
   },
   {
     title: 'Full Control',
@@ -39,7 +38,7 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
       'Pick an artist. Generate a playlist of songs where you can tweak every parameter.',
     component: (title, description) => (
       <FullControl title={title} description={description} />
-    ),
+    )
   },
   {
     title: 'Good Beats to Good Sleeps',
@@ -48,15 +47,6 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
       'Pick an arist. Generate a playlist of songs that starts with the selected artist and ends with enough white noise to last you through the night.',
     component: (title, description) => (
       <GoodBeatsToGoodSleeps title={title} description={description} />
-    ),
-  },
-  {
-    title: 'Progressively Energetic',
-    href: '/a/progressively_energetic',
-    description:
-      'Pick an artist. Generate a playlist of songs related to that artist. The songs will start mellow and end with lots of energy.',
-    component: (title, description) => (
-      <ProgressivelyEnergetic title={title} description={description} />
-    ),
-  },
+    )
+  }
 ]

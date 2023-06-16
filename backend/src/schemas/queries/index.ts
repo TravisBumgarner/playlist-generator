@@ -3,7 +3,6 @@ import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 import { getSpotifyRedirectURI, refreshToken } from './auth'
 import { savePlaylist } from './playlists'
 import { autocomplete } from './autocomplete'
-import { createProgressivelyEnergeticPlaylist } from './progressivelyEnergetic'
 import { createFromArtistToArtistPlaylist } from './fromArtistToArtist'
 import { createGoodBeatsToGoodSleepsPlaylist } from './goodBeatsToGoodSleeps'
 import { createArtistMashupPlaylist } from './artistMashup'
@@ -26,11 +25,10 @@ const RootQueryType = new GraphQLObjectType({
     fields: () => ({
         ping,
         autocomplete,
-        createProgressivelyEnergeticPlaylist,
         getSpotifyRedirectURI,
         refreshToken,
         savePlaylist,
-        createFromArtistToArtistPlaylist, 
+        createFromArtistToArtistPlaylist,
         createGoodBeatsToGoodSleepsPlaylist,
         createArtistMashupPlaylist,
         createFullControlPlaylist
