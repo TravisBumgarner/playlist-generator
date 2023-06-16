@@ -2,8 +2,7 @@ import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQ
 
 import { GetRecommendationsForPlaylistOptions, getRecommendationsForPlaylist } from '../../spotify'
 import { PlaylistType } from '../types'
-import { TFullControl, EFilterValue, TPlaylistEntry } from 'utilities'
-import { EFilterOption, parseFilters } from 'utilties'
+import { TFullControl, EFilterValue, TPlaylistEntry, parseFilters } from 'utilities'
 
 const MAGIC_NUMBER = 5
 
