@@ -70,7 +70,7 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
     setPlaylistEntries([])
   }, [])
 
-  const onCreateCallback = useCallback(() => {
+  const resetStateCallback = useCallback(() => {
     resetState()
   }, [resetState])
 
@@ -127,9 +127,9 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
     }
 
     return (
-      <Playlist onCreateCallback={onCreateCallback} initialTitle={`Artist Mashup with ${selectedArtists.map(({ name }) => name).join(', ')}`} playlistEntries={playlistEntries} />
+      <Playlist resetStateCallback={resetStateCallback} initialTitle={`Artist Mashup with ${selectedArtists.map(({ name }) => name).join(', ')}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, addAnotherArtist, selectedArtists, onCreateCallback, isLoading, removeArtist])
+  }, [playlistEntries, handleSubmit, addAnotherArtist, selectedArtists, resetStateCallback, isLoading, removeArtist])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>

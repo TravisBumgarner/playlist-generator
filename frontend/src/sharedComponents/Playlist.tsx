@@ -50,9 +50,9 @@ const PlaylistItem = (data: TPlaylistEntry) => {
 interface PlaylistParams {
   playlistEntries: TPlaylistEntry[]
   initialTitle: string
-  onCreateCallback: () => void
+  resetStateCallback: () => void
 }
-const Playlist = ({ playlistEntries, initialTitle, onCreateCallback }: PlaylistParams) => {
+const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: PlaylistParams) => {
   const [savePlaylist] = useLazyQuery<{ savePlaylist: string }>(SAVE_PLAYLIST_QUERY)
   const [playlistTitle, setPlaylistTitle] = useState(initialTitle)
   const [isSavingPlaylist, setIsSavingPlaylist] = useState(false)
@@ -72,13 +72,13 @@ const Playlist = ({ playlistEntries, initialTitle, onCreateCallback }: PlaylistP
     const response = await savePlaylist({ variables: { uris, playlistTitle, accessToken } })
     if (response.data) {
       dispatch({ type: 'ADD_ALERT', data: { text: 'Playlist created!', url: response.data.savePlaylist, severity: 'success' } })
-      onCreateCallback()
+      resetStateCallback()
     } else {
       dispatch({ type: 'ADD_ALERT', data: { text: 'Failed to save playlist', severity: 'error' } })
     }
 
     setIsSavingPlaylist(false)
-  }, [playlistEntries, playlistTitle, savePlaylist, navigate, dispatch, onCreateCallback])
+  }, [playlistEntries, playlistTitle, savePlaylist, navigate, dispatch, resetStateCallback])
 
   const Playlist = useMemo(() => {
     // Sometimes duplicate songs come back in a playlist. Currently it doesn't look possible to dedup a playlist and keep its integrity.
@@ -103,7 +103,7 @@ const Playlist = ({ playlistEntries, initialTitle, onCreateCallback }: PlaylistP
     />
     <Button
       css={{ margin: '1rem 0' }}
-      variant='text' onClick={onCreateCallback}>Start Over
+      variant='text' onClick={resetStateCallback}>Start Over
     </Button>
     <Button
       css={{ margin: '1rem 0' }}

@@ -47,7 +47,7 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
     setPlaylistEntries(null)
   }, [])
 
-  const onCreateCallback = useCallback(() => {
+  const resetStateCallback = useCallback(() => {
     resetState()
   }, [resetState])
 
@@ -117,9 +117,9 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
     }
 
     return (
-      <Playlist onCreateCallback={onCreateCallback} initialTitle={`Good Beats to Good Sleeps ${selectedArtist.name}`} playlistEntries={playlistEntries} />
+      <Playlist resetStateCallback={resetStateCallback} initialTitle={`Good Beats to Good Sleeps ${selectedArtist.name}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, onCreateCallback, isLoading, whiteNoise, handleChange])
+  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, resetStateCallback, isLoading, whiteNoise, handleChange])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>

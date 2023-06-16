@@ -188,7 +188,7 @@ const FullControl = ({ title, description }: FullControlParams) => {
     setPlaylistEntries([])
   }, [])
 
-  const onCreateCallback = useCallback(() => {
+  const resetStateCallback = useCallback(() => {
     resetState()
   }, [resetState])
 
@@ -246,9 +246,9 @@ const FullControl = ({ title, description }: FullControlParams) => {
     }
 
     return (
-      <Playlist onCreateCallback={onCreateCallback} initialTitle={`Full Control with ${selectedArist.name}`} playlistEntries={playlistEntries} />
+      <Playlist resetStateCallback={resetStateCallback} initialTitle={`Full Control with ${selectedArist.name}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArist, onCreateCallback, isLoading, filtersSelectedCallback, isDisabled])
+  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArist, resetStateCallback, isLoading, filtersSelectedCallback, isDisabled])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>

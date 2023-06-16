@@ -41,7 +41,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
     setPlaylistEntries([])
   }, [])
 
-  const onCreateCallback = useCallback(() => {
+  const resetStateCallback = useCallback(() => {
     resetState()
   }, [resetState])
 
@@ -98,9 +98,9 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
     }
 
     return (
-      <Playlist onCreateCallback={onCreateCallback} initialTitle={`From ${selectedArtistStart.name} to ${selectedArtistEnd.name}`} playlistEntries={playlistEntries} />
+      <Playlist resetStateCallback={resetStateCallback} initialTitle={`From ${selectedArtistStart.name} to ${selectedArtistEnd.name}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, resultSelectedCallbackStart, resultSelectedCallbackEnd, selectedArtistStart, selectedArtistEnd, onCreateCallback, isLoading])
+  }, [playlistEntries, handleSubmit, resultSelectedCallbackStart, resultSelectedCallbackEnd, selectedArtistStart, selectedArtistEnd, resetStateCallback, isLoading])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
