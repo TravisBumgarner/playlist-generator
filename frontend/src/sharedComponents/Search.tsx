@@ -91,7 +91,6 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
       fullWidth
       getOptionLabel={(option) => option.name}
       options={options}
-      autoComplete
       value={selected}
       loading={isLoading}
       loadingText="Enter a query to get started"
