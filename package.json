@@ -3,7 +3,7 @@
     "concurrently": "^8.0.1"
   },
   "scripts": {
-    "start": "concurrently -n frontend,backend -c \"bgBlue.bold,bgMagenta.bold\" \"cd frontend && yarn start\" \"cd backend && yarn start\"",
+    "start": "concurrently -n frontend,backend,utilities -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"cd frontend && yarn start\" \"cd backend && yarn start\" \"cd utiltities && yarn start\"",
     "tunnel": "ngrok start --all --config=ngrok.yml"
   }
 }
