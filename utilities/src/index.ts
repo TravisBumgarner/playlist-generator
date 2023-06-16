@@ -74,7 +74,7 @@ export enum EFilterValue {
     ExtraHigh = "ExtraHigh",
 }
 
-type TFilter = {
+export type TFilter = {
     value: EFilterOption
     start: EFilterValue
     end: EFilterValue
@@ -84,11 +84,7 @@ export type TFullControl = {
     Request: {
         artistId: string,
         market: string,
-        [EFilterOption.Danceability]?: EFilterOption
-        [EFilterOption.Energy]?: EFilterOption
-        [EFilterOption.Popularity]?: EFilterOption
-        [EFilterOption.Tempo]?: EFilterOption
-        [EFilterOption.Valence]?: EFilterOption
+        filters: string,
     },
     Response: TPlaylistEntry[]
 }
@@ -124,4 +120,12 @@ export type TCreatePlaylist = {
         accessToken: string,
         playlistTitle: string
     },
+}
+
+export const stringifyFilters = (filters: TFilter[]): string => {
+    return JSON.stringify(filters)
+}
+
+export const parseFilters = (filters: string): TFilter[] => {
+    return JSON.parse(filters)
 }

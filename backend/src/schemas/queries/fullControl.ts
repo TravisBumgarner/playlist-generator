@@ -3,7 +3,7 @@ import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQ
 import { GetRecommendationsForPlaylistOptions, getRecommendationsForPlaylist } from '../../spotify'
 import { PlaylistType } from '../types'
 import { TFullControl, EFilterValue, TPlaylistEntry } from 'utilities'
-import { EFilterOption } from 'utilties'
+import { EFilterOption, parseFilters } from 'utilties'
 
 const MAGIC_NUMBER = 5
 
@@ -35,11 +35,11 @@ const FilterValues = new GraphQLEnumType({
 });
 
 const Filter = new GraphQLObjectType({
-  name: 'Filter',
+  name: 'FilterFoo',
   description: 'This represents a filter',
   fields: () => ({
-    start: { type: new GraphQLNonNull(FilterValues) },
-    end: { type: new GraphQLNonNull(FilterValues) },
+    start: { type: FilterValues },
+    // end: { type: new GraphQLNonNull(FilterValues) },
   }),
 })
 
@@ -50,33 +50,24 @@ export const createFullControlPlaylist = {
   args: {
     artistId: { type: new GraphQLNonNull(GraphQLString) },
     market: { type: new GraphQLNonNull(GraphQLString) },
-    // TODO Need to figure out how to make this type work.
-    danceability: { type: Filter },
-    energy: { type: Filter },
-    popularity: { type: Filter },
-    tempo: { type: Filter },
-    valence: { type: Filter },
-    resolve: async (_: any, { artistId, market, ...rest }: TFullControl['Request']): Promise<TFullControl['Response']> => {
-      const optionsToPromise: GetRecommendationsForPlaylistOptions[] = []
-      for (let i = 0; i < MAGIC_NUMBER; i++) {
-        const options: GetRecommendationsForPlaylistOptions = {
-          seed_artists: artistId,
-          market,
-          limit: 10,
-        }
-        Object.keys(rest).forEach((filter) => {
-          // Too much head slamming here. Types are propbably bad.
-          const typecast = filter as unknown as EFilterOption
-          if (Object.values(EFilterOption).includes(typecast)) {
-            const key = `target_${filter}` as unknown as `target_${EFilterOption}`
-            options[key] = calculateTargetValue(rest[typecast]!.start, rest[typecast]!.end, MAGIC_NUMBER, i)
-          }
-        })
-        optionsToPromise.push(options)
+    filters: { type: new GraphQLNonNull(GraphQLString) },
+  },
+  resolve: async (_: any, { artistId, market, filters: filtersString }: TFullControl['Request']): Promise<TFullControl['Response']> => {
+    const optionsToPromise: GetRecommendationsForPlaylistOptions[] = []
+    for (let i = 0; i < MAGIC_NUMBER; i++) {
+      const options: GetRecommendationsForPlaylistOptions = {
+        seed_artists: artistId,
+        market,
+        limit: 10,
       }
-      const promises = await Promise.all(optionsToPromise.map((options) => getRecommendationsForPlaylist(options)))
-      const dedupped = promises.reduce((accum, curr) => ({ ...accum, ...curr }), {} as { [key: string]: TPlaylistEntry })
-      return Object.values(dedupped)
+
+      const filters = parseFilters(filtersString) // I cannot figure out filters and nested types in Apollo. So lazy JSON it is.
+      filters.forEach(({ start, end, value }) => options[`target_${value}`] = calculateTargetValue(start, end, MAGIC_NUMBER - 1, i))
+      optionsToPromise.push(options)
     }
+    console.log(optionsToPromise)
+    const promises = await Promise.all(optionsToPromise.map((options) => getRecommendationsForPlaylist(options)))
+    const dedupped = promises.reduce((accum, curr) => ({ ...accum, ...curr }), {} as { [key: string]: TPlaylistEntry })
+    return Object.values(dedupped)
   }
 }

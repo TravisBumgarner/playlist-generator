@@ -3,7 +3,7 @@ import { Button, Container, Typography, MenuItem, Select, Box, InputLabel } from
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry, EFilterOption, type TFilter, EFilterValue } from 'Utilties'
+import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters } from 'Utilties'
 import { context } from 'context'
 
 interface FilterOptionInfo {
@@ -150,20 +150,12 @@ const CREATE_FULL_CONTROL_PLAYLIST = gql`
   query createFullControlPlaylist(
     $artistId: String!
     $market: String!
-    $danceability: EFilterValue
-    $energy: EFilterValue
-    $popularity: EFilterValue
-    $tempo: EFilterValue
-    $valence: EFilterValue
+    $filters: String!
   ) {
     createFullControlPlaylist(
       artistId: $artistId
       market: $market
-      danceability: danceability
-      energy: energy
-      popularity: popularity
-      tempo: tempo,
-      valence: valence
+      filters: $filters
     ) {
       name
       id
@@ -217,12 +209,7 @@ const FullControl = ({ title, description }: FullControlParams) => {
       return
     }
 
-    const mappedFilters = selectedFilters.reduce<Record<string, { start: EFilterValue, end: EFilterValue }>>((accum, { start, end, value }) => {
-      accum[value] = { start, end }
-      return accum
-    }, {})
-
-    const result = await createFullControl({ variables: { artistId: selectedArist.id, market: state.user.market, ...mappedFilters } })
+    const result = await createFullControl({ variables: { artistId: selectedArist.id, market: state.user.market, filters: stringifyFilters(selectedFilters) } })
     if ((result.data?.createFullControlPlaylist) != null) {
       setPlaylistEntries(result.data?.createFullControlPlaylist)
     }

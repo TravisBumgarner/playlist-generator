@@ -20,7 +20,7 @@ const ping = {
     },
 }
 
-const RootQueryType = new GraphQLObjectTyspe({
+const RootQueryType = new GraphQLObjectType({
     name: 'Query',
     description: 'Root Query',
     fields: () => ({
