@@ -95,4 +95,4 @@ const server = app.listen(8080, '0.0.0.0', () => {
   useServer({ schema }, wsServer)
 })
 
-export {}
+export { }

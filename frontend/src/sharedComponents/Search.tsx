@@ -1,5 +1,5 @@
-import * as React from 'react'
 import TextField from '@mui/material/TextField'
+import { useMemo, useState, useContext, useEffect } from 'react'
 import Autocomplete from '@mui/material/Autocomplete'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
@@ -25,14 +25,14 @@ interface SearchV2Params {
   resultSelectedCallback: (data: TAutocompleteEntry) => void
 }
 const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
-  const { state } = React.useContext(context)
-  const [selected, setSelected] = React.useState<TAutocompleteEntry | null>(null)
-  const [query, setQuery] = React.useState('')
-  const [options, setOptions] = React.useState<readonly TAutocompleteEntry[]>([])
-
+  const { state } = useContext(context)
+  const [selected, setSelected] = useState<TAutocompleteEntry | null>(null)
+  const [query, setQuery] = useState('')
+  const [options, setOptions] = useState<readonly TAutocompleteEntry[]>([])
+  const [isLoading, setIsLoading] = useState(false)
   const [autocomplete] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
 
-  const fetch = React.useMemo(
+  const fetch = useMemo(
     () =>
       debounce(
         (
@@ -54,7 +54,9 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
     [autocomplete, state.user]
   )
 
-  React.useEffect(() => {
+  useEffect(() => {
+    setIsLoading(true)
+
     let active = true
 
     if (query === '') {
@@ -76,6 +78,7 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
 
         setOptions(newOptions)
       }
+      setIsLoading(false)
     })
 
     return () => {
@@ -90,6 +93,8 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
       options={options}
       autoComplete
       value={selected}
+      loading={isLoading}
+      loadingText="Enter a query to get started"
       noOptionsText="No Results"
       onChange={(event: any, newValue: TAutocompleteEntry | null) => {
         setOptions(newValue ? [newValue, ...options] : options)
