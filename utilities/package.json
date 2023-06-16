@@ -1,6 +1,6 @@
 {
-  "name": "playlist-generaetor-utilities",
-  "version": "1.0.5",
+  "name": "playlist-generator-utilities",
+  "version": "1.0.1",
   "main": "src/index.ts",
   "license": "MIT",
   "devDependencies": {
