@@ -67,7 +67,7 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
 
   const resetState = useCallback(() => {
     setSelectedArtists([])
-    setPlaylistEntries([])
+    setPlaylistEntries(null)
   }, [])
 
   const resetStateCallback = useCallback(() => {

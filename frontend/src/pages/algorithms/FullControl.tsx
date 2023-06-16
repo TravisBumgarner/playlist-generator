@@ -185,7 +185,7 @@ const FullControl = ({ title, description }: FullControlParams) => {
 
   const resetState = useCallback(() => {
     setSelectedArtist(null)
-    setPlaylistEntries([])
+    setPlaylistEntries(null)
   }, [])
 
   const resetStateCallback = useCallback(() => {

@@ -38,7 +38,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
   const resetState = useCallback(() => {
     setSelectedArtistStart(null)
     setSelectedArtistEnd(null)
-    setPlaylistEntries([])
+    setPlaylistEntries(null)
   }, [])
 
   const resetStateCallback = useCallback(() => {
