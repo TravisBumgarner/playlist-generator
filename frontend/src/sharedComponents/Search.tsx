@@ -85,7 +85,6 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
       active = false
     }
   }, [selected, query, fetch])
-
   return (
     <Autocomplete
       fullWidth
@@ -93,6 +92,8 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
       options={options}
       value={selected}
       loading={isLoading}
+      clearOnBlur
+      clearOnEscape
       loadingText="Enter a query to get started"
       noOptionsText="No Results"
       onChange={(event: any, newValue: TAutocompleteEntry | null) => {

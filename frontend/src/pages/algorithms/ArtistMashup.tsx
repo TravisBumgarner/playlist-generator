@@ -1,6 +1,7 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Avatar, Button, Container, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
+import { Avatar, Button, Container, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
+import CloseIcon from '@mui/icons-material/Close'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TArtistMashup, type TAutocompleteEntry, type TPlaylistEntry } from 'utilties'
@@ -26,22 +27,29 @@ query createArtistMashupPlaylist($artistIds: [String]!, $market: String!) {
   }
 `
 
-const ArtistsList = ({ selectedArtists }: { selectedArtists: TAutocompleteEntry[] }) => {
-  const ListItems = selectedArtists.map(({ name, image, id }) => {
-    return (
-      <ListItem key={id}>
-        <ListItemAvatar>
-          <Avatar variant="square" alt={name} src={image} />
-        </ListItemAvatar>
-        <ListItemText primary={name} />
-      </ListItem >
-    )
-  })
+interface ArtistListItemProps {
+  selectedArtist: TAutocompleteEntry
+  removeArtist: (artistId: string) => void
+}
+
+const ArtistsListItem = ({ selectedArtist: { name, image, id }, removeArtist }: ArtistListItemProps) => {
+  const handleClick = useCallback(() => {
+    removeArtist(id)
+  }, [id, removeArtist])
 
   return (
-    <List>
-      {ListItems}
-    </List>
+    <ListItem
+      key={id}
+      secondaryAction={
+        <IconButton onClick={handleClick} aria-label="close">
+          <CloseIcon />
+        </IconButton>
+      }>
+      <ListItemAvatar>
+        <Avatar variant="square" alt={name} src={image} />
+      </ListItemAvatar>
+      <ListItemText primary={name} />
+    </ListItem >
   )
 }
 
@@ -52,6 +60,10 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
   const [createArtistMashup] = useLazyQuery<{ createArtistMashupPlaylist: TArtistMashup['Response'] }, TArtistMashup['Request']>(CREATE_FROM_ARTIST_MASHUP_PLAYLIST, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  const removeArtist = useCallback((artistId: string) => {
+    setSelectedArtists(prev => prev.filter(({ id }) => id !== artistId))
+  }, [])
 
   const resetState = useCallback(() => {
     setSelectedArtists([])
@@ -84,11 +96,15 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
   }, [selectedArtists, createArtistMashup, dispatch, state.user])
 
   const content = useMemo(() => {
+    const ListItems = selectedArtists.map((artist) => <ArtistsListItem key={artist.id} selectedArtist={artist} removeArtist={removeArtist} />)
+
     if (selectedArtists === null || playlistEntries === null) {
       return (
         <>
-          <ArtistsList selectedArtists={selectedArtists} />
           <Search label={'Add Artist'} resultSelectedCallback={addAnotherArtist} />
+          <List>
+            {ListItems}
+          </List>
           <Button disabled={selectedArtists === null} onClick={handleSubmit}>Submit</Button>
         </>
       )
@@ -113,7 +129,7 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
     return (
       <Playlist onCreateCallback={onCreateCallback} initialTitle={`Artist Mashup with ${selectedArtists.map(({ name }) => name).join(', ')}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, addAnotherArtist, selectedArtists, onCreateCallback, isLoading])
+  }, [playlistEntries, handleSubmit, addAnotherArtist, selectedArtists, onCreateCallback, isLoading, removeArtist])
 
   return (
     <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
