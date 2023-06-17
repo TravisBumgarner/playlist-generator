@@ -8,6 +8,7 @@ import LoginIcon from '@mui/icons-material/Login'
 import { Avatar, Link } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 
+import { logout } from 'utilities'
 import { context } from 'context'
 import { Loading } from 'sharedComponents'
 
@@ -18,8 +19,8 @@ const Header = () => {
     dispatch({ type: 'OPEN_MODAL', data: 'login' })
   }, [dispatch])
 
-  const logout = useCallback(() => {
-    dispatch({ type: 'LOGOUT' })
+  const handleLogout = useCallback(() => {
+    logout(dispatch)
   }, [dispatch])
 
   const Login = useMemo(() => {
@@ -57,13 +58,13 @@ const Header = () => {
 
         aria-label="menu"
         sx={{ mr: 2 }}
-        onClick={logout}
+        onClick={handleLogout}
       >
         <LogoutIcon />
       </IconButton>
     </div>
     )
-  }, [state.user, logout])
+  }, [state.user, handleLogout])
 
   return (
     <AppBar position="static">
@@ -80,7 +81,7 @@ const Header = () => {
         </IconButton>
         <Typography variant="h6" component="h1" sx={{ flexGrow: 1 }}>
           <Link css={{ color: 'white' }} href="/">
-            Playlist Generator
+            Manifest Playlists
           </Link>
         </Typography>
         {state.user ? AuthedUser : Login}

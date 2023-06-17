@@ -27,7 +27,7 @@ const Algorithms = () => {
 const Home = () => {
   return (
     <Container css={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center', height: '60vh' }}>
-      <Typography variant="h2" gutterBottom>Playlist Generators!</Typography>
+      <Typography variant="h2" gutterBottom>Manifest Playlists!</Typography>
       <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
         <Algorithms />
       </Box>

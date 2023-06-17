@@ -14,6 +14,7 @@ import AddCommentIcon from '@mui/icons-material/AddComment'
 import { context } from 'context'
 import { ALGORITHM_ROUTES } from '../algorithms'
 import { Login, Logout } from '@mui/icons-material'
+import { logout } from 'utilities'
 
 const Navigation = () => {
   const { state, dispatch } = useContext(context)
@@ -35,18 +36,18 @@ const Navigation = () => {
     })
   }, [state.user])
 
-  const login = useCallback(() => {
+  const handleLogin = useCallback(() => {
     dispatch({ type: 'OPEN_MODAL', data: 'login' })
   }, [dispatch])
 
-  const logout = useCallback(() => {
-    dispatch({ type: 'LOGOUT' })
+  const handleLogout = useCallback(() => {
+    logout(dispatch)
   }, [dispatch])
 
   const LoginOrLogout = useMemo(() => {
     return (
       <ListItem disablePadding>
-        <ListItemButton onClick={state.user ? logout : login}>
+        <ListItemButton onClick={state.user ? handleLogout : handleLogin}>
           <ListItemIcon>
             {state.user ? <Logout /> : <Login />}
           </ListItemIcon>
@@ -54,7 +55,7 @@ const Navigation = () => {
         </ListItemButton>
       </ListItem>
     )
-  }, [state.user, login, logout])
+  }, [state.user, handleLogin, handleLogout])
 
   const toggleDrawer =
     () => (event: React.KeyboardEvent | React.MouseEvent) => {

@@ -72,7 +72,7 @@ module.exports = {
       template: './src/static/index.template.ejs',
       favicon: './src/static/favicon.png',
       inject: 'body',
-      title: 'Playlist Generator'
+      title: 'Manifest Playlists'
     })
   ],
   devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
