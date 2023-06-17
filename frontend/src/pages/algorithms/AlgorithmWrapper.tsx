@@ -10,9 +10,8 @@ interface AlgorithmWrapperProps {
   title: string
   description: string
   children: any
-  searchParams?: JSX.Element
-  searchDisabled?: boolean
-  isSearching?: boolean
+  searchParams: JSX.Element
+  searchDisabled: boolean
   apiCall: () => Promise<TPlaylistEntry[] | undefined>
   resetStateCallback: () => void
 }
@@ -20,7 +19,6 @@ interface AlgorithmWrapperProps {
 enum EStep {
   Inputting = 'Inputting',
   Searching = 'Searching',
-  NoResults = 'NoResults',
   PreviewingPlaylist = 'PreviewingPlaylist',
 }
 
@@ -30,6 +28,7 @@ const AlgorithmWrapper = ({ title, description, children, searchParams, searchDi
   const { state, dispatch } = useContext(context)
 
   const resetState = useCallback(() => {
+    setStep(EStep.Inputting)
     setPlaylistEntries([])
     resetStateCallback()
   }, [resetStateCallback])
@@ -43,30 +42,36 @@ const AlgorithmWrapper = ({ title, description, children, searchParams, searchDi
     }
 
     const results = await apiCall()
-
-    setStep(results ? EStep.PreviewingPlaylist : EStep.NoResults)
+    setPlaylistEntries(results ?? [])
+    setStep(EStep.PreviewingPlaylist)
   }, [dispatch, state.user, apiCall])
 
   const Content = useMemo(() => {
     switch (step) {
       case EStep.Inputting:
-        return searchParams
-      case EStep.NoResults:
-        return <Typography>No results found</Typography>
+        return (
+          <>
+            {searchParams}
+            <Button fullWidth variant='contained' disabled={searchDisabled} onClick={handleSearch}>Search</Button>
+          </>
+
+        )
       case EStep.PreviewingPlaylist:
+        if (playlistEntries.length === 0) {
+          return <Typography variant="body1" gutterBottom>No results found</Typography>
+        }
+
         return <Playlist resetStateCallback={resetState} initialTitle={'BRB'} playlistEntries={playlistEntries} />
       case EStep.Searching:
         return <Loading />
     }
-  }, [step, searchParams, playlistEntries, resetState])
+  }, [step, searchParams, playlistEntries, resetState, handleSearch, searchDisabled])
 
   return (
     <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
       <Container>
-        {searchParams}
-        <Button fullWidth variant='contained' disabled={searchDisabled} onClick={handleSearch}>Search</Button>
         {Content}
       </Container>
     </Container >
