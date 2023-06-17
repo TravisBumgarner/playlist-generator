@@ -15,7 +15,7 @@ export const theme = createTheme({
       default: '#d4eaff'
     },
     text: {
-      primary: '##363636'
+      primary: '#363636'
     }
   },
   typography: {
@@ -42,5 +42,8 @@ export const pageWrapperCSS = css`
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-top: 10vh;
+  margin-top: 50px;
+  box-sizing: border-box;
+  max-height: 90vh;
+  overflow-y: scroll;
 `
