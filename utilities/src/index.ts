@@ -47,7 +47,7 @@ export type TFromArtistToArtist = {
         artistIdStart: string,
         artistIdEnd: string,
         market: string
-    },
+    } & TSharedRequestParams,
     Response: TPlaylistEntry[]
 }
 
@@ -72,40 +72,35 @@ export type TFilter = {
     start: EFilterValue
     end: EFilterValue
 }
+export type TSharedRequestParams = {
+    trackCount: number;
+    market: string;
+}
 
 export type TFullControl = {
     Request: {
-        artistId: string,
-        market: string,
-        filters: string,
-    },
-    Response: TPlaylistEntry[]
-}
-
+        artistId: string;
+        market: string;
+        filters: string;
+    } & TSharedRequestParams;
+    Response: TPlaylistEntry[];
+};
 
 export type TGoodBeatsToGoodSleeps = {
     Request: {
-        artistId: string,
-        market: string
-    },
-    Response: TPlaylistEntry[]
-}
+        artistId: string;
+        market: string;
+    } & TSharedRequestParams;
+    Response: TPlaylistEntry[];
+};
 
 export type TArtistMashup = {
     Request: {
-        artistIds: string[],
-        market: string
-    },
-    Response: TPlaylistEntry[]
-}
-
-export type TProgressivelyEnergetic = {
-    Request: {
-        artistId: string,
-        market: string
-    },
-    Response: TPlaylistEntry[]
-}
+        artistIds: string[];
+        market: string;
+    } & TSharedRequestParams;
+    Response: TPlaylistEntry[];
+};
 
 export type TCreatePlaylist = {
     Request: {

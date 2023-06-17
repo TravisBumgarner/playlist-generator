@@ -1,34 +1,13 @@
-import { gql, useLazyQuery } from '@apollo/client'
-import { useCallback, useContext, useState } from 'react'
+import { useLazyQuery } from '@apollo/client'
+import { useCallback, useState } from 'react'
 
 import { Search } from 'sharedComponents'
-import { type TGoodBeatsToGoodSleeps, type TAutocompleteEntry } from 'playlist-generator-utilities'
-import { context } from 'context'
+import { type TGoodBeatsToGoodSleeps, type TAutocompleteEntry, type TSharedRequestParams } from 'playlist-generator-utilities'
 import AlgorithmWrapper from './AlgorithmWrapper'
-
-const CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY = gql`
-query createGoodBeatsToGoodSleepsPlaylist($artistId: String!, $market: String!) {
-  createGoodBeatsToGoodSleepsPlaylist(market: $market, artistId: $artistId) {
-        name
-        id
-        album {
-          href
-          name
-        }
-        artists {
-          href
-          name
-        }
-        uri
-        image
-        href
-    }
-  }
-`
+import { CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY } from './queries'
 
 interface GoodBeatsToGoodSleepsProps { title: string, description: string }
 const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps) => {
-  const { state } = useContext(context)
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
   const [createGoodBeatsToGoodSleepsPlaylist] = useLazyQuery<{ createGoodBeatsToGoodSleepsPlaylist: TGoodBeatsToGoodSleeps['Response'] }, TGoodBeatsToGoodSleeps['Request']>(CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY, { fetchPolicy: 'network-only' })
 
@@ -40,10 +19,10 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
     setSelectedArtist(value)
   }, [])
 
-  const apiCall = useCallback(async () => {
-    const result = await createGoodBeatsToGoodSleepsPlaylist({ variables: { artistId: selectedArtist!.id, market: state.user!.market } })
+  const apiCall = useCallback(async (shared: TSharedRequestParams) => {
+    const result = await createGoodBeatsToGoodSleepsPlaylist({ variables: { artistId: selectedArtist!.id, ...shared } })
     return result.data?.createGoodBeatsToGoodSleepsPlaylist
-  }, [selectedArtist, createGoodBeatsToGoodSleepsPlaylist, state.user])
+  }, [selectedArtist, createGoodBeatsToGoodSleepsPlaylist])
 
   return (
     <AlgorithmWrapper

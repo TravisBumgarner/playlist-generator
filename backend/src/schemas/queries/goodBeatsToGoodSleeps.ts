@@ -1,4 +1,4 @@
-import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLList, GraphQLNonNull, GraphQLInt, GraphQLString } from 'graphql'
 
 import { getRecommendationsForPlaylist } from '../../spotify'
 import { PlaylistType } from '../types'
@@ -10,11 +10,15 @@ export const createGoodBeatsToGoodSleepsPlaylist = {
   args: {
     artistId: { type: new GraphQLNonNull(GraphQLString) },
     market: { type: new GraphQLNonNull(GraphQLString) },
+    trackCount: { type: new GraphQLNonNull(GraphQLInt) },
   },
-  resolve: async (_: any, { artistId, market }: TGoodBeatsToGoodSleeps['Request']): Promise<TGoodBeatsToGoodSleeps['Response']> => {
-    const promises = await Promise.all([{ max: 0.7, min: 0.5 }, { max: 0.5, min: 0.3 }, { max: 0.3, min: 0 }].map(async ({ min, max }) => {
+  resolve: async (_: any, { artistId, market, trackCount }: TGoodBeatsToGoodSleeps['Request']): Promise<TGoodBeatsToGoodSleeps['Response']> => {
+    console.log("RUDA", trackCount, market)
+    const intervals = [{ max: 0.7, min: 0.5 }, { max: 0.5, min: 0.3 }, { max: 0.3, min: 0 }]
+    const limit = Math.ceil(trackCount / intervals.length)
+    const promises = await Promise.all(intervals.map(async ({ min, max }) => {
       // 3 different energies, 4 tracks each, at 3 min each -> ~30 minutes of music before white noise
-      const options = { seed_artists: artistId, market, limit: 10, min_energy: min, max_energy: max }
+      const options = { seed_artists: artistId, market, limit, min_energy: min, max_energy: max }
       const recs = await getRecommendationsForPlaylist(options)
       return recs
     }))

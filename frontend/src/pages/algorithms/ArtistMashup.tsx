@@ -1,32 +1,12 @@
-import { gql, useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { Search } from 'sharedComponents'
-import { type TArtistMashup, type TAutocompleteEntry } from 'playlist-generator-utilities'
-import { context } from 'context'
+import { type TArtistMashup, type TAutocompleteEntry, type TSharedRequestParams } from 'playlist-generator-utilities'
 import AlgorithmWrapper from './AlgorithmWrapper'
-
-const CREATE_FROM_ARTIST_MASHUP_PLAYLIST = gql`
-query createArtistMashupPlaylist($artistIds: [String]!, $market: String!) {
-  createArtistMashupPlaylist(artistIds: $artistIds, market: $market) {
-        name
-        id
-        album {
-          href
-          name
-        }
-        artists {
-          href
-          name
-        }
-        uri
-        image
-        href
-    }
-  }
-`
+import { CREATE_ARTIST_MASHUP_PLAYLIST } from './queries'
 
 interface ArtistListItemProps {
   selectedArtist: TAutocompleteEntry
@@ -56,9 +36,8 @@ const ArtistsListItem = ({ selectedArtist: { name, image, id }, removeArtist }: 
 
 interface ArtistMashupProps { title: string, description: string }
 const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
-  const { state } = useContext(context)
   const [selectedArtists, setSelectedArtists] = useState<TAutocompleteEntry[]>([])
-  const [createArtistMashup] = useLazyQuery<{ createArtistMashupPlaylist: TArtistMashup['Response'] }, TArtistMashup['Request']>(CREATE_FROM_ARTIST_MASHUP_PLAYLIST, { fetchPolicy: 'network-only' })
+  const [createArtistMashup] = useLazyQuery<{ createArtistMashupPlaylist: TArtistMashup['Response'] }, TArtistMashup['Request']>(CREATE_ARTIST_MASHUP_PLAYLIST, { fetchPolicy: 'network-only' })
 
   const removeArtist = useCallback((artistId: string) => {
     setSelectedArtists(prev => prev.filter(({ id }) => id !== artistId))
@@ -72,10 +51,10 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
     setSelectedArtists(prev => ([...prev, value]))
   }, [])
 
-  const apiCall = useCallback(async () => {
-    const result = await createArtistMashup({ variables: { artistIds: selectedArtists.map(({ id }) => id), market: state.user!.market } })
+  const apiCall = useCallback(async (shared: TSharedRequestParams) => {
+    const result = await createArtistMashup({ variables: { artistIds: selectedArtists.map(({ id }) => id), ...shared } })
     return result.data?.createArtistMashupPlaylist
-  }, [selectedArtists, createArtistMashup, state.user])
+  }, [selectedArtists, createArtistMashup])
 
   const ListItems = useMemo(() => {
     return selectedArtists.map((artist) => <ArtistsListItem key={artist.id} selectedArtist={artist} removeArtist={removeArtist} />)

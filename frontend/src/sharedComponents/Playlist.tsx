@@ -99,7 +99,7 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
       }}
       css={{ marginBottom: '1rem' }}
     />
-    <Typography variant="h6" component="div" gutterBottom>Preview Playlist</Typography>
+    <Typography variant="h6" component="div" gutterBottom>Preview Playlist ({playlistEntries.length} Tracks)</Typography>
     <Card component="ul" sx={{ overflowY: 'scroll', maxHeight: '30vh', margin: '0.5rem 0', border: '1px solid #363636', borderRadius: '0.4rem' }}>
       {Playlist}
     </Card>

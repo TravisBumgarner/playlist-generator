@@ -1,4 +1,4 @@
-import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql'
 
 import { GetRecommendationsForPlaylistOptions, getRecommendationsForPlaylist } from '../../spotify'
 import { PlaylistType } from '../types'
@@ -32,14 +32,17 @@ export const createFullControlPlaylist = {
     artistId: { type: new GraphQLNonNull(GraphQLString) },
     market: { type: new GraphQLNonNull(GraphQLString) },
     filters: { type: new GraphQLNonNull(GraphQLString) },
+    trackCount: { type: new GraphQLNonNull(GraphQLInt) },
   },
-  resolve: async (_: any, { artistId, market, filters: filtersString }: TFullControl['Request']): Promise<TFullControl['Response']> => {
+  resolve: async (_: any, { artistId, market, filters: filtersString, trackCount }: TFullControl['Request']): Promise<TFullControl['Response']> => {
     const optionsToPromise: GetRecommendationsForPlaylistOptions[] = []
+    const limit = Math.ceil(trackCount / MAGIC_NUMBER)
+
     for (let i = 0; i < MAGIC_NUMBER; i++) {
       const options: GetRecommendationsForPlaylistOptions = {
         seed_artists: artistId,
         market,
-        limit: 10,
+        limit,
       }
 
       const filters = parseFilters(filtersString) // I cannot figure out filters and nested types in Apollo. So lazy JSON it is.

@@ -1,11 +1,11 @@
-import { gql, useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import { Button, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { Search } from 'sharedComponents'
-import { type TFullControl, type TAutocompleteEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters } from 'playlist-generator-utilities'
-import { context } from 'context'
+import { type TFullControl, type TAutocompleteEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters, type TSharedRequestParams } from 'playlist-generator-utilities'
 import AlgorithmWrapper from './AlgorithmWrapper'
+import { CREATE_FULL_CONTROL_PLAYLIST } from './queries'
 
 interface FilterOptionInfo {
   title: string
@@ -147,37 +147,8 @@ const FullControlFilters = ({ filtersSelectedCallback }: FullControlFiltersProps
   )
 }
 
-const CREATE_FULL_CONTROL_PLAYLIST = gql`
-  query createFullControlPlaylist(
-    $artistId: String!
-    $market: String!
-    $filters: String!
-  ) {
-    createFullControlPlaylist(
-      artistId: $artistId
-      market: $market
-      filters: $filters
-    ) {
-      name
-      id
-      album {
-        href
-        name
-      }
-      artists {
-        href
-        name
-      }
-      uri
-      image
-      href
-    }
-  }
-`
-
 interface FullControlParams { title: string, description: string }
 const FullControl = ({ title, description }: FullControlParams) => {
-  const { state } = useContext(context)
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<TFilter[]>([])
   const [createFullControl] = useLazyQuery<{ createFullControlPlaylist: TFullControl['Response'] }, TFullControl['Request']>(CREATE_FULL_CONTROL_PLAYLIST, { fetchPolicy: 'network-only' })
@@ -194,10 +165,11 @@ const FullControl = ({ title, description }: FullControlParams) => {
     setSelectedFilters(filters)
   }, [])
 
-  const apiCall = useCallback(async () => {
-    const result = await createFullControl({ variables: { artistId: selectedArtist!.id, market: state.user!.market, filters: stringifyFilters(selectedFilters) } })
+  const apiCall = useCallback(async (shared: TSharedRequestParams) => {
+    console.log(shared)
+    const result = await createFullControl({ variables: { artistId: selectedArtist!.id, filters: stringifyFilters(selectedFilters), ...shared } })
     return result.data?.createFullControlPlaylist
-  }, [selectedArtist, createFullControl, state.user, selectedFilters])
+  }, [selectedArtist, createFullControl, selectedFilters])
 
   return (
     <AlgorithmWrapper

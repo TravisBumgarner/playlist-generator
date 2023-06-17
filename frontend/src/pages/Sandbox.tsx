@@ -1,2 +1,5 @@
-const Sandbox = () => { return <div></div> }
+const Sandbox = () => {
+  return <p>hi</p>
+}
+
 export default Sandbox

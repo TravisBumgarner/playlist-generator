@@ -1,10 +1,11 @@
 import { Button, Container, Typography } from '@mui/material'
-import { Loading, Playlist } from 'sharedComponents'
+import { Loading, Playlist, TrackCount } from 'sharedComponents'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { pageWrapperCSS } from 'theme'
-import { type TPlaylistEntry } from 'playlist-generator-utilities'
+import { type TPlaylistEntry, type TSharedRequestParams } from 'playlist-generator-utilities'
 import { context } from 'context'
+import { MIN_TRACK_COUNT } from '../../sharedComponents/TrackCount'
 
 interface AlgorithmWrapperProps {
   title: string
@@ -12,7 +13,7 @@ interface AlgorithmWrapperProps {
   children: any
   searchParams: JSX.Element
   searchDisabled: boolean
-  apiCall: () => Promise<TPlaylistEntry[] | undefined>
+  apiCall: (args: TSharedRequestParams) => Promise<TPlaylistEntry[] | undefined>
   resetStateCallback: () => void
   initialPlaylistTitle: string
 }
@@ -26,7 +27,12 @@ enum EStep {
 const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, apiCall, resetStateCallback, initialPlaylistTitle }: AlgorithmWrapperProps) => {
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const [step, setStep] = useState<EStep>(EStep.Inputting)
+  const [trackCount, setTrackCount] = useState<number>(MIN_TRACK_COUNT)
   const { state, dispatch } = useContext(context)
+
+  const trackCountCallback = useCallback((trackCount: number) => {
+    setTrackCount(trackCount)
+  }, [])
 
   const resetState = useCallback(() => {
     setStep(EStep.Inputting)
@@ -42,17 +48,19 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
       return
     }
 
-    const results = await apiCall()
+    const results = await apiCall({ trackCount, market: state.user.market })
     setPlaylistEntries(results ?? [])
     setStep(EStep.PreviewingPlaylist)
-  }, [dispatch, state.user, apiCall])
-
+  }, [dispatch, state.user, apiCall, trackCount])
+  console.log(trackCount)
   const Content = useMemo(() => {
     switch (step) {
       case EStep.Inputting:
         return (
           <>
             {searchParams}
+            {/* Search Params shared by all algorithms go below */}
+            <TrackCount trackCountCallback={trackCountCallback} />
             <Button fullWidth variant='contained' disabled={searchDisabled} onClick={handleSearch}>Search</Button>
           </>
 
@@ -66,7 +74,7 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
       case EStep.Searching:
         return <Loading />
     }
-  }, [step, searchParams, playlistEntries, resetState, handleSearch, searchDisabled])
+  }, [step, searchParams, playlistEntries, resetState, handleSearch, searchDisabled, initialPlaylistTitle, trackCountCallback])
 
   return (
     <Container css={pageWrapperCSS}>
