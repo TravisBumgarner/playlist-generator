@@ -55,6 +55,7 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
       searchDisabled={selectedArtist === null}
       apiCall={apiCall}
       resetStateCallback={resetState}
+      initialPlaylistTitle={`Good Beats to Good Sleeps with ${selectedArtist?.name}`}
     >
     </AlgorithmWrapper >
   )

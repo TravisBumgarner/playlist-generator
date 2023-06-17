@@ -66,6 +66,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
       searchDisabled={selectedArtistStart === null || selectedArtistEnd === null}
       apiCall={apiCall}
       resetStateCallback={resetState}
+      initialPlaylistTitle={`From ${selectedArtistStart?.name} to ${selectedArtistEnd?.name}`}
     >
     </AlgorithmWrapper >
   )

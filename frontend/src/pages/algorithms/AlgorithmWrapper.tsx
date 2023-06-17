@@ -14,6 +14,7 @@ interface AlgorithmWrapperProps {
   searchDisabled: boolean
   apiCall: () => Promise<TPlaylistEntry[] | undefined>
   resetStateCallback: () => void
+  initialPlaylistTitle: string
 }
 
 enum EStep {
@@ -22,7 +23,7 @@ enum EStep {
   PreviewingPlaylist = 'PreviewingPlaylist',
 }
 
-const AlgorithmWrapper = ({ title, description, children, searchParams, searchDisabled, apiCall, resetStateCallback }: AlgorithmWrapperProps) => {
+const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, apiCall, resetStateCallback, initialPlaylistTitle }: AlgorithmWrapperProps) => {
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const [step, setStep] = useState<EStep>(EStep.Inputting)
   const { state, dispatch } = useContext(context)
@@ -61,7 +62,7 @@ const AlgorithmWrapper = ({ title, description, children, searchParams, searchDi
           return <Typography variant="body1" gutterBottom>No results found</Typography>
         }
 
-        return <Playlist resetStateCallback={resetState} initialTitle={'BRB'} playlistEntries={playlistEntries} />
+        return <Playlist resetStateCallback={resetState} initialTitle={initialPlaylistTitle} playlistEntries={playlistEntries} />
       case EStep.Searching:
         return <Loading />
     }

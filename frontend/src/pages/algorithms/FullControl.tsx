@@ -212,6 +212,7 @@ const FullControl = ({ title, description }: FullControlParams) => {
       searchDisabled={selectedArtist === null || selectedFilters.length === 0}
       apiCall={apiCall}
       resetStateCallback={resetState}
+      initialPlaylistTitle={`Full Control with ${selectedArtist?.name}`}
     >
     </AlgorithmWrapper >
   )

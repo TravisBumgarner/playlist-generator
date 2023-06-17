@@ -96,6 +96,7 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
       searchDisabled={selectedArtists.length < 2}
       apiCall={apiCall}
       resetStateCallback={resetState}
+      initialPlaylistTitle={`Artist Mashup with ${selectedArtists.map(({ name }) => name).join(', ')}`}
     >
     </AlgorithmWrapper >
   )
