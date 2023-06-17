@@ -5,6 +5,8 @@ import { Navigate } from 'react-router-dom'
 import { context } from 'context'
 import { Home, Error, LandingPage, NotFound, Sandbox } from '../pages'
 import { ALGORITHM_ROUTES } from '../algorithms'
+import { Loading } from 'sharedComponents'
+import { Container } from '@mui/material'
 
 interface ConditionalRouteProps {
   authedComponent: JSX.Element
@@ -24,6 +26,13 @@ const Router = () => {
 
   if (state.hasErrored) {
     return <Error />
+  }
+  if (state.isLoggingIn) {
+    return (
+      <Container sx={{ marginTop: '40vh' }}>
+        <Loading />
+      </Container>
+    )
   }
 
   return (

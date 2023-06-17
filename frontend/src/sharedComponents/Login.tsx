@@ -31,8 +31,8 @@ const LoginModal = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: Dispatc
           Login
         </Typography>
         <Button fullWidth variant='contained' onClick={handleSubmit}>Login with Spotify</Button>
-        <Typography variant="caption">
-          We do not store any of your data. Access will allow generated playlists to be saved to your account.
+        <Typography sx={{ marginTop: '1rem' }} textAlign="center" component="p" variant="caption">
+          I do not store any of your data. Access will allow generated playlists to be saved to your Spotify account.
         </Typography>
       </Box>
     </Modal>

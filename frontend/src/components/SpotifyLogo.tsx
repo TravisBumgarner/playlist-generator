@@ -3,10 +3,12 @@ import spotifyLogo from '../static/spotify.png'
 import { Box } from '@mui/system'
 import { Typography } from '@mui/material'
 
+const SHARED_HEIGHT = '18px'
+
 const SpotifyLogo = () => {
   return (
     <Box css={wrapperCSS}>
-      <Typography css={{ marginBottom: '36px' }}>Powered by:</Typography>
+      <Typography css={{ marginBottom: SHARED_HEIGHT }}>Powered by:</Typography>
       <Box component="img" src={spotifyLogo} css={imgCSS} />
     </Box >
   )
@@ -23,8 +25,8 @@ const wrapperCSS = css`
 `
 
 const imgCSS = css`
-  height: 72px;
-  margin: 36px;
+  height: calc(${SHARED_HEIGHT} * 2);
+  margin: ${SHARED_HEIGHT};
 `
 
 export default SpotifyLogo

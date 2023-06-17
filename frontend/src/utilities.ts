@@ -64,6 +64,7 @@ export const apolloClient = new ApolloClient({
 })
 
 const login = async (dispatch: (value: Action) => void) => {
+  dispatch({ type: 'LOGIN_INITIATED' })
   const response = await apolloClient.query<{ getSpotifyRedirectURI: string }>({
     query: GET_SPOTIFY_REDIRECT_URI_QUERY
   })
@@ -72,8 +73,6 @@ const login = async (dispatch: (value: Action) => void) => {
   } else {
     dispatch({ type: 'ADD_ALERT', data: { text: 'Login failed', severity: 'error' } })
   }
-
-  dispatch({ type: 'LOGOUT' })
 }
 
 export {

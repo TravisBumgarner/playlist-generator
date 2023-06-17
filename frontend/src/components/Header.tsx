@@ -10,7 +10,6 @@ import MenuIcon from '@mui/icons-material/Menu'
 
 import { logout } from 'utilities'
 import { context } from 'context'
-import { Loading } from 'sharedComponents'
 
 const Header = () => {
   const { dispatch, state } = useContext(context)
@@ -24,9 +23,8 @@ const Header = () => {
   }, [dispatch])
 
   const Login = useMemo(() => {
-    return (state.isLoggingIn
-      ? <Loading />
-      : <IconButton
+    return (
+      <IconButton
         size="large"
         edge="start"
         color="inherit"
@@ -36,7 +34,7 @@ const Header = () => {
       >
         <LoginIcon />
       </IconButton>)
-  }, [login, state.isLoggingIn])
+  }, [login])
 
   const handleMenuClick = useCallback(() => {
     dispatch({ type: 'TOGGLE_MENU' })

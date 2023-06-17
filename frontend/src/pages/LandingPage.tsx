@@ -1,4 +1,4 @@
-import { Container, List, ListItem, Typography, ListItemIcon, ListItemText } from '@mui/material'
+import { Container, List, ListItem, Typography, ListItemIcon, ListItemText, Link } from '@mui/material'
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 
 import { ALGORITHM_ROUTES } from '../algorithms'
@@ -25,9 +25,9 @@ const LandingPage = () => {
   return (
     <Container css={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center', height: '60vh' }}>
       <Typography variant="h2" gutterBottom>Welcome!</Typography>
-      <Typography variant="body1">Manifest Playlists offer a collection of playlist generators for scratching your musical itch. Browse the list of generators below.</Typography>
-      <Typography variant="body1"> Don&#39;t see the one you&#39;re looking for? Leave feedback and I will create it!</Typography>
+      <Typography variant="body1">Manifest Playlists offers a collection of playlist generators for scratching your musical itch.</Typography>
       <Algorithms />
+      <Typography variant="body1"> Don&#39;t see the one you&#39;re looking for? <Link target="_blank" href="https://forms.gle/Sx34MTubf5vb8YFL7" >Leave feedback</Link> and I will create it!</Typography>
     </Container>
   )
 }
