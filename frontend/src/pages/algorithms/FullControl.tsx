@@ -1,11 +1,11 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Button, Container, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
+import { Button, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters } from 'playlist-generator-utilities'
 import { context } from 'context'
-import { pageWrapperCSS } from 'theme'
+import AlgorithmWrapper from './AlgorithmWrapper'
 
 interface FilterOptionInfo {
   title: string
@@ -252,13 +252,9 @@ const FullControl = ({ title, description }: FullControlParams) => {
   }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, resetStateCallback, isLoading, filtersSelectedCallback, isDisabled])
 
   return (
-    <Container css={pageWrapperCSS}>
-      <Typography variant="h2" gutterBottom>{title}</Typography>
-      <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container>
-        {content}
-      </Container>
-    </Container >
+    <AlgorithmWrapper title={title} description={description}>
+      {content}
+    </AlgorithmWrapper>
   )
 }
 

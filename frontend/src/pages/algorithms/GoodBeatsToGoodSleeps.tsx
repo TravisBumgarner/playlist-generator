@@ -1,11 +1,11 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Button, Container, type SelectChangeEvent, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TGoodBeatsToGoodSleeps, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
-import { pageWrapperCSS } from 'theme'
+import AlgorithmWrapper from './AlgorithmWrapper'
 
 const CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY = gql`
 query createGoodBeatsToGoodSleepsPlaylist($artistId: String!, $market: String!) {
@@ -27,13 +27,6 @@ query createGoodBeatsToGoodSleepsPlaylist($artistId: String!, $market: String!) 
   }
 `
 
-enum EWhiteNoise {
-  White = 'White',
-  Brown = 'Brown',
-  Pink = 'Pink',
-  Blue = 'Blue',
-}
-
 interface GoodBeatsToGoodSleepsProps { title: string, description: string }
 const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps) => {
   const { state, dispatch } = useContext(context)
@@ -41,7 +34,6 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
   const [createGoodBeatsToGoodSleepsPlaylist] = useLazyQuery<{ createGoodBeatsToGoodSleepsPlaylist: TGoodBeatsToGoodSleeps['Response'] }, TGoodBeatsToGoodSleeps['Request']>(CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [whiteNoise, setWhiteNoise] = useState(EWhiteNoise.Brown)
 
   const resetState = useCallback(() => {
     setSelectedArtist(null)
@@ -54,10 +46,6 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
 
   const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
     setSelectedArtist(value)
-  }, [])
-
-  const handleChange = useCallback((event: SelectChangeEvent<EWhiteNoise>) => {
-    setWhiteNoise(event.target.value as EWhiteNoise)
   }, [])
 
   const handleSubmit = useCallback(async () => {
@@ -120,16 +108,12 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
     return (
       <Playlist resetStateCallback={resetStateCallback} initialTitle={`Good Beats to Good Sleeps ${selectedArtist.name}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, resetStateCallback, isLoading, whiteNoise, handleChange])
+  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, resetStateCallback, isLoading])
 
   return (
-    <Container css={pageWrapperCSS}>
-      <Typography variant="h2" gutterBottom>{title}</Typography>
-      <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container>
-        {content}
-      </Container>
-    </Container >
+    <AlgorithmWrapper title={title} description={description}>
+      {content}
+    </AlgorithmWrapper>
   )
 }
 

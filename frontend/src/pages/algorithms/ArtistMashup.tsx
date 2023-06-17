@@ -1,12 +1,12 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Avatar, Button, Container, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
+import { Avatar, Button, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TArtistMashup, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
-import { pageWrapperCSS } from 'theme'
+import AlgorithmWrapper from './AlgorithmWrapper'
 
 const CREATE_FROM_ARTIST_MASHUP_PLAYLIST = gql`
 query createArtistMashupPlaylist($artistIds: [String]!, $market: String!) {
@@ -133,13 +133,9 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
   }, [playlistEntries, handleSubmit, addAnotherArtist, selectedArtists, resetStateCallback, isLoading, removeArtist])
 
   return (
-    <Container css={pageWrapperCSS}>
-      <Typography variant="h2" gutterBottom>{title}</Typography>
-      <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container>
-        {content}
-      </Container>
-    </Container >
+    <AlgorithmWrapper title={title} description={description}>
+      {content}
+    </AlgorithmWrapper>
   )
 }
 

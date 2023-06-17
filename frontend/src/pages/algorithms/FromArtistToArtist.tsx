@@ -1,11 +1,11 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Button, Container, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TFromArtistToArtist, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
-import { pageWrapperCSS } from 'theme'
+import AlgorithmWrapper from './AlgorithmWrapper'
 
 const CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST = gql`
 query createFromArtistToArtistPlaylist($artistIdStart: String!, $artistIdEnd: String!, $market: String!) {
@@ -104,13 +104,9 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
   }, [playlistEntries, handleSubmit, resultSelectedCallbackStart, resultSelectedCallbackEnd, selectedArtistStart, selectedArtistEnd, resetStateCallback, isLoading])
 
   return (
-    <Container css={pageWrapperCSS}>
-      <Typography variant="h2" gutterBottom>{title}</Typography>
-      <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container>
-        {content}
-      </Container>
-    </Container >
+    <AlgorithmWrapper title={title} description={description}>
+      {content}
+    </AlgorithmWrapper>
   )
 }
 
