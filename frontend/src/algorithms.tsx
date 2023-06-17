@@ -44,7 +44,7 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
     title: 'Good Beats to Good Sleeps',
     href: '/a/good_beats_to_good_sleeps',
     description:
-      'Pick an arist. Generate a playlist that starts with tracks related to the artist and ends with enough white noise to last you through the night.',
+      'Pick an artist. Generate a playlist that starts with tracks related to the artist and ends with enough white noise to last you through the night.',
     component: (title, description) => (
       <GoodBeatsToGoodSleeps title={title} description={description} />
     )

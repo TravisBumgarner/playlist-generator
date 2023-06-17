@@ -178,7 +178,7 @@ const CREATE_FULL_CONTROL_PLAYLIST = gql`
 interface FullControlParams { title: string, description: string }
 const FullControl = ({ title, description }: FullControlParams) => {
   const { state, dispatch } = useContext(context)
-  const [selectedArist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
+  const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<TFilter[]>([])
   const [createFullControl] = useLazyQuery<{ createFullControlPlaylist: TFullControl['Response'] }, TFullControl['Request']>(CREATE_FULL_CONTROL_PLAYLIST, { fetchPolicy: 'network-only' })
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
@@ -203,24 +203,24 @@ const FullControl = ({ title, description }: FullControlParams) => {
 
   const handleSubmit = useCallback(async () => {
     setIsLoading(true)
-    if (!selectedArist) return
+    if (!selectedArtist) return
 
     if (!state.user) {
       dispatch({ type: 'ADD_ALERT', data: { text: 'User is not logged in', severity: 'error' } })
       return
     }
 
-    const result = await createFullControl({ variables: { artistId: selectedArist.id, market: state.user.market, filters: stringifyFilters(selectedFilters) } })
+    const result = await createFullControl({ variables: { artistId: selectedArtist.id, market: state.user.market, filters: stringifyFilters(selectedFilters) } })
     if ((result.data?.createFullControlPlaylist) != null) {
       setPlaylistEntries(result.data?.createFullControlPlaylist)
     }
 
     setIsLoading(false)
-  }, [selectedArist, createFullControl, dispatch, state.user, selectedFilters])
+  }, [selectedArtist, createFullControl, dispatch, state.user, selectedFilters])
 
-  const isDisabled = useMemo(() => selectedArist === null || selectedFilters.length === 0, [selectedArist, selectedFilters])
+  const isDisabled = useMemo(() => selectedArtist === null || selectedFilters.length === 0, [selectedArtist, selectedFilters])
   const content = useMemo(() => {
-    if (selectedArist === null || playlistEntries === null) {
+    if (selectedArtist === null || playlistEntries === null) {
       return (
         <>
           <Search label={'Select an Artist'} resultSelectedCallback={resultSelectedCallback} />
@@ -247,9 +247,9 @@ const FullControl = ({ title, description }: FullControlParams) => {
     }
 
     return (
-      <Playlist resetStateCallback={resetStateCallback} initialTitle={`Full Control with ${selectedArist.name}`} playlistEntries={playlistEntries} />
+      <Playlist resetStateCallback={resetStateCallback} initialTitle={`Full Control with ${selectedArtist.name}`} playlistEntries={playlistEntries} />
     )
-  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArist, resetStateCallback, isLoading, filtersSelectedCallback, isDisabled])
+  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, resetStateCallback, isLoading, filtersSelectedCallback, isDisabled])
 
   return (
     <Container css={pageWrapperCSS}>

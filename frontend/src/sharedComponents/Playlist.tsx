@@ -1,4 +1,4 @@
-import { Box, Link, css, Button, Typography } from '@mui/material'
+import { Box, Link, css, Button, Typography, Card } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -15,7 +15,6 @@ import { Loading } from 'sharedComponents'
 
 const playlistLinkCSS = css`
   text-decoration: none;
-  color: black;
   margin-right: 0.25rem;
   
   &:hover {
@@ -41,7 +40,6 @@ const PlaylistItem = (data: TPlaylistEntry) => {
           <Avatar variant="square" alt={data.name} src={data.image} />
         </Link>
       </ListItemAvatar>
-
       <ListItemText primary={<Link css={playlistLinkCSS} target="_blank" href={data.href}>{data.name}</Link>} secondary={Artists} />
     </ListItem >
   )
@@ -102,9 +100,9 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
       css={{ marginBottom: '1rem' }}
     />
     <Typography variant="h6" component="div" gutterBottom>Preview Playlist</Typography>
-    <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '30vh', margin: '0.5rem 0', border: '1px solid #363636', borderRadius: '0.4rem' }}>
+    <Card component="ul" sx={{ overflowY: 'scroll', maxHeight: '30vh', margin: '0.5rem 0', border: '1px solid #363636', borderRadius: '0.4rem' }}>
       {Playlist}
-    </Box>
+    </Card>
     <Button
       fullWidth
       variant='contained' disabled={isSavingPlaylist} onClick={handleSavePlaylistSubmit}>Save it to your Spotify
@@ -113,7 +111,7 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
       fullWidth
       variant='text' onClick={resetStateCallback}>Start Over
     </Button>
-  </Box>
+  </Box >
   )
 }
 

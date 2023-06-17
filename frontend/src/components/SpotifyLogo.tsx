@@ -1,5 +1,5 @@
 import { css } from '@emotion/react'
-import spotifyLogo from '../static/spotify.png'
+import spotifyLogo from '../static/spotify_dark.png'
 import { Box } from '@mui/system'
 import { Typography } from '@mui/material'
 

@@ -3,7 +3,10 @@ import {
   Modal,
   Typography,
   Box,
-  Button
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent
 } from '@mui/material'
 import { login } from 'utilities'
 import { context } from 'context'
@@ -20,22 +23,21 @@ const LoginModal = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: Dispatc
   }, [dispatch])
 
   return (
-    <Modal
+    <Dialog
       open={isOpen}
       onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
-        <Typography textAlign="center" variant="h2" gutterBottom>
-          Login
-        </Typography>
+      <DialogTitle textAlign="center">Login</DialogTitle>
+      <DialogContent>
         <Button fullWidth variant='contained' onClick={handleSubmit}>Login with Spotify</Button>
         <Typography sx={{ marginTop: '1rem' }} textAlign="center" component="p" variant="caption">
-          I do not store any of your data. Access will allow generated playlists to be saved to your Spotify account.
+          I do not store any of your personal data.
         </Typography>
-      </Box>
-    </Modal>
+        <Typography textAlign="center" component="p" variant="caption">
+          Access will allow generated playlists to be saved to your Spotify account.
+        </Typography>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -47,9 +49,5 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 400,
-  border: '2px solid #000',
-  backgroundColor: 'white',
-  borderRadius: '1rem',
-  boxShadow: 24,
-  p: 4
+  boxShadow: 24
 }

@@ -11,12 +11,7 @@ LinkBehavior.displayName = 'LinkBehavior'
 
 export const theme = createTheme({
   palette: {
-    background: {
-      default: '#d4eaff'
-    },
-    text: {
-      primary: '#363636'
-    }
+    mode: 'dark'
   },
   typography: {
     h2: {
