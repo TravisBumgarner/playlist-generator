@@ -1,12 +1,12 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Avatar, Button, Container, IconButton, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
+import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TArtistMashup, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
+import { Search } from 'sharedComponents'
+import { type TArtistMashup, type TAutocompleteEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
-import { pageWrapperCSS } from 'theme'
+import AlgorithmWrapper from './AlgorithmWrapper'
 
 const CREATE_FROM_ARTIST_MASHUP_PLAYLIST = gql`
 query createArtistMashupPlaylist($artistIds: [String]!, $market: String!) {
@@ -56,11 +56,9 @@ const ArtistsListItem = ({ selectedArtist: { name, image, id }, removeArtist }: 
 
 interface ArtistMashupProps { title: string, description: string }
 const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
-  const { state, dispatch } = useContext(context)
+  const { state } = useContext(context)
   const [selectedArtists, setSelectedArtists] = useState<TAutocompleteEntry[]>([])
   const [createArtistMashup] = useLazyQuery<{ createArtistMashupPlaylist: TArtistMashup['Response'] }, TArtistMashup['Request']>(CREATE_FROM_ARTIST_MASHUP_PLAYLIST, { fetchPolicy: 'network-only' })
-  const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
 
   const removeArtist = useCallback((artistId: string) => {
     setSelectedArtists(prev => prev.filter(({ id }) => id !== artistId))
@@ -68,78 +66,39 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
 
   const resetState = useCallback(() => {
     setSelectedArtists([])
-    setPlaylistEntries(null)
   }, [])
-
-  const resetStateCallback = useCallback(() => {
-    resetState()
-  }, [resetState])
 
   const addAnotherArtist = useCallback(async (value: TAutocompleteEntry) => {
     setSelectedArtists(prev => ([...prev, value]))
   }, [])
 
-  const handleSubmit = useCallback(async () => {
-    setIsLoading(true)
-    if (!selectedArtists) return
+  const apiCall = useCallback(async () => {
+    const result = await createArtistMashup({ variables: { artistIds: selectedArtists.map(({ id }) => id), market: state.user!.market } })
+    return result.data?.createArtistMashupPlaylist
+  }, [selectedArtists, createArtistMashup, state.user])
 
-    if (!state.user) {
-      dispatch({ type: 'ADD_ALERT', data: { text: 'User is not logged in', severity: 'error' } })
-      return
-    }
+  const ListItems = useMemo(() => {
+    return selectedArtists.map((artist) => <ArtistsListItem key={artist.id} selectedArtist={artist} removeArtist={removeArtist} />)
+  }, [selectedArtists, removeArtist])
 
-    const result = await createArtistMashup({ variables: { artistIds: selectedArtists.map(({ id }) => id), market: state.user.market } })
-    if ((result.data?.createArtistMashupPlaylist) != null) {
-      setPlaylistEntries(result.data?.createArtistMashupPlaylist)
-    }
-
-    setIsLoading(false)
-  }, [selectedArtists, createArtistMashup, dispatch, state.user])
-
-  const content = useMemo(() => {
-    const ListItems = selectedArtists.map((artist) => <ArtistsListItem key={artist.id} selectedArtist={artist} removeArtist={removeArtist} />)
-
-    if (selectedArtists.length < 2 || playlistEntries === null) {
-      return (
+  return (
+    <AlgorithmWrapper
+      title={title}
+      description={description}
+      searchParams={
         <>
           <Search label={'Add an Artist'} resultSelectedCallback={addAnotherArtist} />
           <List>
             {ListItems}
           </List>
-          <Button fullWidth variant='contained' disabled={selectedArtists.length === 0} onClick={handleSubmit}>Submit</Button>
         </>
-      )
-    }
-
-    if (isLoading) {
-      return (
-        <>
-          <Loading />
-        </>
-      )
-    }
-
-    if (playlistEntries && playlistEntries.length === 0) {
-      return (
-        <Typography>
-          No results found
-        </Typography>
-      )
-    }
-
-    return (
-      <Playlist resetStateCallback={resetStateCallback} initialTitle={`Artist Mashup with ${selectedArtists.map(({ name }) => name).join(', ')}`} playlistEntries={playlistEntries} />
-    )
-  }, [playlistEntries, handleSubmit, addAnotherArtist, selectedArtists, resetStateCallback, isLoading, removeArtist])
-
-  return (
-    <Container css={pageWrapperCSS}>
-      <Typography variant="h2" gutterBottom>{title}</Typography>
-      <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container>
-        {content}
-      </Container>
-    </Container >
+      }
+      searchDisabled={selectedArtists.length < 2}
+      apiCall={apiCall}
+      resetStateCallback={resetState}
+      initialPlaylistTitle={`Artist Mashup with ${selectedArtists.map(({ name }) => name).join(', ')}`}
+    >
+    </AlgorithmWrapper >
   )
 }
 

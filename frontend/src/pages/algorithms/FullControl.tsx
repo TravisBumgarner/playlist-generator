@@ -1,11 +1,11 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Button, Container, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { Button, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
-import { Search, Playlist, Loading } from 'sharedComponents'
-import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters } from 'playlist-generator-utilities'
+import { Search } from 'sharedComponents'
+import { type TFullControl, type TAutocompleteEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters } from 'playlist-generator-utilities'
 import { context } from 'context'
-import { pageWrapperCSS } from 'theme'
+import AlgorithmWrapper from './AlgorithmWrapper'
 
 interface FilterOptionInfo {
   title: string
@@ -177,21 +177,14 @@ const CREATE_FULL_CONTROL_PLAYLIST = gql`
 
 interface FullControlParams { title: string, description: string }
 const FullControl = ({ title, description }: FullControlParams) => {
-  const { state, dispatch } = useContext(context)
+  const { state } = useContext(context)
   const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<TFilter[]>([])
   const [createFullControl] = useLazyQuery<{ createFullControlPlaylist: TFullControl['Response'] }, TFullControl['Request']>(CREATE_FULL_CONTROL_PLAYLIST, { fetchPolicy: 'network-only' })
-  const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[] | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
 
   const resetState = useCallback(() => {
     setSelectedArtist(null)
-    setPlaylistEntries(null)
   }, [])
-
-  const resetStateCallback = useCallback(() => {
-    resetState()
-  }, [resetState])
 
   const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
     setSelectedArtist(value)
@@ -201,64 +194,27 @@ const FullControl = ({ title, description }: FullControlParams) => {
     setSelectedFilters(filters)
   }, [])
 
-  const handleSubmit = useCallback(async () => {
-    setIsLoading(true)
-    if (!selectedArtist) return
+  const apiCall = useCallback(async () => {
+    const result = await createFullControl({ variables: { artistId: selectedArtist!.id, market: state.user!.market, filters: stringifyFilters(selectedFilters) } })
+    return result.data?.createFullControlPlaylist
+  }, [selectedArtist, createFullControl, state.user, selectedFilters])
 
-    if (!state.user) {
-      dispatch({ type: 'ADD_ALERT', data: { text: 'User is not logged in', severity: 'error' } })
-      return
-    }
-
-    const result = await createFullControl({ variables: { artistId: selectedArtist.id, market: state.user.market, filters: stringifyFilters(selectedFilters) } })
-    if ((result.data?.createFullControlPlaylist) != null) {
-      setPlaylistEntries(result.data?.createFullControlPlaylist)
-    }
-
-    setIsLoading(false)
-  }, [selectedArtist, createFullControl, dispatch, state.user, selectedFilters])
-
-  const isDisabled = useMemo(() => selectedArtist === null || selectedFilters.length === 0, [selectedArtist, selectedFilters])
-  const content = useMemo(() => {
-    if (selectedArtist === null || playlistEntries === null) {
-      return (
+  return (
+    <AlgorithmWrapper
+      title={title}
+      description={description}
+      searchParams={
         <>
           <Search label={'Select an Artist'} resultSelectedCallback={resultSelectedCallback} />
           <FullControlFilters filtersSelectedCallback={filtersSelectedCallback} />
-          <Button fullWidth variant='contained' disabled={isDisabled} onClick={handleSubmit}>Submit</Button>
         </>
-      )
-    }
-
-    if (isLoading) {
-      return (
-        <>
-          <Loading />
-        </>
-      )
-    }
-
-    if (playlistEntries && playlistEntries.length === 0) {
-      return (
-        <Typography>
-          No results found
-        </Typography>
-      )
-    }
-
-    return (
-      <Playlist resetStateCallback={resetStateCallback} initialTitle={`Full Control with ${selectedArtist.name}`} playlistEntries={playlistEntries} />
-    )
-  }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, resetStateCallback, isLoading, filtersSelectedCallback, isDisabled])
-
-  return (
-    <Container css={pageWrapperCSS}>
-      <Typography variant="h2" gutterBottom>{title}</Typography>
-      <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container>
-        {content}
-      </Container>
-    </Container >
+      }
+      searchDisabled={selectedArtist === null || selectedFilters.length === 0}
+      apiCall={apiCall}
+      resetStateCallback={resetState}
+      initialPlaylistTitle={`Full Control with ${selectedArtist?.name}`}
+    >
+    </AlgorithmWrapper >
   )
 }
 
