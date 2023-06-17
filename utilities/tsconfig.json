@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "target": "ES5",
         "resolveJsonModule": true,
         "strict": true,
         "baseUrl": ".",

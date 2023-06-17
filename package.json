@@ -4,6 +4,7 @@
   },
   "scripts": {
     "start": "concurrently -n frontend,backend,utilities -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"cd frontend && yarn start\" \"cd backend && yarn start\" \"cd utiltities && yarn start\"",
-    "tunnel": "ngrok start --all --config=ngrok.yml"
+    "tunnel": "ngrok start --all --config=ngrok.yml",
+    "deploy": "cd utilities && yarn deploy && cd ../backend && yarn deploy && cd ../frontend && yarn deploy"
   }
 }

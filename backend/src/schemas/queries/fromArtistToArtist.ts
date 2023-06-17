@@ -2,9 +2,7 @@ import { GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql'
 
 import { getRecommendationsForPlaylist, getRelatedArtistFromArtists } from '../../spotify'
 import { PlaylistType } from '../types'
-import { TFromArtistToArtist, TPlaylistEntry, foo } from 'playlist-generator-utilities'
-
-const foobar: 7 = foo;
+import { TFromArtistToArtist, TPlaylistEntry } from 'playlist-generator-utilities'
 
 export const createFromArtistToArtistPlaylist = {
   type: new GraphQLList(PlaylistType),

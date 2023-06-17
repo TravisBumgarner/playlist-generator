@@ -25,24 +25,6 @@ function calculateTargetValue(start: EFilterValue, end: EFilterValue, totalSampl
   return y;
 }
 
-
-const FilterValues = new GraphQLEnumType({
-  name: 'FilterValue',
-  values: Object.fromEntries(
-    Object.values(EFilterValue).map((value) => [value, { value }])
-  ),
-});
-
-const Filter = new GraphQLObjectType({
-  name: 'FilterFoo',
-  description: 'This represents a filter',
-  fields: () => ({
-    start: { type: FilterValues },
-    // end: { type: new GraphQLNonNull(FilterValues) },
-  }),
-})
-
-
 export const createFullControlPlaylist = {
   type: new GraphQLList(PlaylistType),
   description: 'See frontend',
