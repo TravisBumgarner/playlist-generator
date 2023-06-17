@@ -1,4 +1,4 @@
-import { Box, Link, css, Button } from '@mui/material'
+import { Box, Link, css, Button, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
@@ -81,7 +81,7 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
   }, [playlistEntries, playlistTitle, savePlaylist, navigate, dispatch, resetStateCallback])
 
   const Playlist = useMemo(() => {
-    // Sometimes duplicate songs come back in a playlist. Currently it doesn't look possible to dedup a playlist and keep its integrity.
+    // Sometimes duplicate tracks come back in a playlist. Currently it doesn't look possible to dedup a playlist and keep its integrity.
     return playlistEntries.map((result, index) => <PlaylistItem key={`${result.uri}_${index}`} {...result} />)
   }, [playlistEntries])
 
@@ -101,17 +101,18 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
       }}
       css={{ marginBottom: '1rem' }}
     />
-    <Button
-      fullWidth
-      variant='text' onClick={resetStateCallback}>Start Over
-    </Button>
+    <Typography variant="h6" component="div" gutterBottom>Preview Playlist</Typography>
+    <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '30vh', margin: '0.5rem 0', border: '1px solid #363636', borderRadius: '0.4rem' }}>
+      {Playlist}
+    </Box>
     <Button
       fullWidth
       variant='contained' disabled={isSavingPlaylist} onClick={handleSavePlaylistSubmit}>Save it to your Spotify
     </Button>
-    <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '50vh' }}>
-      {Playlist}
-    </Box>
+    <Button
+      fullWidth
+      variant='text' onClick={resetStateCallback}>Start Over
+    </Button>
   </Box>
   )
 }

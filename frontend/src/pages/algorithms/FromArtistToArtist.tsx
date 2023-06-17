@@ -77,7 +77,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
         <>
           <Search label={'Starting Artist'} resultSelectedCallback={resultSelectedCallbackStart} />
           <Search label={'Ending Artist'} resultSelectedCallback={resultSelectedCallbackEnd} />
-          <Button disabled={selectedArtistStart === null && selectedArtistEnd === null} onClick={handleSubmit}>Submit</Button>
+          <Button fullWidth variant='contained' disabled={selectedArtistStart === null && selectedArtistEnd === null} onClick={handleSubmit}>Submit</Button>
         </>
       )
     }
@@ -107,7 +107,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
     <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container sx={{ maxWidth: '500px', width: '500px' }}>
+      <Container>
         {content}
       </Container>
     </Container >

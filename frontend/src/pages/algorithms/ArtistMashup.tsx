@@ -99,14 +99,14 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
   const content = useMemo(() => {
     const ListItems = selectedArtists.map((artist) => <ArtistsListItem key={artist.id} selectedArtist={artist} removeArtist={removeArtist} />)
 
-    if (selectedArtists === null || playlistEntries === null) {
+    if (selectedArtists.length < 2 || playlistEntries === null) {
       return (
         <>
-          <Search label={'Add Artist'} resultSelectedCallback={addAnotherArtist} />
+          <Search label={'Add an Artist'} resultSelectedCallback={addAnotherArtist} />
           <List>
             {ListItems}
           </List>
-          <Button disabled={selectedArtists === null} onClick={handleSubmit}>Submit</Button>
+          <Button fullWidth variant='contained' disabled={selectedArtists.length === 0} onClick={handleSubmit}>Submit</Button>
         </>
       )
     }
@@ -136,7 +136,7 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
     <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container sx={{ maxWidth: '500px', width: '500px' }}>
+      <Container>
         {content}
       </Container>
     </Container >

@@ -1,5 +1,5 @@
 import { gql, useLazyQuery } from '@apollo/client'
-import { Button, Container, InputLabel, MenuItem, Select, type SelectChangeEvent, Typography } from '@mui/material'
+import { Button, Container, type SelectChangeEvent, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { Search, Playlist, Loading } from 'sharedComponents'
@@ -82,7 +82,7 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
       return (
         <>
           <Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />
-          <InputLabel id="white-noise-selector">Noise Color</InputLabel>
+          {/* <InputLabel id="white-noise-selector">Noise Color</InputLabel>
           <Select
             fullWidth
             labelId="white-noise-selector"
@@ -94,9 +94,9 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
             <MenuItem value={EWhiteNoise.Brown}>{EWhiteNoise.Brown}</MenuItem>
             <MenuItem value={EWhiteNoise.White}>{EWhiteNoise.White}</MenuItem>
             <MenuItem value={EWhiteNoise.Pink}>{EWhiteNoise.Pink}</MenuItem>
-          </Select>
+          </Select> */}
 
-          <Button disabled={selectedArtist === null} onClick={handleSubmit}>Submit</Button>
+          <Button fullWidth variant='contained' disabled={selectedArtist === null} onClick={handleSubmit}>Submit</Button>
         </>
       )
     }
@@ -126,7 +126,7 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
     <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container sx={{ maxWidth: '500px', width: '500px' }}>
+      <Container>
         {content}
       </Container>
     </Container >

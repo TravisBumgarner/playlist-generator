@@ -46,4 +46,6 @@ export const pageWrapperCSS = css`
   box-sizing: border-box;
   max-height: 90vh;
   overflow-y: scroll;
+  max-width: 500px !important;
+  text-align: center;
 `

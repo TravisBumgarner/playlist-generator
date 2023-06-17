@@ -225,7 +225,7 @@ const FullControl = ({ title, description }: FullControlParams) => {
         <>
           <Search label={'Select an Artist'} resultSelectedCallback={resultSelectedCallback} />
           <FullControlFilters filtersSelectedCallback={filtersSelectedCallback} />
-          <Button fullWidth disabled={isDisabled} onClick={handleSubmit}>Submit</Button>
+          <Button fullWidth variant='contained' disabled={isDisabled} onClick={handleSubmit}>Submit</Button>
         </>
       )
     }
@@ -255,7 +255,7 @@ const FullControl = ({ title, description }: FullControlParams) => {
     <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
-      <Container sx={{ maxWidth: '500px', width: '500px' }}>
+      <Container>
         {content}
       </Container>
     </Container >

@@ -17,7 +17,7 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
     title: 'Artist Mashup',
     href: '/a/artist_mashup',
     description:
-      'Pick several artists. Generate a playlist of songs that jumps between recommended songs of each artist.',
+      'Pick several artists. Generate a playlist that jumps between recommended tracks from each artist.',
     component: (title, description) => (
       <ArtistMashup title={title} description={description} />
     )
@@ -26,7 +26,7 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
     title: 'From Artist to Artist',
     href: '/a/from_artist_to_artist',
     description:
-      'Pick two artists. Generate a playlist of songs that starts with one and ends with the other.',
+      'Pick two artists. Generate a playlist of tracks that starts with one artist, moves through related artists, and ends with the other.',
     component: (title, description) => (
       <FromArtistToArtist title={title} description={description} />
     )
@@ -35,7 +35,7 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
     title: 'Full Control',
     href: '/a/full_control',
     description:
-      'Pick an artist. Generate a playlist of songs where you can tweak every parameter.',
+      'Pick an artist. Generate a playlist where you can tweak everything about the tracks of the playlist.',
     component: (title, description) => (
       <FullControl title={title} description={description} />
     )
@@ -44,7 +44,7 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
     title: 'Good Beats to Good Sleeps',
     href: '/a/good_beats_to_good_sleeps',
     description:
-      'Pick an arist. Generate a playlist of songs that starts with the selected artist and ends with enough white noise to last you through the night.',
+      'Pick an arist. Generate a playlist that starts with tracks related to the artist and ends with enough white noise to last you through the night.',
     component: (title, description) => (
       <GoodBeatsToGoodSleeps title={title} description={description} />
     )
