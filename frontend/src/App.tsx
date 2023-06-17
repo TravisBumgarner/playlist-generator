@@ -29,7 +29,6 @@ const App = () => {
   const { state, dispatch } = useContext(context)
   const [refreshToken] = useLazyQuery<{ refreshToken: { refreshToken: string, accessToken: string, expiresIn: string } }>(REFRESH_TOKEN_QUERY)
   const [hasAppInitialized, setHasAppInitialized] = useState(false)
-  const [loginModalOpen, setLoginModalOpen] = useState(true)
 
   const getUserDetails = useCallback(async () => {
     const accessToken = (getLocalStorage(ELocalStorageItems.AccessToken)) as string
@@ -133,7 +132,7 @@ const App = () => {
       return null
     }
 
-    return <Login isOpen={true} setIsOpen={setLoginModalOpen} />
+    return <Login isOpen={true} />
   }, [state.openModal])
 
   useAsyncEffect(async (isMounted) => {

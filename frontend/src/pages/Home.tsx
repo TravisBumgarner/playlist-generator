@@ -1,4 +1,4 @@
-import { Box, Container, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
+import { Container, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
 import ListItem from '@mui/material/ListItem'
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 import AddCommentIcon from '@mui/icons-material/AddComment'
@@ -38,9 +38,7 @@ const Home = () => {
   return (
     <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>Manifest Playlists!</Typography>
-      <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '500px' }}>
-        <Algorithms />
-      </Box>
+      <Algorithms />
     </Container>
   )
 }

@@ -27,6 +27,7 @@ const Router = () => {
   if (state.hasErrored) {
     return <Error />
   }
+
   if (state.isLoggingIn) {
     return (
       <Container sx={{ marginTop: '40vh' }}>

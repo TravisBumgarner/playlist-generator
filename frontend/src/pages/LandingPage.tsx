@@ -1,5 +1,4 @@
-import { Container, List, ListItem, Typography, ListItemIcon, ListItemText, Link } from '@mui/material'
-import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
+import { Container, List, ListItem, Typography, ListItemText, Link } from '@mui/material'
 
 import { ALGORITHM_ROUTES } from '../algorithms'
 import { pageWrapperCSS } from 'theme'
@@ -10,15 +9,12 @@ const Algorithms = () => {
       {
         ALGORITHM_ROUTES.map(({ title: text, href, description }) => {
           return (
-            <ListItem disablePadding key={text} >
-              <ListItemIcon>
-                <PlaylistPlayIcon />
-              </ListItemIcon>
-              <ListItemText primary={text} secondary={description} />
+            <ListItem disablePadding key={text} sx={{ margin: '1rem 0' }} >
+              <ListItemText primary={<strong>{text}</strong>} secondary={<span>{description}</span>} />
             </ListItem >
           )
         })}
-    </List>
+    </List >
   )
 }
 

@@ -1,8 +1,6 @@
-import React, { type Dispatch, type SetStateAction, useCallback, useContext } from 'react'
+import { type Dispatch, type SetStateAction, useCallback, useContext } from 'react'
 import {
-  Modal,
   Typography,
-  Box,
   Button,
   Dialog,
   DialogTitle,
@@ -11,7 +9,7 @@ import {
 import { login } from 'utilities'
 import { context } from 'context'
 
-const LoginModal = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: Dispatch<SetStateAction<boolean>> }) => {
+const LoginModal = ({ isOpen }: { isOpen: boolean }) => {
   const { dispatch } = useContext(context)
   const handleClose = () => {
     dispatch({ type: 'CLOSE_MODAL' })
@@ -42,12 +40,3 @@ const LoginModal = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: Dispatc
 }
 
 export default LoginModal
-
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  boxShadow: 24
-}

@@ -40,7 +40,7 @@ export const pageWrapperCSS = css`
   margin-top: 50px;
   box-sizing: border-box;
   max-height: 90vh;
-  overflow-y: scroll;
-  max-width: 500px !important;
+  overflow-y: auto;
+  max-width: 800px !important;
   text-align: center;
 `
