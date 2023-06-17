@@ -27,7 +27,7 @@ const LoginModal = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: Dispatc
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Typography textAlign="center" variant="h3" component="h2" gutterBottom>
+        <Typography textAlign="center" variant="h2" gutterBottom>
           Login
         </Typography>
         <Button fullWidth variant='contained' onClick={handleSubmit}>Login with Spotify</Button>

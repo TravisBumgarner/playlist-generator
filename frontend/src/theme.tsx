@@ -10,6 +10,12 @@ const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> &
 LinkBehavior.displayName = 'LinkBehavior'
 
 export const theme = createTheme({
+  typography: {
+    h2: {
+      fontSize: '2rem',
+      fontWeight: 700
+    }
+  },
   components: {
     MuiLink: {
       defaultProps: {
