@@ -1,4 +1,4 @@
-import { useMemo, useContext } from 'react'
+import { useMemo, useContext, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
@@ -13,6 +13,7 @@ import AddCommentIcon from '@mui/icons-material/AddComment'
 
 import { context } from 'context'
 import { ALGORITHM_ROUTES } from '../algorithms'
+import { Login, Logout } from '@mui/icons-material'
 
 const Navigation = () => {
   const { state, dispatch } = useContext(context)
@@ -33,6 +34,27 @@ const Navigation = () => {
       )
     })
   }, [state.user])
+
+  const login = useCallback(() => {
+    dispatch({ type: 'OPEN_MODAL', data: 'login' })
+  }, [dispatch])
+
+  const logout = useCallback(() => {
+    dispatch({ type: 'LOGOUT' })
+  }, [dispatch])
+
+  const LoginOrLogout = useMemo(() => {
+    return (
+      <ListItem disablePadding>
+        <ListItemButton onClick={state.user ? logout : login}>
+          <ListItemIcon>
+            {state.user ? <Logout /> : <Login />}
+          </ListItemIcon>
+          <ListItemText primary={state.user ? 'Logout' : 'Login'} />
+        </ListItemButton>
+      </ListItem>
+    )
+  }, [state.user, login, logout])
 
   const toggleDrawer =
     () => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -55,7 +77,7 @@ const Navigation = () => {
           display: 'flex',
           justifyContent: 'space-between',
           flexDirection: 'column',
-          height: '100%',
+          height: '100%'
         }}
         role="presentation"
         onClick={toggleDrawer()}
@@ -77,6 +99,7 @@ const Navigation = () => {
         </Box>
         <Box>
           <List>
+            {LoginOrLogout}
             <ListItem disablePadding>
               <ListItemButton
                 target="_blank"

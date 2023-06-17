@@ -2,7 +2,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { gql, useLazyQuery } from '@apollo/client'
 import { Record, String, Array } from 'runtypes'
 import { useNavigate } from 'react-router'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import axios from 'axios'
 import useAsyncEffect from 'use-async-effect'
 
@@ -11,6 +11,7 @@ import { Alert, Router, Header, Navigation, SpotifyLogo } from './components'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
 import { context } from 'context'
 import { useSearchParams } from 'react-router-dom'
+import { Login } from 'sharedComponents'
 
 const REFRESH_TOKEN_QUERY = gql`
 query RefreshToken($refreshToken: String!) {
@@ -25,9 +26,10 @@ query RefreshToken($refreshToken: String!) {
 const App = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { dispatch } = useContext(context)
+  const { state, dispatch } = useContext(context)
   const [refreshToken] = useLazyQuery<{ refreshToken: { refreshToken: string, accessToken: string, expiresIn: string } }>(REFRESH_TOKEN_QUERY)
   const [hasAppInitialized, setHasAppInitialized] = useState(false)
+  const [loginModalOpen, setLoginModalOpen] = useState(true)
 
   const getUserDetails = useCallback(async () => {
     const accessToken = (getLocalStorage(ELocalStorageItems.AccessToken)) as string
@@ -126,6 +128,14 @@ const App = () => {
     return 'does_not_exist'
   }, [])
 
+  const OpenModal = useMemo(() => {
+    if (state.openModal === null) {
+      return null
+    }
+
+    return <Login isOpen={true} setIsOpen={setLoginModalOpen} />
+  }, [state.openModal])
+
   useAsyncEffect(async (isMounted) => {
     if (hasAppInitialized || !isMounted) return
 
@@ -151,6 +161,7 @@ const App = () => {
       <Navigation />
       <Alert />
       <Router />
+      {OpenModal}
       <SpotifyLogo />
     </ThemeProvider>
   )

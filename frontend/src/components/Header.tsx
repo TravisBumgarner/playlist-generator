@@ -9,19 +9,17 @@ import { Avatar, Link } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 
 import { context } from 'context'
-import { logout, login } from 'utilities'
 import { Loading } from 'sharedComponents'
 
 const Header = () => {
   const { dispatch, state } = useContext(context)
 
-  const handleLogin = useCallback(async () => {
-    dispatch({ type: 'LOGIN_INITIATED' })
-    await login(dispatch)
+  const login = useCallback(() => {
+    dispatch({ type: 'OPEN_MODAL', data: 'login' })
   }, [dispatch])
 
-  const handleLogout = useCallback(() => {
-    logout(dispatch)
+  const logout = useCallback(() => {
+    dispatch({ type: 'LOGOUT' })
   }, [dispatch])
 
   const Login = useMemo(() => {
@@ -33,11 +31,11 @@ const Header = () => {
         color="inherit"
         aria-label="menu"
         sx={{ mr: 2 }}
-        onClick={handleLogin}
+        onClick={login}
       >
         <LoginIcon />
       </IconButton>)
-  }, [handleLogin, state.isLoggingIn])
+  }, [login, state.isLoggingIn])
 
   const handleMenuClick = useCallback(() => {
     dispatch({ type: 'TOGGLE_MENU' })
@@ -59,13 +57,13 @@ const Header = () => {
 
         aria-label="menu"
         sx={{ mr: 2 }}
-        onClick={handleLogout}
+        onClick={logout}
       >
         <LogoutIcon />
       </IconButton>
     </div>
     )
-  }, [handleLogout, state.user])
+  }, [state.user, logout])
 
   return (
     <AppBar position="static">

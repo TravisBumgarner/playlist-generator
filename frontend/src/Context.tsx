@@ -17,6 +17,7 @@ interface State {
   } | null
   isMenuOpen: boolean
   isLoggingIn: boolean
+  openModal: 'login' | null
 }
 
 const EMPTY_STATE: State = {
@@ -24,7 +25,8 @@ const EMPTY_STATE: State = {
   hasErrored: false,
   user: null,
   isMenuOpen: false,
-  isLoggingIn: false
+  isLoggingIn: false,
+  openModal: null
 }
 
 interface Login {
@@ -66,6 +68,15 @@ interface DeleteMessage {
   type: 'DELETE_ALERT'
 }
 
+interface OpenModal {
+  type: 'OPEN_MODAL'
+  data: 'login'
+}
+
+interface CloseModal {
+  type: 'CLOSE_MODAL'
+}
+
 type Action =
   | AddMessage
   | DeleteMessage
@@ -74,6 +85,8 @@ type Action =
   | Logout
   | ToggleMenu
   | LoginInitiated
+  | OpenModal
+  | CloseModal
 
 const context = createContext({
   state: EMPTY_STATE,
@@ -106,6 +119,12 @@ const reducer = (state: State, action: Action): State => {
     }
     case 'LOGOUT': {
       return { ...state, user: null, isLoggingIn: false }
+    }
+    case 'OPEN_MODAL': {
+      return { ...state, openModal: action.data }
+    }
+    case 'CLOSE_MODAL': {
+      return { ...state, openModal: null }
     }
     default: {
       logger(`Swallowing action: ${JSON.stringify(action)}`)
