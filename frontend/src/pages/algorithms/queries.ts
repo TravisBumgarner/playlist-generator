@@ -39,57 +39,57 @@ export const CREATE_FULL_CONTROL_PLAYLIST = gql`
 `
 
 export const CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST = gql`
-    ${Playlist}
+  ${Playlist}
 
-query createFromArtistToArtistPlaylist(
-  $artistIdStart: String!,
-  $artistIdEnd: String!,
-  $market: String!,
-  $trackCount: Int!
+  query createFromArtistToArtistPlaylist(
+    $artistIdStart: String!,
+    $artistIdEnd: String!,
+    $market: String!,
+    $trackCount: Int!
   ) {
-  createFromArtistToArtistPlaylist(
-    artistIdStart: $artistIdStart,
-    artistIdEnd: $artistIdEnd,
-    market: $market,
-    trackCount: $trackCount) {
-    ...playlist
+    createFromArtistToArtistPlaylist(
+      artistIdStart: $artistIdStart,
+      artistIdEnd: $artistIdEnd,
+      market: $market,
+      trackCount: $trackCount
+    ) {
+      ...playlist
     }
   }
 `
 
 export const CREATE_ARTIST_MASHUP_PLAYLIST = gql`
-    ${Playlist}
+  ${Playlist}
 
-query createArtistMashupPlaylist(
-  $artistIds: [String]!,
-  $market: String!,
-  $trackCount: Int!
-) {
-  createArtistMashupPlaylist(
-    artistIds: $artistIds,
-    market: $market,
-    trackCount: $trackCount
+  query createArtistMashupPlaylist(
+    $artistIds: [String]!,
+    $market: String!,
+    $trackCount: Int!
   ) {
-    ...playlist
+    createArtistMashupPlaylist(
+      artistIds: $artistIds,
+      market: $market,
+      trackCount: $trackCount
+    ) {
+      ...playlist
     }
   }
 `
 
 export const CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY = gql`
-    ${Playlist}
+  ${Playlist}
 
-
-query createGoodBeatsToGoodSleepsPlaylist(
+  query createGoodBeatsToGoodSleepsPlaylist(
     $artistId: String!,
     $market: String!,
     $trackCount: Int!
   ) {
-  createGoodBeatsToGoodSleepsPlaylist(
-    market: $market,
-    artistId: $artistId,
-    trackCount: $trackCount
-  ) {
-    ...playlist
+    createGoodBeatsToGoodSleepsPlaylist(
+      market: $market,
+      artistId: $artistId,
+      trackCount: $trackCount
+    ) {
+      ...playlist
     }
   }
 `
