@@ -102,11 +102,11 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
       css={{ marginBottom: '1rem' }}
     />
     <Button
-      css={{ margin: '1rem 0' }}
+      fullWidth
       variant='text' onClick={resetStateCallback}>Start Over
     </Button>
     <Button
-      css={{ margin: '1rem 0' }}
+      fullWidth
       variant='contained' disabled={isSavingPlaylist} onClick={handleSavePlaylistSubmit}>Save it to your Spotify
     </Button>
     <Box component="ul" sx={{ overflowY: 'scroll', maxHeight: '50vh' }}>

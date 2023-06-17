@@ -10,6 +10,14 @@ const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> &
 LinkBehavior.displayName = 'LinkBehavior'
 
 export const theme = createTheme({
+  palette: {
+    background: {
+      default: '#d4eaff'
+    },
+    text: {
+      primary: '##363636'
+    }
+  },
   typography: {
     h2: {
       fontSize: '2rem',
