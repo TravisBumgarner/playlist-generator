@@ -1,7 +1,7 @@
 {
   "name": "playlist-generator-utilities",
-  "version": "1.0.17",
-  "main": "src/index.ts",
+  "version": "1.0.18",
+  "main": "build/index.js",
   "license": "MIT",
   "devDependencies": {
     "nodemon": "^2.0.22",
