@@ -40,6 +40,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
+    "source-map-explorer": "^2.5.3",
     "style-loader": "^3.3.2",
     "ts-loader": "^9.4.2",
     "typescript": "*",
@@ -48,10 +49,11 @@
     "webpack-dev-server": "^4.11.1"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/*.js'",
     "lint:run": "npx eslint --ext .ts ./src/**",
     "lint:fix": "npx eslint --ext .ts ./src/** --fix",
     "start": "export NODE_ENV=local && webpack serve --config=webpack.js",
-    "bundle": " rm -rf ./build; mkdir ./build; webpack --mode=production --config=webpack.js",
+    "bundle": "export NODE_ENV=production && rm -rf ./build; mkdir ./build; webpack --config=webpack.js",
     "deploy": "gcloud config set project silly-side-projects && gcloud builds submit --tag gcr.io/silly-side-projects/playlist-generator-frontend && gcloud run deploy playlist-generator-frontend --image gcr.io/silly-side-projects/playlist-generator-frontend --platform managed --region us-east1"
   }
 }
