@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TArtistMashup, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
+import { pageWrapperCSS } from 'theme'
 
 const CREATE_FROM_ARTIST_MASHUP_PLAYLIST = gql`
 query createArtistMashupPlaylist($artistIds: [String]!, $market: String!) {
@@ -132,7 +133,7 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
   }, [playlistEntries, handleSubmit, addAnotherArtist, selectedArtists, resetStateCallback, isLoading, removeArtist])
 
   return (
-    <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+    <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
       <Container sx={{ maxWidth: '500px', width: '500px' }}>

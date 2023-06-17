@@ -5,6 +5,7 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TGoodBeatsToGoodSleeps, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
+import { pageWrapperCSS } from 'theme'
 
 const CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY = gql`
 query createGoodBeatsToGoodSleepsPlaylist($artistId: String!, $market: String!) {
@@ -122,7 +123,7 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
   }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArtist, resetStateCallback, isLoading, whiteNoise, handleChange])
 
   return (
-    <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+    <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
       <Container sx={{ maxWidth: '500px', width: '500px' }}>

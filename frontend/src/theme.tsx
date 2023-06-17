@@ -1,4 +1,4 @@
-import { type LinkProps, createTheme } from '@mui/material'
+import { type LinkProps, createTheme, css } from '@mui/material'
 import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
 import { forwardRef } from 'react'
 
@@ -23,3 +23,10 @@ export const theme = createTheme({
     }
   }
 })
+
+export const pageWrapperCSS = css`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 10vh;
+`

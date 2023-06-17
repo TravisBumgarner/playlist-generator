@@ -5,6 +5,7 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TFromArtistToArtist, type TAutocompleteEntry, type TPlaylistEntry } from 'playlist-generator-utilities'
 import { context } from 'context'
+import { pageWrapperCSS } from 'theme'
 
 const CREATE_FROM_ARTIST_TO_ARTIST_PLAYLIST = gql`
 query createFromArtistToArtistPlaylist($artistIdStart: String!, $artistIdEnd: String!, $market: String!) {
@@ -103,7 +104,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
   }, [playlistEntries, handleSubmit, resultSelectedCallbackStart, resultSelectedCallbackEnd, selectedArtistStart, selectedArtistEnd, resetStateCallback, isLoading])
 
   return (
-    <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+    <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
       <Container sx={{ maxWidth: '500px', width: '500px' }}>

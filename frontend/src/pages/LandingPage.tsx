@@ -2,6 +2,7 @@ import { Container, List, ListItem, Typography, ListItemIcon, ListItemText, Link
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 
 import { ALGORITHM_ROUTES } from '../algorithms'
+import { pageWrapperCSS } from 'theme'
 
 const Algorithms = () => {
   return (
@@ -23,7 +24,7 @@ const Algorithms = () => {
 
 const LandingPage = () => {
   return (
-    <Container css={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center', height: '60vh' }}>
+    <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>Welcome!</Typography>
       <Typography variant="body1">Manifest Playlists offers a collection of playlist generators for scratching your musical itch.</Typography>
       <Algorithms />

@@ -5,6 +5,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { Search, Playlist, Loading } from 'sharedComponents'
 import { type TFullControl, type TAutocompleteEntry, type TPlaylistEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters } from 'playlist-generator-utilities'
 import { context } from 'context'
+import { pageWrapperCSS } from 'theme'
 
 interface FilterOptionInfo {
   title: string
@@ -251,7 +252,7 @@ const FullControl = ({ title, description }: FullControlParams) => {
   }, [playlistEntries, handleSubmit, resultSelectedCallback, selectedArist, resetStateCallback, isLoading, filtersSelectedCallback, isDisabled])
 
   return (
-    <Container sx={{ marginTop: '2rem', justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+    <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>{title}</Typography>
       <Typography variant="body1" gutterBottom>{description}</Typography>
       <Container sx={{ maxWidth: '500px', width: '500px' }}>
