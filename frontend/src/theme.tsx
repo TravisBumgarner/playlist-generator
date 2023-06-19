@@ -34,13 +34,13 @@ export const theme = createTheme({
 })
 
 export const pageWrapperCSS = css`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 50px;
   box-sizing: border-box;
-  max-height: 90vh;
   overflow-y: auto;
   max-width: 800px !important;
   text-align: center;
+  height: 80vh;
+  padding-top: 50px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `

@@ -10,6 +10,7 @@ import ListItemText from '@mui/material/ListItemText'
 import HomeIcon from '@mui/icons-material/Home'
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 import AddCommentIcon from '@mui/icons-material/AddComment'
+import LightbulbIcon from '@mui/icons-material/Lightbulb'
 
 import { context } from 'context'
 import { ALGORITHM_ROUTES } from '../algorithms'
@@ -110,6 +111,17 @@ const Navigation = () => {
                   <AddCommentIcon />
                 </ListItemIcon>
                 <ListItemText primary="Provide Feedback" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton
+                target="_blank"
+                href="https://sillysideprojects.com"
+              >
+                <ListItemIcon>
+                  <LightbulbIcon />
+                </ListItemIcon>
+                <ListItemText primary="More from the Creator" />
               </ListItemButton>
             </ListItem>
           </List>

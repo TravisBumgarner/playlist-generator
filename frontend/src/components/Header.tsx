@@ -78,7 +78,7 @@ const Header = () => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" component="h1" sx={{ flexGrow: 1 }}>
-          <Link css={{ color: 'white' }} href="/">
+          <Link css={{ color: 'white', textDecoration: 'none' }} href="/">
             Manifest Playlists
           </Link>
         </Typography>
