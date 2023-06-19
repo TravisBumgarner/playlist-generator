@@ -71,8 +71,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/static/index.template.ejs',
       favicon: './src/static/favicon.png',
-      inject: 'body',
-      title: 'Manifest Playlists'
+      inject: 'body'
     })
   ],
   devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
