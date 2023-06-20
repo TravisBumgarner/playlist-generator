@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import LogoutIcon from '@mui/icons-material/Logout'
 import LoginIcon from '@mui/icons-material/Login'
-import { Avatar, Link } from '@mui/material'
+import { Avatar, Link, Tooltip } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 
 import { logout } from 'utilities'
@@ -24,16 +24,18 @@ const Header = () => {
 
   const Login = useMemo(() => {
     return (
-      <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
-        aria-label="menu"
-        sx={{ mr: 2 }}
-        onClick={login}
-      >
-        <LoginIcon />
-      </IconButton>)
+      <Tooltip title="Login">
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ mr: 2 }}
+          onClick={login}
+        >
+          <LoginIcon />
+        </IconButton>
+      </Tooltip>)
   }, [login])
 
   const handleMenuClick = useCallback(() => {
@@ -43,40 +45,40 @@ const Header = () => {
   const AuthedUser = useMemo(() => {
     if (!state.user) return null
 
-    return (<div>
-      <IconButton
-        size="large"
-      >
-        <Avatar src={state.user.image ?? ''} alt={state.user.displayName} />
-      </IconButton>
-      <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
+    return (<>
+      <Avatar sx={{ marginRight: '1rem' }} src={state.user.image ?? ''} alt={state.user.displayName} />
+      <Tooltip title="Logout">
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
 
-        aria-label="menu"
-        sx={{ mr: 2 }}
-        onClick={handleLogout}
-      >
-        <LogoutIcon />
-      </IconButton>
-    </div>
+          aria-label="menu"
+          sx={{ mr: 2 }}
+          onClick={handleLogout}
+        >
+          <LogoutIcon />
+        </IconButton>
+      </Tooltip>
+    </>
     )
   }, [state.user, handleLogout])
 
   return (
     <AppBar position="static">
       <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-          onClick={handleMenuClick}
-        >
-          <MenuIcon />
-        </IconButton>
+        <Tooltip title="Menu">
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+            onClick={handleMenuClick}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Tooltip>
         <Typography variant="h6" component="h1" sx={{ flexGrow: 1 }}>
           <Link css={{ color: 'white', textDecoration: 'none' }} href="/">
             Manifest Playlists
