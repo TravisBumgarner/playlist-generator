@@ -31,7 +31,7 @@ const LandingPage = () => {
   return (
     <Container css={pageWrapperCSS}>
       <Typography variant="h2" gutterBottom>Welcome!</Typography>
-      <Typography variant="body1">Manifest Playlists offers a collection of playlist generators for scratching your musical itch.</Typography>
+      <Typography textAlign="center" variant="body1">Manifest Playlists offers a collection of playlist generators for scratching your musical itch.</Typography>
       <Typography variant="body1">To start generating playlists, you will need to login to Spotify.</Typography>
       <Button sx={{ margin: '1rem' }} variant="contained" onClick={handleLogin}>Login</Button>
       <Algorithms />
