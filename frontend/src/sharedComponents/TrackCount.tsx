@@ -45,7 +45,11 @@ const TrackCount = ({ trackCountCallback }: TrackCountProps) => {
 
   return (
     <Container sx={{ marginBottom: '1rem' }}>
-      <Typography variant='h6'>Desired Number of Tracks</Typography>
+      <Typography textAlign="center" variant='h6'>Desired Number of Tracks</Typography>
+      <Typography textAlign="center" variant='body1'>
+        Note - The more obscure the request, the harder it will be to meet the desired number of tracks.
+      </Typography>
+
       <Slider
         value={value}
         onChange={handleChange}
@@ -54,7 +58,7 @@ const TrackCount = ({ trackCountCallback }: TrackCountProps) => {
         step={5}
         marks={[{ value: 20, label: '20' }, { value: 500, label: '500' }]}
       />
-      <Typography variant='caption'>
+      <Typography textAlign="center" variant='body1'>
         Selected: {value} track{value !== 1 && 's'} | Estimated Duration: {formatDuration(duration.hours, duration.minutes)}
       </Typography>
     </Container>
