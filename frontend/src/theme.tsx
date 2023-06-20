@@ -37,7 +37,6 @@ export const pageWrapperCSS = css`
   box-sizing: border-box;
   overflow-y: auto;
   max-width: 800px !important;
-  text-align: center;
   height: 80vh;
   padding-top: 50px;
   display: flex;
