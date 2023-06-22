@@ -14,7 +14,7 @@ import LightbulbIcon from '@mui/icons-material/Lightbulb'
 
 import { context } from 'context'
 import { ALGORITHM_ROUTES } from '../algorithms'
-import { Login, Logout } from '@mui/icons-material'
+import { ChangeCircle, Login, Logout } from '@mui/icons-material'
 import { logout } from 'utilities'
 
 const Navigation = () => {
@@ -25,14 +25,18 @@ const Navigation = () => {
 
     return ALGORITHM_ROUTES.map(({ title: text, href }) => {
       return (
-        <ListItem disablePadding key={text}>
-          <ListItemButton href={href}>
-            <ListItemIcon>
-              <PlaylistPlayIcon />
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItemButton>
-        </ListItem>
+        <>
+          <ListItem disablePadding key={text}>
+            <ListItemButton href={href}>
+              <ListItemIcon>
+                <PlaylistPlayIcon />
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+          <Divider />
+        </>
+
       )
     })
   }, [state.user])
@@ -77,7 +81,6 @@ const Navigation = () => {
         sx={{
           width: 300,
           display: 'flex',
-          justifyContent: 'space-between',
           flexDirection: 'column',
           height: '100%'
         }}
@@ -98,10 +101,18 @@ const Navigation = () => {
           </List>
           <Divider />
           <List>{algorithmRoutes}</List>
-        </Box>
-        <Box>
           <List>
             {LoginOrLogout}
+            <ListItem disablePadding>
+              <ListItemButton
+                href="/changelog"
+              >
+                <ListItemIcon>
+                  <ChangeCircle />
+                </ListItemIcon>
+                <ListItemText primary="Changelog" />
+              </ListItemButton>
+            </ListItem>
             <ListItem disablePadding>
               <ListItemButton
                 target="_blank"

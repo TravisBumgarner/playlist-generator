@@ -7,11 +7,11 @@ import { context } from 'context'
 
 const Algorithms = () => {
   return (
-    <Grid rowSpacing={{ xs: 3 }} columnSpacing={{ xs: 6 }} columns={{ xs: 2 }} container>
+    <Grid rowSpacing={{ xs: 2, sm: 6 }} columnSpacing={{ xs: 1, sm: 3 }} columns={{ xs: 1, sm: 2 }} container>
       {
         ALGORITHM_ROUTES.map(({ title: text, href, description }) => {
           return (
-            <Grid xs={1} item key={text} sx={{ margin: '1rem 0' }} >
+            <Grid xs={1} sm={1} item key={text} >
               <Typography variant="h6">{text}</Typography>
               <Typography variant='body1'><span>{description}</span></Typography>
             </Grid >
@@ -33,9 +33,9 @@ const LandingPage = () => {
       <Typography variant="h2" gutterBottom>Welcome!</Typography>
       <Typography textAlign="center" variant="body1">Manifest Playlists offers a collection of playlist generators for scratching your musical itch.</Typography>
       <Typography variant="body1">To start generating playlists, you will need to login to Spotify.</Typography>
-      <Button sx={{ margin: '1rem' }} variant="contained" onClick={handleLogin}>Login</Button>
+      <Button sx={{ margin: '2rem' }} variant="contained" onClick={handleLogin}>Login</Button>
       <Algorithms />
-      <Typography variant="body1"> Don&#39;t see the one you&#39;re looking for? <Link target="_blank" href="https://forms.gle/Sx34MTubf5vb8YFL7" >Leave feedback</Link> and I will create it!</Typography>
+      <Typography sx={{ marginTop: '2rem' }} variant="body1"> Don&#39;t see the one you&#39;re looking for? <Link target="_blank" href="https://forms.gle/Sx34MTubf5vb8YFL7" >Leave feedback</Link> and I will create it!</Typography>
     </Container>
   )
 }

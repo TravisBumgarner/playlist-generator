@@ -1,4 +1,4 @@
-import { CssBaseline, ThemeProvider } from '@mui/material'
+import { Box, CssBaseline, ThemeProvider } from '@mui/material'
 import { gql, useLazyQuery } from '@apollo/client'
 import { Record, String, Array } from 'runtypes'
 import { useNavigate } from 'react-router'
@@ -156,12 +156,16 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Header />
-      <Navigation />
       <Alert />
-      <Router />
-      {OpenModal}
-      <SpotifyLogo />
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+        <Header />
+        <Box sx={{ overflow: 'scroll', flexGrow: 1 }}>
+          <Navigation />
+          <Router />
+          {OpenModal}
+        </Box>
+        <SpotifyLogo />
+      </Box>
     </ThemeProvider>
   )
 }

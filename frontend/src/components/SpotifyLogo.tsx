@@ -1,7 +1,6 @@
 import { css } from '@emotion/react'
 import spotifyLogo from '../static/spotify_dark.png'
-import { Box } from '@mui/system'
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 const SHARED_HEIGHT = 18
 
@@ -15,9 +14,6 @@ const SpotifyLogo = () => {
 }
 
 const wrapperCSS = css`
-  position:fixed;
-  right: 0;
-  bottom: 0;
   flex-direction: row;
   display: flex;
   justify-content: end;

@@ -36,10 +36,10 @@ export const theme = createTheme({
 export const pageWrapperCSS = css`
   box-sizing: border-box;
   overflow-y: auto;
-  max-width: 700px !important;
-  height: 80vh;
-  padding-top: 50px;
+  max-width: 800px !important;
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 `

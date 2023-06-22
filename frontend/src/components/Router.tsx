@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router'
 import { Navigate } from 'react-router-dom'
 
 import { context } from 'context'
-import { Home, Error, LandingPage, NotFound, Sandbox } from '../pages'
+import { Home, Error, LandingPage, NotFound, Sandbox, Changelog } from '../pages'
 import { ALGORITHM_ROUTES } from '../algorithms'
 import { Loading } from 'sharedComponents'
 import { Container } from '@mui/material'
@@ -57,6 +57,7 @@ const Router = () => {
           />
         )
       })}
+      <Route path="/changelog" element={<Changelog />} />
       <Route path="/rudaruda" element={<Sandbox />} />
       <Route path="*" element={<NotFound />} />
 

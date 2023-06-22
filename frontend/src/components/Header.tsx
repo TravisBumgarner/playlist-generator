@@ -65,7 +65,7 @@ const Header = () => {
   }, [state.user, handleLogout])
 
   return (
-    <AppBar position="static">
+    <AppBar position="relative">
       <Toolbar>
         <Tooltip title="Menu">
           <IconButton
