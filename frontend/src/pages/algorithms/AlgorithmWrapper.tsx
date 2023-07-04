@@ -67,14 +67,20 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
         )
       case EStep.PreviewingPlaylist:
         if (playlistEntries.length === 0) {
-          return <Typography variant="body1" gutterBottom>No results found</Typography>
+          return <>
+            <Typography variant="body1" gutterBottom>No results found</Typography>
+            <Button
+              fullWidth
+              variant='text' onClick={resetStateCallback}>Start Over
+            </Button>
+          </>
         }
 
-        return <Playlist resetStateCallback={resetState} initialTitle={initialPlaylistTitle} playlistEntries={playlistEntries} />
+        return <Playlist initialDescription={initialPlaylistDescription} resetStateCallback={resetState} initialTitle={initialPlaylistTitle} playlistEntries={playlistEntries} />
       case EStep.Searching:
         return <Loading />
     }
-  }, [step, searchParams, playlistEntries, resetState, handleSearch, searchDisabled, initialPlaylistTitle, trackCountCallback])
+  }, [step, searchParams, playlistEntries, resetStateCallback, resetState, handleSearch, searchDisabled, initialPlaylistTitle, initialPlaylistDescription, trackCountCallback])
 
   return (
     <Container css={pageWrapperCSS}>
