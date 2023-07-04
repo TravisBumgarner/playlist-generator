@@ -107,6 +107,7 @@ export type TCreatePlaylist = {
         uris: string[],
         accessToken: string,
         playlistTitle: string
+        playlistDescription: string
     },
 }
 

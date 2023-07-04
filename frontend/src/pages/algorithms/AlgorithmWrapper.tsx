@@ -16,6 +16,7 @@ interface AlgorithmWrapperProps {
   apiCall: (args: TSharedRequestParams) => Promise<TPlaylistEntry[] | undefined>
   resetStateCallback: () => void
   initialPlaylistTitle: string
+  initialPlaylistDescription: string
 }
 
 enum EStep {
@@ -24,7 +25,7 @@ enum EStep {
   PreviewingPlaylist = 'PreviewingPlaylist',
 }
 
-const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, apiCall, resetStateCallback, initialPlaylistTitle }: AlgorithmWrapperProps) => {
+const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, apiCall, resetStateCallback, initialPlaylistTitle, initialPlaylistDescription }: AlgorithmWrapperProps) => {
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const [step, setStep] = useState<EStep>(EStep.Inputting)
   const [trackCount, setTrackCount] = useState<number>(MIN_TRACK_COUNT)
@@ -52,7 +53,6 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
     setPlaylistEntries(results ?? [])
     setStep(EStep.PreviewingPlaylist)
   }, [dispatch, state.user, apiCall, trackCount])
-  console.log(trackCount)
   const Content = useMemo(() => {
     switch (step) {
       case EStep.Inputting:

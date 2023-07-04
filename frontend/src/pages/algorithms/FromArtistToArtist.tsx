@@ -35,6 +35,7 @@ const FromArtistToArtist = ({ title, description }: FromArtistToArtistParams) =>
   return (
     <AlgorithmWrapper
       title={title}
+      initialPlaylistDescription={description}
       description={description}
       searchParams={
         <>

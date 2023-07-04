@@ -13,7 +13,6 @@ export const createGoodBeatsToGoodSleepsPlaylist = {
     trackCount: { type: new GraphQLNonNull(GraphQLInt) },
   },
   resolve: async (_: any, { artistId, market, trackCount }: TGoodBeatsToGoodSleeps['Request']): Promise<TGoodBeatsToGoodSleeps['Response']> => {
-    console.log("RUDA", trackCount, market)
     const intervals = [{ max: 0.7, min: 0.5 }, { max: 0.5, min: 0.3 }, { max: 0.3, min: 0 }]
     const limit = Math.ceil(trackCount / intervals.length)
     const promises = await Promise.all(intervals.map(async ({ min, max }) => {

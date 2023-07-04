@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client'
 import { Button, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Search } from 'sharedComponents'
 import { type TFullControl, type TAutocompleteEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters, type TSharedRequestParams } from 'playlist-generator-utilities'
@@ -166,14 +166,22 @@ const FullControl = ({ title, description }: FullControlParams) => {
   }, [])
 
   const apiCall = useCallback(async (shared: TSharedRequestParams) => {
-    console.log(shared)
     const result = await createFullControl({ variables: { artistId: selectedArtist!.id, filters: stringifyFilters(selectedFilters), ...shared } })
     return result.data?.createFullControlPlaylist
   }, [selectedArtist, createFullControl, selectedFilters])
 
+  const initialPlaylistDescription = useMemo(() => {
+    let result = description
+    result += ' Selected Filters - '
+    result += selectedFilters.map(({ value, start, end }) => ` ${availableValues[value].title} from ${start} to ${end}`).join(', ')
+    result += '.'
+    return result
+  }, [description, selectedFilters])
+
   return (
     <AlgorithmWrapper
       title={title}
+      initialPlaylistDescription={initialPlaylistDescription}
       description={description}
       searchParams={
         <>

@@ -64,6 +64,7 @@ const ArtistMashup = ({ title, description }: ArtistMashupProps) => {
     <AlgorithmWrapper
       title={title}
       description={description}
+      initialPlaylistDescription={description}
       searchParams={
         <>
           <Search label={'Add an Artist'} resultSelectedCallback={addAnotherArtist} />

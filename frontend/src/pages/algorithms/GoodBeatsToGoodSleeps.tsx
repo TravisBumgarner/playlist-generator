@@ -28,6 +28,7 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
     <AlgorithmWrapper
       title={title}
       description={description}
+      initialPlaylistDescription={description}
       searchParams={
         <Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />
       }

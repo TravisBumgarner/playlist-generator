@@ -23,8 +23,8 @@ const playlistLinkCSS = css`
 `
 
 const SAVE_PLAYLIST_QUERY = gql`
-query savePlaylist($accessToken: String! $playlistTitle: String! $uris: [String]!) {
-    savePlaylist(accessToken: $accessToken, playlistTitle: $playlistTitle, uris: $uris) 
+query savePlaylist($accessToken: String! $playlistTitle: String! $playlistDescription: String! $uris: [String]!) {
+    savePlaylist(accessToken: $accessToken, playlistTitle: $playlistTitle, playlistDescription: $playlistDescription, uris: $uris) 
   }
 `
 
@@ -48,11 +48,13 @@ const PlaylistItem = (data: TPlaylistEntry) => {
 interface PlaylistParams {
   playlistEntries: TPlaylistEntry[]
   initialTitle: string
+  initialDescription: string
   resetStateCallback: () => void
 }
-const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: PlaylistParams) => {
+const Playlist = ({ playlistEntries, initialTitle, initialDescription, resetStateCallback }: PlaylistParams) => {
   const [savePlaylist] = useLazyQuery<{ savePlaylist: string }>(SAVE_PLAYLIST_QUERY)
   const [playlistTitle, setPlaylistTitle] = useState(initialTitle)
+  const [playlistDescription, setPlaylistDescription] = useState(initialDescription)
   const [isSavingPlaylist, setIsSavingPlaylist] = useState(false)
   const navigate = useNavigate()
   const { dispatch } = useContext(context)
@@ -67,7 +69,7 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
       navigate('/')
       return
     }
-    const response = await savePlaylist({ variables: { uris, playlistTitle, accessToken } })
+    const response = await savePlaylist({ variables: { uris, playlistTitle, playlistDescription, accessToken } })
     if (response.data) {
       dispatch({ type: 'ADD_ALERT', data: { text: 'Playlist created!', url: response.data.savePlaylist, severity: 'success' } })
       resetStateCallback()
@@ -76,7 +78,7 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
     }
 
     setIsSavingPlaylist(false)
-  }, [playlistEntries, playlistTitle, savePlaylist, navigate, dispatch, resetStateCallback])
+  }, [playlistEntries, playlistTitle, savePlaylist, navigate, dispatch, playlistDescription, resetStateCallback])
 
   const Playlist = useMemo(() => {
     // Sometimes duplicate tracks come back in a playlist. Currently it doesn't look possible to dedup a playlist and keep its integrity.
@@ -96,6 +98,18 @@ const Playlist = ({ playlistEntries, initialTitle, resetStateCallback }: Playlis
       value={playlistTitle}
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         setPlaylistTitle(event.target.value)
+      }}
+      css={{ marginBottom: '1rem' }}
+    />
+    <TextField
+      fullWidth
+      label="Give it a Description"
+      type="description"
+      margin="normal"
+      value={playlistDescription}
+      multiline
+      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        setPlaylistDescription(event.target.value)
       }}
       css={{ marginBottom: '1rem' }}
     />

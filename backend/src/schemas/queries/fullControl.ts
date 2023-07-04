@@ -49,7 +49,6 @@ export const createFullControlPlaylist = {
       filters.forEach(({ start, end, value }) => options[`target_${value}`] = calculateTargetValue(start, end, MAGIC_NUMBER - 1, i))
       optionsToPromise.push(options)
     }
-    console.log(optionsToPromise)
     const promises = await Promise.all(optionsToPromise.map((options) => getRecommendationsForPlaylist(options)))
     const dedupped = promises.reduce((accum, curr) => ({ ...accum, ...curr }), {} as { [key: string]: TPlaylistEntry })
     return Object.values(dedupped)
