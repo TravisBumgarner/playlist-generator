@@ -2,6 +2,7 @@ export interface TAutocompleteEntry {
     image: string
     name: string
     id: string
+    type: SearchType
 }
 
 export interface TArtist {
@@ -37,11 +38,7 @@ export type TAutocomplete = {
         query: string,
         market: string
     }
-    Response: {
-        id: string,
-        name: string,
-        image: string
-    }[]
+    Response: TAutocompleteEntry[]
 }
 
 export type TFromArtistToArtist = {
