@@ -24,8 +24,9 @@ query Autocomplete($query: String!, $market: String!) {
 
 interface SearchParams {
   resultSelectedCallback: (data: TAutocompleteEntry) => void
+  disabled?: boolean
 }
-const Search = ({ resultSelectedCallback }: SearchParams) => {
+const Search = ({ resultSelectedCallback, disabled }: SearchParams) => {
   const { state } = useContext(context)
   const [query, setQuery] = useState('')
   const [options, setOptions] = useState<readonly TAutocompleteEntry[]>([])
@@ -83,6 +84,7 @@ const Search = ({ resultSelectedCallback }: SearchParams) => {
 
   return (
     <Autocomplete
+      disabled={disabled}
       fullWidth
       getOptionLabel={(option) => option.name}
       options={options}

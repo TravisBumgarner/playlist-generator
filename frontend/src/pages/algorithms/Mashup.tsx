@@ -1,12 +1,13 @@
 import { useLazyQuery } from '@apollo/client'
 import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { Search } from 'sharedComponents'
 import { SearchType, type TAlgorithmMashup, type TAutocompleteEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import AlgorithmWrapper from './AlgorithmWrapper'
 import { MASHUP } from './queries'
+import { context } from 'context'
 
 interface ArtistListItemProps {
   autocompleteEntry: TAutocompleteEntry
@@ -36,6 +37,7 @@ const AutocompleteEntryListItem = ({ autocompleteEntry: { name, image, id }, rem
 
 interface MashupProps { title: string, description: string }
 const Mashup = ({ title, description }: MashupProps) => {
+  const { dispatch } = useContext(context)
   const [selectedAutocompleteEntries, setSelectedAutocompleteEntries] = useState<TAutocompleteEntry[]>([])
   const [createPlaylistMashup] = useLazyQuery<{ playlistMashup: TAlgorithmMashup['Response'] }, TAlgorithmMashup['Request']>(MASHUP, { fetchPolicy: 'network-only' })
 
@@ -63,6 +65,18 @@ const Mashup = ({ title, description }: MashupProps) => {
     return selectedAutocompleteEntries.map((entry) => <AutocompleteEntryListItem key={entry.id} autocompleteEntry={entry} removeAutocompleteEntry={removeAutocompleteEntry} />)
   }, [selectedAutocompleteEntries, removeAutocompleteEntry])
 
+  useEffect(() => {
+    if (selectedAutocompleteEntries.length === 5) {
+      dispatch({
+        type: 'ADD_ALERT',
+        data: {
+          text: 'You have selected the maximum number of artists and tracks. Please remove one to add another.',
+          severity: 'warning'
+        }
+      })
+    }
+  }, [selectedAutocompleteEntries, dispatch])
+
   return (
     <AlgorithmWrapper
       title={title}
@@ -70,7 +84,7 @@ const Mashup = ({ title, description }: MashupProps) => {
       initialPlaylistDescription={description}
       searchParams={
         <>
-          <Search resultSelectedCallback={addAnotherAutocompleteEntry} />
+          <Search disabled={selectedAutocompleteEntries.length === 5} resultSelectedCallback={addAnotherAutocompleteEntry} />
           <List>
             {ListItems}
           </List>
