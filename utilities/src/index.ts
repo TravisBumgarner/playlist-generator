@@ -24,13 +24,16 @@ export interface TPlaylistEntry {
     image: string
 }
 
-enum ESearchTypeEnum {
-    artist = 'artist'
+export enum SearchType {
+    Album = 'Album',
+    Artist = 'Artist',
+    Playlist = 'Playlist',
+    Track = 'Track',
 }
 
 export type TAutocomplete = {
     Request: {
-        types: ESearchTypeEnum,
+        type: string,
         query: string,
         market: string
     }
@@ -40,7 +43,6 @@ export type TAutocomplete = {
         image: string
     }[]
 }
-
 
 export type TFromArtistToArtist = {
     Request: {

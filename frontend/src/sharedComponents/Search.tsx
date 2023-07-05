@@ -1,5 +1,5 @@
 import TextField from '@mui/material/TextField'
-import { useMemo, useState, useContext, useEffect } from 'react'
+import React, { useMemo, useContext, useEffect, useState } from 'react'
 import Autocomplete from '@mui/material/Autocomplete'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
@@ -7,12 +7,19 @@ import { debounce } from '@mui/material/utils'
 import { gql, useLazyQuery } from '@apollo/client'
 import { type TAutocompleteEntry } from 'playlist-generator-utilities'
 import { logger } from 'utilities'
-import { Avatar } from '@mui/material'
+import { Avatar, FormControlLabel, Box, FormControl, FormLabel, RadioGroup, Radio } from '@mui/material'
 import { context } from 'context'
 
+enum Filter {
+  Album = 'album',
+  Artist = 'artist',
+  Playlist = 'playlist',
+  Track = 'track'
+}
+
 const AUTOCOMPLETE_QUERY = gql`
-query Autocomplete($query: String!, $market: String!) {
-    autocomplete(query: $query, types: artist, market: $market) {
+query Autocomplete($query: String!, $market: String!, $type: String!) {
+    autocomplete(query: $query, type: $type, market: $market) {
         name
         id
         image
@@ -31,6 +38,11 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
   const [options, setOptions] = useState<readonly TAutocompleteEntry[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [autocomplete] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
+  const [selectedType, setSelectedType] = useState<Filter>(Filter.Artist)
+
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedType(event.target.value as Filter)
+  }
 
   const fetch = useMemo(
     () =>
@@ -39,7 +51,7 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
           request: string,
           handleResults: (results?: readonly TAutocompleteEntry[]) => void
         ) => {
-          autocomplete({ variables: { query: request, market: state.user!.market } }).then(result => {
+          autocomplete({ variables: { query: request, market: state.user!.market, type: selectedType } }).then(result => {
             if ((result.data?.autocomplete) != null) {
               handleResults(result.data?.autocomplete)
             } else {
@@ -51,7 +63,7 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
         },
         400
       ),
-    [autocomplete, state.user]
+    [autocomplete, state.user, selectedType]
   )
 
   useEffect(() => {
@@ -86,44 +98,58 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
     }
   }, [selected, query, fetch])
   return (
-    <Autocomplete
-      fullWidth
-      getOptionLabel={(option) => option.name}
-      options={options}
-      value={selected}
-      loading={isLoading}
-      clearOnBlur
-      clearOnEscape
-      loadingText="Enter a query to get started"
-      noOptionsText="No Results"
-      onChange={(event: any, newValue: TAutocompleteEntry | null) => {
-        setOptions(newValue ? [newValue, ...options] : options)
-        newValue && resultSelectedCallback(newValue)
-        setSelected(newValue)
-      }}
-      onInputChange={(event, newInputValue) => {
-        setQuery(newInputValue)
-      }}
-      renderInput={(params) => (
-        <TextField {...params} label={label} fullWidth margin='normal' />
-      )}
-      renderOption={(props, option) => {
-        return (
-          <li {...props} key={option.id}>
-            <Grid container alignItems="center">
-              <Grid item sx={{ display: 'flex', width: 44 }}>
-                <Avatar variant="square" alt={option.name} src={option.image} />
+    <>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Typography variant="body2" sx={{ marginRight: '1rem' }} color="text.secondary">
+          Filter Search Results by:
+        </Typography>
+        <FormControl component="fieldset">
+          <RadioGroup row aria-label="media-type" name="media-type" value={selectedType} onChange={handleRadioChange}>
+            <FormControlLabel value="album" control={<Radio />} label="Album" />
+            <FormControlLabel value="artist" control={<Radio />} label="Artist" />
+            <FormControlLabel value="playlist" control={<Radio />} label="Playlist" />
+            <FormControlLabel value="track" control={<Radio />} label="Track" />
+          </RadioGroup>
+        </FormControl>
+      </Box>      <Autocomplete
+        fullWidth
+        getOptionLabel={(option) => option.name}
+        options={options}
+        value={selected}
+        loading={isLoading}
+        clearOnBlur
+        clearOnEscape
+        loadingText="Enter a query to get started"
+        noOptionsText="No Results"
+        onChange={(event: any, newValue: TAutocompleteEntry | null) => {
+          setOptions(newValue ? [newValue, ...options] : options)
+          newValue && resultSelectedCallback(newValue)
+          setSelected(newValue)
+        }}
+        onInputChange={(event, newInputValue) => {
+          setQuery(newInputValue)
+        }}
+        renderInput={(params) => (
+          <TextField {...params} label={label} fullWidth margin='normal' />
+        )}
+        renderOption={(props, option) => {
+          return (
+            <li {...props} key={option.id}>
+              <Grid container alignItems="center">
+                <Grid item sx={{ display: 'flex', width: 44 }}>
+                  <Avatar variant="square" alt={option.name} src={option.image} />
+                </Grid>
+                <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {option.name}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
-                <Typography variant="body2" color="text.secondary">
-                  {option.name}
-                </Typography>
-              </Grid>
-            </Grid>
-          </li>
-        )
-      }}
-    />
+            </li>
+          )
+        }}
+      />
+    </>
   )
 }
 

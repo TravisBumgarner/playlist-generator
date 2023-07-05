@@ -5,6 +5,14 @@ import { pageWrapperCSS } from 'theme'
 
 const changelogData: Array<{ version: string, date: string, title: string, notes: string[] }> = [
   {
+    version: '1.1.0',
+    date: 'July 4, 2023',
+    notes: [
+      'Added descriptions for playlists'
+    ],
+    title: 'Initial Release'
+  },
+  {
     version: '1.0.0',
     date: 'June 22, 2023',
     notes: [
