@@ -2,27 +2,27 @@ import { useLazyQuery } from '@apollo/client'
 import { useCallback, useState } from 'react'
 
 import { Search } from 'sharedComponents'
-import { type TGoodBeatsToGoodSleeps, type TAutocompleteEntry, type TSharedRequestParams } from 'playlist-generator-utilities'
+import { type TAlgorithmGoodBeatsToGoodSleeps, type TAutocompleteEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import AlgorithmWrapper from './AlgorithmWrapper'
-import { CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY } from './queries'
+import { GOOD_BEATS_TO_GOOD_SLEEPS } from './queries'
 
 interface GoodBeatsToGoodSleepsProps { title: string, description: string }
 const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps) => {
-  const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
-  const [createGoodBeatsToGoodSleepsPlaylist] = useLazyQuery<{ createGoodBeatsToGoodSleepsPlaylist: TGoodBeatsToGoodSleeps['Response'] }, TGoodBeatsToGoodSleeps['Request']>(CREATE_GOOD_BEATS_TO_GOOD_SLEEPS_QUERY, { fetchPolicy: 'network-only' })
+  const [selectedEntry, setSelectedEntry] = useState<TAutocompleteEntry | null>(null)
+  const [createPlaylistGoodBeatsToGoodSleeps] = useLazyQuery<{ createPlaylistGoodBeatsToGoodSleeps: TAlgorithmGoodBeatsToGoodSleeps['Response'] }, TAlgorithmGoodBeatsToGoodSleeps['Request']>(GOOD_BEATS_TO_GOOD_SLEEPS, { fetchPolicy: 'network-only' })
 
   const resetState = useCallback(() => {
-    setSelectedArtist(null)
+    setSelectedEntry(null)
   }, [])
 
   const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
-    setSelectedArtist(value)
+    setSelectedEntry(value)
   }, [])
 
-  const apiCall = useCallback(async (shared: TSharedRequestParams) => {
-    const result = await createGoodBeatsToGoodSleepsPlaylist({ variables: { artistId: selectedArtist!.id, ...shared } })
-    return result.data?.createGoodBeatsToGoodSleepsPlaylist
-  }, [selectedArtist, createGoodBeatsToGoodSleepsPlaylist])
+  const apiCall = useCallback(async (shared: TSharedAlgorithmRequestParams) => {
+    const result = await createPlaylistGoodBeatsToGoodSleeps({ variables: { selectedId: selectedEntry!.id, selectedType: selectedEntry!.type, ...shared } })
+    return result.data?.createPlaylistGoodBeatsToGoodSleeps
+  }, [selectedEntry, createPlaylistGoodBeatsToGoodSleeps])
 
   return (
     <AlgorithmWrapper
@@ -30,12 +30,12 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
       description={description}
       initialPlaylistDescription={description}
       searchParams={
-        <Search label={'Artist'} resultSelectedCallback={resultSelectedCallback} />
+        <Search resultSelectedCallback={resultSelectedCallback} />
       }
-      searchDisabled={selectedArtist === null}
+      searchDisabled={selectedEntry === null}
       apiCall={apiCall}
       resetStateCallback={resetState}
-      initialPlaylistTitle={`Good Beats to Good Sleeps with ${selectedArtist?.name}`}
+      initialPlaylistTitle={`Good Beats to Good Sleeps with ${selectedEntry?.name}`}
     >
     </AlgorithmWrapper >
   )

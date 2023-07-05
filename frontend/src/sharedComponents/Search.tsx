@@ -22,11 +22,10 @@ query Autocomplete($query: String!, $market: String!) {
   }
 `
 
-interface SearchV2Params {
-  label: string
+interface SearchParams {
   resultSelectedCallback: (data: TAutocompleteEntry) => void
 }
-const Search = ({ label, resultSelectedCallback }: SearchV2Params) => {
+const Search = ({ resultSelectedCallback }: SearchParams) => {
   const { state } = useContext(context)
   const [query, setQuery] = useState('')
   const [options, setOptions] = useState<readonly TAutocompleteEntry[]>([])
@@ -81,7 +80,7 @@ const Search = ({ label, resultSelectedCallback }: SearchV2Params) => {
       active = false
     }
   }, [query, fetch])
-  console.log(options)
+
   return (
     <Autocomplete
       fullWidth
@@ -100,7 +99,7 @@ const Search = ({ label, resultSelectedCallback }: SearchV2Params) => {
         setQuery(newInputValue)
       }}
       renderInput={(params) => (
-        <TextField {...params} label={label} fullWidth margin='normal' />
+        <TextField {...params} label="Select an Artist or Track" fullWidth margin='normal' />
       )}
       groupBy={(option) => option.type}
       renderOption={(props, option) => {

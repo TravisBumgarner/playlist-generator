@@ -19,7 +19,6 @@ export const savePlaylist = {
 
       // Spotify does not allow returns in a description.
       const trimmedDescription = playlistDescription.replace(/(\r\n|\n|\r)/gm, "")
-      console.log(trimmedDescription)
       const playlist = await client.createPlaylist(playlistTitle || "No title supplied", { description: trimmedDescription || "No description supplied" })
 
       await client.addTracksToPlaylist(playlist.body.id, uris)

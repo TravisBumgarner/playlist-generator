@@ -3,7 +3,7 @@ import { Loading, Playlist, TrackCount } from 'sharedComponents'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { pageWrapperCSS } from 'theme'
-import { type TPlaylistEntry, type TSharedRequestParams } from 'playlist-generator-utilities'
+import { type TPlaylistEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import { context } from 'context'
 import { MIN_TRACK_COUNT } from '../../sharedComponents/TrackCount'
 
@@ -13,7 +13,7 @@ interface AlgorithmWrapperProps {
   children: any
   searchParams: JSX.Element
   searchDisabled: boolean
-  apiCall: (args: TSharedRequestParams) => Promise<TPlaylistEntry[] | undefined>
+  apiCall: (args: TSharedAlgorithmRequestParams) => Promise<TPlaylistEntry[] | undefined>
   resetStateCallback: () => void
   initialPlaylistTitle: string
   initialPlaylistDescription: string
@@ -48,7 +48,6 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
       dispatch({ type: 'ADD_ALERT', data: { text: 'User is not logged in', severity: 'error' } })
       return
     }
-
     const results = await apiCall({ trackCount, market: state.user.market })
     setPlaylistEntries(results ?? [])
     setStep(EStep.PreviewingPlaylist)
@@ -71,7 +70,7 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
             <Typography variant="body1" gutterBottom>No results found</Typography>
             <Button
               fullWidth
-              variant='text' onClick={resetStateCallback}>Start Over
+              variant='text' onClick={resetState}>Start Over
             </Button>
           </>
         }
@@ -80,7 +79,7 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
       case EStep.Searching:
         return <Loading />
     }
-  }, [step, searchParams, playlistEntries, resetStateCallback, resetState, handleSearch, searchDisabled, initialPlaylistTitle, initialPlaylistDescription, trackCountCallback])
+  }, [step, searchParams, playlistEntries, resetState, handleSearch, searchDisabled, initialPlaylistTitle, initialPlaylistDescription, trackCountCallback])
 
   return (
     <Container css={pageWrapperCSS}>
