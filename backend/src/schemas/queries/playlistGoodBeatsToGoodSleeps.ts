@@ -17,16 +17,18 @@ const playlistGoodBeatsToGoodSleeps = {
     const intervals = [{ max: 0.7, min: 0.5 }, { max: 0.5, min: 0.3 }, { max: 0.3, min: 0 }]
     const limit = Math.ceil(trackCount / intervals.length)
     const promises = await Promise.all(intervals.map(async ({ min, max }) => {
-      // 3 different energies, 4 tracks each, at 3 min each -> ~30 minutes of music before white noise
+
       const options: GetRecommendationsForPlaylistOptions = { market, limit, min_energy: min, max_energy: max }
       if (selectedType === SearchType.Artist) {
         options.seed_artists = selectedId
       } else if (selectedType === SearchType.Track) {
         options.seed_tracks = selectedId
       }
+      console.log(options)
       const recs = await getRecommendationsForPlaylist(options)
       return recs
     }))
+    console.log(promises)
     const deduped = promises.reduce((accum, curr) => ({ ...accum, ...curr }), {} as { [key: string]: TPlaylistEntry })
     const whiteNoise = {
       "id": "2RrTfwz7prB7ImgbxdWOcE",

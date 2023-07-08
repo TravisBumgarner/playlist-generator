@@ -9,7 +9,7 @@ import { GOOD_BEATS_TO_GOOD_SLEEPS } from './queries'
 interface GoodBeatsToGoodSleepsProps { title: string, description: string }
 const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps) => {
   const [selectedEntry, setSelectedEntry] = useState<TAutocompleteEntry | null>(null)
-  const [createPlaylistGoodBeatsToGoodSleeps] = useLazyQuery<{ createPlaylistGoodBeatsToGoodSleeps: TAlgorithmGoodBeatsToGoodSleeps['Response'] }, TAlgorithmGoodBeatsToGoodSleeps['Request']>(GOOD_BEATS_TO_GOOD_SLEEPS, { fetchPolicy: 'network-only' })
+  const [createPlaylistGoodBeatsToGoodSleeps] = useLazyQuery<{ playlistGoodBeatsToGoodSleeps: TAlgorithmGoodBeatsToGoodSleeps['Response'] }, TAlgorithmGoodBeatsToGoodSleeps['Request']>(GOOD_BEATS_TO_GOOD_SLEEPS, { fetchPolicy: 'network-only' })
 
   const resetState = useCallback(() => {
     setSelectedEntry(null)
@@ -21,7 +21,7 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
 
   const apiCall = useCallback(async (shared: TSharedAlgorithmRequestParams) => {
     const result = await createPlaylistGoodBeatsToGoodSleeps({ variables: { selectedId: selectedEntry!.id, selectedType: selectedEntry!.type, ...shared } })
-    return result.data?.createPlaylistGoodBeatsToGoodSleeps
+    return result.data?.playlistGoodBeatsToGoodSleeps
   }, [selectedEntry, createPlaylistGoodBeatsToGoodSleeps])
 
   return (
