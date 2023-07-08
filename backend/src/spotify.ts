@@ -171,7 +171,6 @@ export const getRecommendationsForPlaylist = async (options: GetRecommendationsF
             return {}
         }
 
-        // For whatever reason I can't get map/reduce to run at the same time without complaining.
         return playlistTracks.reduce((accum, curr) => {
             accum[curr.id] = curr
             return accum

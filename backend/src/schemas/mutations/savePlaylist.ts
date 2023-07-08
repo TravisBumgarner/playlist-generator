@@ -3,7 +3,7 @@ import { GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql'
 import getSpotifyClient from '../../spotify'
 import { TCreatePlaylist } from 'playlist-generator-utilities'
 
-export const savePlaylist = {
+const savePlaylist = {
   type: GraphQLString,
   description: 'Save a collection of tracks to spotify',
   args: {
@@ -31,3 +31,5 @@ export const savePlaylist = {
     }
   }
 }
+
+export default savePlaylist

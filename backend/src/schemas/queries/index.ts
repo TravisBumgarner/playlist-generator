@@ -1,8 +1,7 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 
 import { getSpotifyRedirectURI, refreshToken } from './auth'
-import { savePlaylist } from './playlists'
-import { autocomplete } from './autocomplete'
+import autocomplete from './autocomplete'
 import playlistGradient from './playlistGradient'
 import playlistGoodBeatsToGoodSleeps from './playlistGoodBeatsToGoodSleeps'
 import playlistMashup from './playlistMashup'
@@ -27,7 +26,6 @@ const RootQueryType = new GraphQLObjectType({
         autocomplete,
         getSpotifyRedirectURI,
         refreshToken,
-        savePlaylist,
         playlistGradient,
         playlistFullControl,
         playlistGoodBeatsToGoodSleeps,

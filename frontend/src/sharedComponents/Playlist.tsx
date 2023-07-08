@@ -6,7 +6,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
 import { type TPlaylistEntry } from 'playlist-generator-utilities'
 import TextField from '@mui/material/TextField'
-import { gql, useLazyQuery } from '@apollo/client'
+import { gql, useMutation } from '@apollo/client'
 import { useNavigate } from 'react-router'
 
 import { ELocalStorageItems, getLocalStorage } from 'utilities'
@@ -22,8 +22,8 @@ const playlistLinkCSS = css`
   }
 `
 
-const SAVE_PLAYLIST_QUERY = gql`
-query savePlaylist($accessToken: String! $playlistTitle: String! $playlistDescription: String! $uris: [String]!) {
+const SAVE_PLAYLIST_MUTATION = gql`
+  mutation savePlaylist($accessToken: String! $playlistTitle: String! $playlistDescription: String! $uris: [String]!) {
     savePlaylist(accessToken: $accessToken, playlistTitle: $playlistTitle, playlistDescription: $playlistDescription, uris: $uris) 
   }
 `
@@ -52,7 +52,7 @@ interface PlaylistParams {
   resetStateCallback: () => void
 }
 const Playlist = ({ playlistEntries, initialTitle, initialDescription, resetStateCallback }: PlaylistParams) => {
-  const [savePlaylist] = useLazyQuery<{ savePlaylist: string }>(SAVE_PLAYLIST_QUERY)
+  const [savePlaylist] = useMutation<{ savePlaylist: string }>(SAVE_PLAYLIST_MUTATION)
   const [playlistTitle, setPlaylistTitle] = useState(initialTitle)
   const [playlistDescription, setPlaylistDescription] = useState(initialDescription)
   const [isSavingPlaylist, setIsSavingPlaylist] = useState(false)

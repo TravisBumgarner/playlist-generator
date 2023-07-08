@@ -14,7 +14,7 @@ const AutoCompleteType = new GraphQLObjectType({
   }),
 })
 
-export const autocomplete = {
+const autocomplete = {
   type: new GraphQLList(AutoCompleteType),
   description: 'Get a list of items searched for autocomplete',
   args: {
@@ -56,3 +56,5 @@ export const autocomplete = {
     return autocompleteResults
   }
 }
+
+export default autocomplete
