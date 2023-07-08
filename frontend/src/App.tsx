@@ -7,7 +7,7 @@ import axios from 'axios'
 import useAsyncEffect from 'use-async-effect'
 
 import { theme } from 'theme'
-import { Alert, Router, Header, Navigation, SpotifyLogo } from './components'
+import { Router, Header, Navigation, Footer } from './components'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
 import { context } from 'context'
 import { useSearchParams } from 'react-router-dom'
@@ -156,15 +156,14 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Alert />
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <Header />
-        <Box sx={{ overflow: 'scroll', flexGrow: 1 }}>
+        <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
           <Navigation />
           <Router />
           {OpenModal}
         </Box>
-        <SpotifyLogo />
+        <Footer />
       </Box>
     </ThemeProvider>
   )

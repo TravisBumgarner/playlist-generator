@@ -2,6 +2,7 @@ export interface TAutocompleteEntry {
     image: string
     name: string
     id: string
+    type: SearchType
 }
 
 export interface TArtist {
@@ -24,31 +25,20 @@ export interface TPlaylistEntry {
     image: string
 }
 
-enum ESearchTypeEnum {
-    artist = 'artist'
+export enum SearchType {
+    Album = 'Album',
+    Artist = 'Artist',
+    Playlist = 'Playlist',
+    Track = 'Track',
 }
 
 export type TAutocomplete = {
     Request: {
-        types: ESearchTypeEnum,
+        type: string,
         query: string,
         market: string
     }
-    Response: {
-        id: string,
-        name: string,
-        image: string
-    }[]
-}
-
-
-export type TFromArtistToArtist = {
-    Request: {
-        artistIdStart: string,
-        artistIdEnd: string,
-        market: string
-    } & TSharedRequestParams,
-    Response: TPlaylistEntry[]
+    Response: TAutocompleteEntry[]
 }
 
 export enum EFilterOption {
@@ -72,33 +62,44 @@ export type TFilter = {
     start: EFilterValue
     end: EFilterValue
 }
-export type TSharedRequestParams = {
+
+export type TAlgorithmGradient = {
+    Request: {
+        startWithId: string;
+        startWithType: SearchType;
+        endWithId: string;
+        endWithType: SearchType;
+    } & TSharedAlgorithmRequestParams,
+    Response: TPlaylistEntry[]
+}
+
+export type TSharedAlgorithmRequestParams = {
     trackCount: number;
     market: string;
 }
 
-export type TFullControl = {
+export type TAlgorithmFullControl = {
     Request: {
-        artistId: string;
-        market: string;
+        selectedId: string;
+        selectedType: SearchType;
         filters: string;
-    } & TSharedRequestParams;
+    } & TSharedAlgorithmRequestParams;
     Response: TPlaylistEntry[];
 };
 
-export type TGoodBeatsToGoodSleeps = {
+export type TAlgorithmGoodBeatsToGoodSleeps = {
     Request: {
-        artistId: string;
-        market: string;
-    } & TSharedRequestParams;
+        selectedId: string;
+        selectedType: SearchType;
+    } & TSharedAlgorithmRequestParams;
     Response: TPlaylistEntry[];
 };
 
-export type TArtistMashup = {
+export type TAlgorithmMashup = {
     Request: {
         artistIds: string[];
-        market: string;
-    } & TSharedRequestParams;
+        trackIds: string[]
+    } & TSharedAlgorithmRequestParams;
     Response: TPlaylistEntry[];
 };
 
@@ -107,6 +108,7 @@ export type TCreatePlaylist = {
         uris: string[],
         accessToken: string,
         playlistTitle: string
+        playlistDescription: string
     },
 }
 

@@ -1,7 +1,7 @@
 import {
-  FromArtistToArtist,
+  Gradient,
   GoodBeatsToGoodSleeps,
-  ArtistMashup,
+  Mashup,
   FullControl
 } from './pages/algorithms'
 
@@ -14,28 +14,10 @@ interface TAlgorithm {
 
 export const ALGORITHM_ROUTES: TAlgorithm[] = [
   {
-    title: 'Artist Mashup',
-    href: '/a/artist_mashup',
-    description:
-      'Pick several artists. Generate a playlist that jumps between recommended tracks from each artist.',
-    component: (title, description) => (
-      <ArtistMashup title={title} description={description} />
-    )
-  },
-  {
-    title: 'From Artist to Artist',
-    href: '/a/from_artist_to_artist',
-    description:
-      'Pick two artists. Generate a playlist of tracks that starts with one artist, moves through related artists, and ends with the other.',
-    component: (title, description) => (
-      <FromArtistToArtist title={title} description={description} />
-    )
-  },
-  {
     title: 'Full Control',
     href: '/a/full_control',
     description:
-      'Pick an artist. Generate a playlist where you can tweak everything about the tracks of the playlist.',
+      'Pick an artist or track. Generate a playlist where you can tweak everything about the tracks of the playlist.',
     component: (title, description) => (
       <FullControl title={title} description={description} />
     )
@@ -47,6 +29,24 @@ export const ALGORITHM_ROUTES: TAlgorithm[] = [
       'Pick an artist. Generate a playlist that starts with tracks related to the artist and ends with enough white noise to last you through the night.',
     component: (title, description) => (
       <GoodBeatsToGoodSleeps title={title} description={description} />
+    )
+  },
+  {
+    title: 'Gradient',
+    href: '/a/gradient',
+    description:
+      'Pick two artists or tracks. Generate a playlist of tracks that starts with one, moves through related music, and ends with the other.',
+    component: (title, description) => (
+      <Gradient title={title} description={description} />
+    )
+  },
+  {
+    title: 'Mashup',
+    href: '/a/mashup',
+    description:
+      'Pick several artists and/or tracks. Generate a playlist that jumps between recommended tracks from each of them.',
+    component: (title, description) => (
+      <Mashup title={title} description={description} />
     )
   }
 ]

@@ -1,11 +1,11 @@
-import FromArtistToArtist from './FromArtistToArtist'
+import Gradient from './Gradient'
 import GoodBeatsToGoodSleeps from './GoodBeatsToGoodSleeps'
-import ArtistMashup from './ArtistMashup'
+import Mashup from './Mashup'
 import FullControl from './FullControl'
 
 export {
-  FromArtistToArtist,
+  Gradient,
   GoodBeatsToGoodSleeps,
-  ArtistMashup,
+  Mashup,
   FullControl
 }

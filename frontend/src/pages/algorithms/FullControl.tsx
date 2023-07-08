@@ -1,11 +1,11 @@
 import { useLazyQuery } from '@apollo/client'
 import { Button, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Search } from 'sharedComponents'
-import { type TFullControl, type TAutocompleteEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters, type TSharedRequestParams } from 'playlist-generator-utilities'
+import { type TAlgorithmFullControl, type TAutocompleteEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import AlgorithmWrapper from './AlgorithmWrapper'
-import { CREATE_FULL_CONTROL_PLAYLIST } from './queries'
+import { FULL_CONTROL } from './queries'
 
 interface FilterOptionInfo {
   title: string
@@ -149,42 +149,50 @@ const FullControlFilters = ({ filtersSelectedCallback }: FullControlFiltersProps
 
 interface FullControlParams { title: string, description: string }
 const FullControl = ({ title, description }: FullControlParams) => {
-  const [selectedArtist, setSelectedArtist] = useState<{ id: string, name: string } | null>(null)
+  const [selectedEntry, setSelectedEntry] = useState<TAutocompleteEntry | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<TFilter[]>([])
-  const [createFullControl] = useLazyQuery<{ createFullControlPlaylist: TFullControl['Response'] }, TFullControl['Request']>(CREATE_FULL_CONTROL_PLAYLIST, { fetchPolicy: 'network-only' })
+  const [createPlaylistFullControl] = useLazyQuery<{ playlistFullControl: TAlgorithmFullControl['Response'] }, TAlgorithmFullControl['Request']>(FULL_CONTROL, { fetchPolicy: 'network-only' })
 
   const resetState = useCallback(() => {
-    setSelectedArtist(null)
+    setSelectedEntry(null)
   }, [])
 
   const resultSelectedCallback = useCallback(async (value: TAutocompleteEntry) => {
-    setSelectedArtist(value)
+    setSelectedEntry(value)
   }, [])
 
   const filtersSelectedCallback = useCallback(async (filters: TFilter[]) => {
     setSelectedFilters(filters)
   }, [])
 
-  const apiCall = useCallback(async (shared: TSharedRequestParams) => {
-    console.log(shared)
-    const result = await createFullControl({ variables: { artistId: selectedArtist!.id, filters: stringifyFilters(selectedFilters), ...shared } })
-    return result.data?.createFullControlPlaylist
-  }, [selectedArtist, createFullControl, selectedFilters])
+  const apiCall = useCallback(async (shared: TSharedAlgorithmRequestParams) => {
+    const result = await createPlaylistFullControl({ variables: { selectedId: selectedEntry!.id, selectedType: selectedEntry!.type, filters: stringifyFilters(selectedFilters), ...shared } })
+    return result.data?.playlistFullControl
+  }, [selectedEntry, createPlaylistFullControl, selectedFilters])
+
+  const initialPlaylistDescription = useMemo(() => {
+    let result = description
+    result += ' Selected Filters - '
+    result += selectedFilters.map(({ value, start, end }) => ` ${availableValues[value].title} from ${start} to ${end}`).join(', ')
+    result += '.'
+    return result
+  }, [description, selectedFilters])
 
   return (
     <AlgorithmWrapper
       title={title}
+      initialPlaylistDescription={initialPlaylistDescription}
       description={description}
       searchParams={
         <>
-          <Search label={'Select an Artist'} resultSelectedCallback={resultSelectedCallback} />
+          <Search resultSelectedCallback={resultSelectedCallback} />
           <FullControlFilters filtersSelectedCallback={filtersSelectedCallback} />
         </>
       }
-      searchDisabled={selectedArtist === null || selectedFilters.length === 0}
+      searchDisabled={selectedEntry === null || selectedFilters.length === 0}
       apiCall={apiCall}
       resetStateCallback={resetState}
-      initialPlaylistTitle={`Full Control with ${selectedArtist?.name}`}
+      initialPlaylistTitle={`Full Control with ${selectedEntry?.name}`}
     >
     </AlgorithmWrapper >
   )

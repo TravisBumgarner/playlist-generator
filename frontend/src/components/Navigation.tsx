@@ -25,18 +25,14 @@ const Navigation = () => {
 
     return ALGORITHM_ROUTES.map(({ title: text, href }) => {
       return (
-        <>
-          <ListItem disablePadding key={text}>
-            <ListItemButton href={href}>
-              <ListItemIcon>
-                <PlaylistPlayIcon />
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-          <Divider />
-        </>
-
+        <ListItem disablePadding key={text}>
+          <ListItemButton href={href}>
+            <ListItemIcon>
+              <PlaylistPlayIcon />
+            </ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItemButton>
+        </ListItem>
       )
     })
   }, [state.user])

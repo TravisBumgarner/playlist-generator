@@ -1,12 +1,11 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 
 import { getSpotifyRedirectURI, refreshToken } from './auth'
-import { savePlaylist } from './playlists'
-import { autocomplete } from './autocomplete'
-import { createFromArtistToArtistPlaylist } from './fromArtistToArtist'
-import { createGoodBeatsToGoodSleepsPlaylist } from './goodBeatsToGoodSleeps'
-import { createArtistMashupPlaylist } from './artistMashup'
-import { createFullControlPlaylist } from './fullControl'
+import autocomplete from './autocomplete'
+import playlistGradient from './playlistGradient'
+import playlistGoodBeatsToGoodSleeps from './playlistGoodBeatsToGoodSleeps'
+import playlistMashup from './playlistMashup'
+import playlistFullControl from './playlistFullControl'
 
 const ping = {
     type: GraphQLString,
@@ -27,11 +26,10 @@ const RootQueryType = new GraphQLObjectType({
         autocomplete,
         getSpotifyRedirectURI,
         refreshToken,
-        savePlaylist,
-        createFromArtistToArtistPlaylist,
-        createGoodBeatsToGoodSleepsPlaylist,
-        createArtistMashupPlaylist,
-        createFullControlPlaylist
+        playlistGradient,
+        playlistFullControl,
+        playlistGoodBeatsToGoodSleeps,
+        playlistMashup
     }),
 })
 

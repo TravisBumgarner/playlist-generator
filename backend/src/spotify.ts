@@ -4,7 +4,7 @@ import config from './config'
 import axios from 'axios'
 import SpotifyWebApi from 'spotify-web-api-node'
 import { logger } from './utilities'
-import { TPlaylistEntry } from 'playlist-generator-utilities'
+import { SearchType, TPlaylistEntry } from 'playlist-generator-utilities'
 
 const SpotifyToken = Record({
     access_token: String,
@@ -113,7 +113,8 @@ const getSpotifyClient = async () => {
 
 
 export type GetRecommendationsForPlaylistOptions = {
-    seed_artists: string[] | string
+    seed_artists?: string[] | string
+    seed_tracks?: string[] | string
     market: string,
     limit: number,
     min_energy?: number,
@@ -125,13 +126,22 @@ export type GetRecommendationsForPlaylistOptions = {
     target_valence?: number,
 }
 
-type Options = { seed_artists: string[], market: string, limit: number }
-export const getRelatedArtistFromArtists = async (market: string, artistIdStart: string, artistIdEnd: string) => {
+type Options = { seed_artists: string[], seed_tracks: string[], market: string, limit: number }
+export const getRecommendedArtist = async (
+    market: string,
+    seeds: { id: string, type: SearchType }[]
+) => {
     // This algorithm could definitely be improved. Kind of blocked until I find a solution on creating a graph of spotify artists.
     const client = await getSpotifyClient()
 
-    const options: Options = { seed_artists: [], market, limit: 1 }
-    options.seed_artists.push(artistIdStart, artistIdEnd)
+    const options: Options = { seed_artists: [], seed_tracks: [], market, limit: 1 }
+    seeds.forEach(seed => {
+        if (seed.type === SearchType.Artist) {
+            options.seed_artists.push(seed.id)
+        } else if (seed.type === SearchType.Track) {
+            options.seed_tracks.push(seed.id)
+        }
+    })
 
     const results = await client.getRecommendations(options)
     return results.body?.tracks[0].artists[0].id
@@ -161,7 +171,6 @@ export const getRecommendationsForPlaylist = async (options: GetRecommendationsF
             return {}
         }
 
-        // For whatever reason I can't get map/reduce to run at the same time without complaining.
         return playlistTracks.reduce((accum, curr) => {
             accum[curr.id] = curr
             return accum
@@ -184,7 +193,6 @@ export const getArtistFromOptions = async (options: GetArtistOptions) => {
     const client = await getSpotifyClient()
     try {
         const results = await client.getRecommendations(options)
-        console.log(results.body)
         return results.body?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
             return {
                 id,

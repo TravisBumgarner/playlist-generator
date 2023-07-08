@@ -3,7 +3,7 @@ import { Loading, Playlist, TrackCount } from 'sharedComponents'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
 import { pageWrapperCSS } from 'theme'
-import { type TPlaylistEntry, type TSharedRequestParams } from 'playlist-generator-utilities'
+import { type TPlaylistEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import { context } from 'context'
 import { MIN_TRACK_COUNT } from '../../sharedComponents/TrackCount'
 
@@ -13,9 +13,10 @@ interface AlgorithmWrapperProps {
   children: any
   searchParams: JSX.Element
   searchDisabled: boolean
-  apiCall: (args: TSharedRequestParams) => Promise<TPlaylistEntry[] | undefined>
+  apiCall: (args: TSharedAlgorithmRequestParams) => Promise<TPlaylistEntry[] | undefined>
   resetStateCallback: () => void
   initialPlaylistTitle: string
+  initialPlaylistDescription: string
 }
 
 enum EStep {
@@ -24,7 +25,7 @@ enum EStep {
   PreviewingPlaylist = 'PreviewingPlaylist',
 }
 
-const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, apiCall, resetStateCallback, initialPlaylistTitle }: AlgorithmWrapperProps) => {
+const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, apiCall, resetStateCallback, initialPlaylistTitle, initialPlaylistDescription }: AlgorithmWrapperProps) => {
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const [step, setStep] = useState<EStep>(EStep.Inputting)
   const [trackCount, setTrackCount] = useState<number>(MIN_TRACK_COUNT)
@@ -47,12 +48,10 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
       dispatch({ type: 'ADD_ALERT', data: { text: 'User is not logged in', severity: 'error' } })
       return
     }
-
     const results = await apiCall({ trackCount, market: state.user.market })
     setPlaylistEntries(results ?? [])
     setStep(EStep.PreviewingPlaylist)
   }, [dispatch, state.user, apiCall, trackCount])
-  console.log(trackCount)
   const Content = useMemo(() => {
     switch (step) {
       case EStep.Inputting:
@@ -67,14 +66,20 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
         )
       case EStep.PreviewingPlaylist:
         if (playlistEntries.length === 0) {
-          return <Typography variant="body1" gutterBottom>No results found</Typography>
+          return <>
+            <Typography variant="body1" gutterBottom>No results found</Typography>
+            <Button
+              fullWidth
+              variant='text' onClick={resetState}>Start Over
+            </Button>
+          </>
         }
 
-        return <Playlist resetStateCallback={resetState} initialTitle={initialPlaylistTitle} playlistEntries={playlistEntries} />
+        return <Playlist initialDescription={initialPlaylistDescription} resetStateCallback={resetState} initialTitle={initialPlaylistTitle} playlistEntries={playlistEntries} />
       case EStep.Searching:
         return <Loading />
     }
-  }, [step, searchParams, playlistEntries, resetState, handleSearch, searchDisabled, initialPlaylistTitle, trackCountCallback])
+  }, [step, searchParams, playlistEntries, resetState, handleSearch, searchDisabled, initialPlaylistTitle, initialPlaylistDescription, trackCountCallback])
 
   return (
     <Container css={pageWrapperCSS}>

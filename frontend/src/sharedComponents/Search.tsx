@@ -1,43 +1,44 @@
 import TextField from '@mui/material/TextField'
-import { useMemo, useState, useContext, useEffect } from 'react'
+import React, { useMemo, useContext, useEffect, useState } from 'react'
 import Autocomplete from '@mui/material/Autocomplete'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { debounce } from '@mui/material/utils'
 import { gql, useLazyQuery } from '@apollo/client'
-import { type TAutocompleteEntry } from 'playlist-generator-utilities'
+import { type TAutocomplete, type TAutocompleteEntry } from 'playlist-generator-utilities'
 import { logger } from 'utilities'
 import { Avatar } from '@mui/material'
 import { context } from 'context'
+import { darken, lighten, styled } from '@mui/system'
 
 const AUTOCOMPLETE_QUERY = gql`
 query Autocomplete($query: String!, $market: String!) {
-    autocomplete(query: $query, types: artist, market: $market) {
+    autocomplete(query: $query, market: $market) {
         name
         id
         image
+        type
     }
   }
 `
 
-interface SearchV2Params {
-  label: string
+interface SearchParams {
   resultSelectedCallback: (data: TAutocompleteEntry) => void
+  disabled?: boolean
 }
-const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
+const Search = ({ resultSelectedCallback, disabled }: SearchParams) => {
   const { state } = useContext(context)
-  const [selected, setSelected] = useState<TAutocompleteEntry | null>(null)
   const [query, setQuery] = useState('')
   const [options, setOptions] = useState<readonly TAutocompleteEntry[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [autocomplete] = useLazyQuery<{ autocomplete: TAutocompleteEntry[] }>(AUTOCOMPLETE_QUERY)
+  const [autocomplete] = useLazyQuery<{ autocomplete: TAutocomplete['Response'] }>(AUTOCOMPLETE_QUERY)
 
   const fetch = useMemo(
     () =>
       debounce(
         (
           request: string,
-          handleResults: (results?: readonly TAutocompleteEntry[]) => void
+          handleResults: (results?: TAutocomplete['Response']) => void
         ) => {
           autocomplete({ variables: { query: request, market: state.user!.market } }).then(result => {
             if ((result.data?.autocomplete) != null) {
@@ -60,17 +61,12 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
     let active = true
 
     if (query === '') {
-      setOptions(selected ? [selected] : [])
       return undefined
     }
 
     fetch(query, (results?: readonly TAutocompleteEntry[]) => {
       if (active) {
         let newOptions: readonly TAutocompleteEntry[] = []
-
-        if (selected) {
-          newOptions = [selected]
-        }
 
         if (results) {
           newOptions = [...newOptions, ...results]
@@ -84,29 +80,30 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
     return () => {
       active = false
     }
-  }, [selected, query, fetch])
+  }, [query, fetch])
+
   return (
     <Autocomplete
+      disabled={disabled}
       fullWidth
       getOptionLabel={(option) => option.name}
       options={options}
-      value={selected}
       loading={isLoading}
       clearOnBlur
       clearOnEscape
       loadingText="Enter a query to get started"
       noOptionsText="No Results"
       onChange={(event: any, newValue: TAutocompleteEntry | null) => {
-        setOptions(newValue ? [newValue, ...options] : options)
         newValue && resultSelectedCallback(newValue)
-        setSelected(newValue)
+        setQuery('')
       }}
       onInputChange={(event, newInputValue) => {
         setQuery(newInputValue)
       }}
       renderInput={(params) => (
-        <TextField {...params} label={label} fullWidth margin='normal' />
+        <TextField {...params} label="Select an Artist or Track" fullWidth margin='normal' />
       )}
+      groupBy={(option) => option.type}
       renderOption={(props, option) => {
         return (
           <li {...props} key={option.id}>
@@ -123,8 +120,29 @@ const SearchV2 = ({ label, resultSelectedCallback }: SearchV2Params) => {
           </li>
         )
       }}
+      renderGroup={(params) => {
+        return (
+          <li key={params.key}>
+            <GroupHeader>{params.group}s</GroupHeader>
+            <ul>
+              {params.children}
+            </ul>
+          </li>
+        )
+      }}
     />
   )
 }
 
-export default SearchV2
+const GroupHeader = styled('div')(({ theme }) => ({
+  position: 'sticky',
+  top: '-8px',
+  padding: '4px 10px',
+  color: theme.palette.primary.main,
+  backgroundColor:
+    theme.palette.mode === 'light'
+      ? lighten(theme.palette.primary.light, 0.85)
+      : darken(theme.palette.primary.main, 0.8)
+}))
+
+export default Search
