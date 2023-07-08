@@ -7,7 +7,7 @@ import axios from 'axios'
 import useAsyncEffect from 'use-async-effect'
 
 import { theme } from 'theme'
-import {  Router, Header, Navigation, Footer } from './components'
+import { Router, Header, Navigation, Footer } from './components'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
 import { context } from 'context'
 import { useSearchParams } from 'react-router-dom'
@@ -158,7 +158,7 @@ const App = () => {
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <Header />
-        <Box sx={{ overflow: 'scroll', flexGrow: 1 }}>
+        <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
           <Navigation />
           <Router />
           {OpenModal}
