@@ -14,7 +14,7 @@
     "axios": "^1.4.0",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.12.1",
-    "playlist-generator-utilities": "^1.0.20",
+    "playlist-generator-utilities": "^1.0.22",
     "polished": "^4.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -53,7 +53,6 @@
     "lint:run": "npx eslint --ext .ts ./src/**",
     "lint:fix": "npx eslint --ext .ts ./src/** --fix",
     "start": "export NODE_ENV=local && webpack serve --config=webpack.js",
-    "bundle": "export NODE_ENV=production && rm -rf ./build; mkdir ./build; webpack --config=webpack.js",
-    "deploy": "gcloud config set project silly-side-projects && gcloud builds submit --tag gcr.io/silly-side-projects/playlist-generator-frontend && gcloud run deploy playlist-generator-frontend --image gcr.io/silly-side-projects/playlist-generator-frontend --platform managed --region us-east1"
+    "bundle": "export NODE_ENV=production && rm -rf ./build; mkdir ./build; webpack --config=webpack.js"
   }
 }

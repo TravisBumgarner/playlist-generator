@@ -3554,10 +3554,10 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-playlist-generator-utilities@^1.0.20:
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/playlist-generator-utilities/-/playlist-generator-utilities-1.0.20.tgz#c4e319330fcaafa35d6696841287f7072d262561"
-  integrity sha512-AaJFWLVWb9g6fW2mqTPqbyoBnp55LnKKc5Qr5yAFVIYyRLnvQCwVYeEMydeie6W9TPKB81KXGkp1pSqv1v/heQ==
+playlist-generator-utilities@^1.0.22:
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/playlist-generator-utilities/-/playlist-generator-utilities-1.0.22.tgz#bc1d347a710e7b269f386a0c36962e62927612c0"
+  integrity sha512-mqeJRafantwW1MLc0ZMl9ODSc7OP+QG7Q4ATgxgLGBSRmWSRaSjIv2mJAdm51AxEWoOt7XHqXn8EaAhvRgE4mQ==
 
 polished@^4.2.2:
   version "4.2.2"
