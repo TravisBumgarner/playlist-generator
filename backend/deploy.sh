@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Load environment variables from .env file
-if [ -f .env.nfs ]; then
-    export $(cat .env.nfs | grep -v '#' | xargs)
+if [ -f ../.env.nfs ]; then
+    export $(cat ../.env.nfs | grep -v '#' | xargs)
 else
     echo "Error: .env.nfs file not found"
     exit 1
@@ -13,6 +13,10 @@ SERVER_USER="${DEPLOY_SERVER_USER}"
 SERVER_HOST="${DEPLOY_SERVER_HOST}"
 REMOTE_DIR="/home/protected/backend"
 NODE_VERSION="18"
+
+# Create remote directory if it doesn't exist
+echo "Creating remote directory $REMOTE_DIR if it doesn't exist"
+ssh $SERVER_USER@$SERVER_HOST "mkdir -p $REMOTE_DIR"
 
 # Build the Next.js app locally
 echo "Building the Express app..."

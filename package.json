@@ -4,7 +4,7 @@
   },
   "scripts": {
     "start": "concurrently -n frontend,backend,utilities -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"cd frontend && yarn start\" \"cd backend && yarn start\" \"cd utilities && yarn start\"",
-    "deploy": "cd backend && yarn deploy && cd ../frontend && yarn deploy",
-    "deploy-with-package": "cd utilities && yarn deploy && cd ../backend && yarn deploy && cd ../frontend && yarn deploy"
+    "deploy:nfs": "concurrently -n backend,frontend -c \"bgMagenta.bold,bgBlue.bold\" \"cd backend && yarn deploy:nfs\" \"cd frontend && yarn deploy:nfs\"",
+    "deploy-with-package:nfs": "cd utilities && yarn deploy && cd ../backend && yarn deploy:nfs && cd ../frontend && yarn deploy:nfs"
   }
 }

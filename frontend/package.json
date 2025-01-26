@@ -53,6 +53,7 @@
     "lint:run": "npx eslint --ext .ts ./src/**",
     "lint:fix": "npx eslint --ext .ts ./src/** --fix",
     "start": "export NODE_ENV=local && webpack serve --config=webpack.js",
-    "bundle": "export NODE_ENV=production && rm -rf ./build; mkdir ./build; webpack --config=webpack.js"
+    "bundle": "export NODE_ENV=production && rm -rf ./build; mkdir ./build; webpack --config=webpack.js",
+    "deploy:nfs": "yarn bundle && ./deploy.sh"
   }
 }
