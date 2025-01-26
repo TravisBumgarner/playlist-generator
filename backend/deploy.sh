@@ -11,7 +11,7 @@ fi
 # Define variables
 SERVER_USER="${DEPLOY_SERVER_USER}"
 SERVER_HOST="${DEPLOY_SERVER_HOST}"
-REMOTE_DIR="/home/private"
+REMOTE_DIR="/home/protected/backend"
 NODE_VERSION="18"
 
 # Build the Next.js app locally

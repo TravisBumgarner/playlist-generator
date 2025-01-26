@@ -1,14 +1,14 @@
+import * as Sentry from '@sentry/node'
+import bodyParser from 'body-parser'
+import cors from 'cors'
 import express from 'express'
 import { graphqlHTTP } from 'express-graphql'
 import { useServer } from 'graphql-ws/lib/use/ws'
-import * as Sentry from '@sentry/node'
-import cors from 'cors'
-import bodyParser from 'body-parser'
 import { WebSocketServer } from 'ws'
 
 import schema from './schemas'
-import { logger } from './utilities'
 import { handleSpotifyUserRedirect } from './spotify'
+import { logger } from './utilities'
 
 const app = express()
 Sentry.init({
@@ -86,8 +86,10 @@ app.use(
 
 app.use(Sentry.Handlers.errorHandler())
 
-const server = app.listen(8080, '0.0.0.0', () => {
-  console.log('App listening at http://0.0.0.0:8080') //eslint-disable-line
+const PORT = 8000
+
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`App listening at http://0.0.0.0:${PORT}`) //eslint-disable-line
 
   const wsServer = new WebSocketServer({ server, path: '/graphql' })
   useServer({ schema }, wsServer)
