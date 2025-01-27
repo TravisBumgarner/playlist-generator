@@ -8,7 +8,7 @@
     "lint:run": "npx eslint --ext .ts ./src/**",
     "lint:fix": "npx eslint --ext .ts ./src/** --fix",
     "deploy:nfs": "yarn run build && bash deploy.sh",
-    "start:prod": "node build/index.js"
+    "start:prod": "export NODE_ENV=production && node build/index.js"
   },
   "version": "1.0.0",
   "keywords": [],

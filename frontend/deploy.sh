@@ -32,7 +32,8 @@ rsync -avz "yarn.lock" "$SERVER_USER@$SERVER_HOST:$REMOTE_DIR/yarn.lock"
 echo "Files uploaded successfully to $SERVER_HOST:$REMOTE_DIR"
 
 echo "Installing dependencies"
-ssh $SERVER_USER@$SERVER_HOST "cd $REMOTE_DIR && yarn install --production"
+# For whatever reason, server can't use yarn. It'll hang on step 2/4 of installing dependencies.
+ssh $SERVER_USER@$SERVER_HOST "cd $REMOTE_DIR && npm install --production"
 
 # echo "Setting up run.sh"
 ssh $SERVER_USER@$SERVER_HOST "cd $REMOTE_DIR && chmod +x ./run.sh"
