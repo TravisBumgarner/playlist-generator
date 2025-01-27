@@ -1,12 +1,12 @@
-import { useContext } from 'react'
-import { Routes, Route } from 'react-router'
+import { type JSX, useContext } from 'react'
+import { Route, Routes } from 'react-router'
 import { Navigate } from 'react-router-dom'
 
-import { context } from 'context'
-import { Home, Error, LandingPage, NotFound, Sandbox, Changelog } from '../pages'
-import { ALGORITHM_ROUTES } from '../algorithms'
-import { Loading } from 'sharedComponents'
 import { Container } from '@mui/material'
+import { context } from 'context'
+import { Loading } from 'sharedComponents'
+import { ALGORITHM_ROUTES } from '../algorithms'
+import { Changelog, Error, Home, LandingPage, NotFound, Sandbox } from '../pages'
 
 interface ConditionalRouteProps {
   authedComponent: JSX.Element

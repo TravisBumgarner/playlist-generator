@@ -1,16 +1,16 @@
 import { Button, Container, Typography } from '@mui/material'
+import { type JSX, useCallback, useContext, useMemo, useState } from 'react'
 import { Loading, Playlist, TrackCount } from 'sharedComponents'
-import { useCallback, useContext, useMemo, useState } from 'react'
 
-import { pageWrapperCSS } from 'theme'
-import { type TPlaylistEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import { context } from 'context'
+import { type TPlaylistEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
+import { pageWrapperCSS } from 'theme'
 import { MIN_TRACK_COUNT } from '../../sharedComponents/TrackCount'
 
 interface AlgorithmWrapperProps {
   title: string
   description: string
-  children: any
+  children?: any
   searchParams: JSX.Element
   searchDisabled: boolean
   apiCall: (args: TSharedAlgorithmRequestParams) => Promise<TPlaylistEntry[] | undefined>

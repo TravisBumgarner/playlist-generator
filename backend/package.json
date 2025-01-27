@@ -5,9 +5,10 @@
     "start": "nodemon ./src/index.ts",
     "start-production": "node build/index.js",
     "build": "rm -rf ./build && tsc",
-    "deploy": "export NODE_ENV=production && yarn run build && gcloud config set project silly-side-projects && gcloud builds submit --tag gcr.io/silly-side-projects/playlist-generator-backend && gcloud run deploy playlist-generator-backend --image gcr.io/silly-side-projects/playlist-generator-backend --platform managed --region us-east1",
     "lint:run": "npx eslint --ext .ts ./src/**",
-    "lint:fix": "npx eslint --ext .ts ./src/** --fix"
+    "lint:fix": "npx eslint --ext .ts ./src/** --fix",
+    "deploy:nfs": "yarn run build && bash deploy.sh",
+    "start:prod": "export NODE_ENV=production && node build/index.js"
   },
   "version": "1.0.0",
   "keywords": [],
@@ -23,7 +24,7 @@
     "graphql-subscriptions": "^2.0.0",
     "graphql-ws": "^5.12.1",
     "mongodb": "^5.4.0",
-    "playlist-generator-utilities": "^1.0.20",
+    "playlist-generator-utilities": "^1.0.22",
     "runtypes": "^6.6.0",
     "spotify-web-api-node": "^5.0.2",
     "ts-node": "^10.4.0",

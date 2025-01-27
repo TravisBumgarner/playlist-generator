@@ -5,13 +5,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const PLUGIN_VARS = {
   local: {
-    __API_WS_ENDPOINT__: "'ws://localhost:8080/graphql'",
-    __API_HTTP_ENDPOINT__: "'http://localhost:8080/graphql'",
+    __API_WS_ENDPOINT__: "'ws://localhost:8000/graphql'",
+    __API_HTTP_ENDPOINT__: "'http://localhost:8000/graphql'",
     __LOGGING_LEVEL__: "'local'"
   },
   production: {
-    __API_WS_ENDPOINT__: "'https://playlists-api.sillysideprojects.com/graphql'",
-    __API_HTTP_ENDPOINT__: "'https://playlists-api.sillysideprojects.com/graphql'",
+    __API_WS_ENDPOINT__: "'/ws/graphql'",
+    __API_HTTP_ENDPOINT__: "'/api/graphql'",
     __LOGGING_LEVEL__: "'sentry'"
   }
 }
@@ -62,7 +62,7 @@ module.exports = {
   },
   devServer: {
     compress: true,
-    port: 3001,
+    port: 3000,
     hot: true,
     historyApiFallback: true
   },
