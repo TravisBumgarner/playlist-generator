@@ -31,22 +31,12 @@ Sentry.init({
 app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
-const CORS_DEV = ['localhost:3000']
+const CORS_DEV = ['http://localhost:3000']
+const CORS_PROD = ['https://playlists.sillysideprojects.com']
 
-const COORS_PROD = ['https://playlists.sillysideprojects.com/']
-
-// For Cors
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  )
-  next()
-})
 app.use(
   cors({
-    origin: process.env.NODE_ENV === 'production' ? COORS_PROD : CORS_DEV,
+    origin: process.env.NODE_ENV === 'production' ? CORS_PROD : CORS_DEV,
   })
 )
 
