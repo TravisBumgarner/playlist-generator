@@ -1,8 +1,10 @@
+import { type JSX } from 'react'
+
 import {
-  Gradient,
+  FullControl,
   GoodBeatsToGoodSleeps,
-  Mashup,
-  FullControl
+  Gradient,
+  Mashup
 } from './pages/algorithms'
 
 interface TAlgorithm {

@@ -1,11 +1,10 @@
 import { useLazyQuery } from '@apollo/client'
 import { useCallback, useState } from 'react'
 
-import { Search } from 'sharedComponents'
 import { type TAlgorithmGradient, type TAutocompleteEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
+import { Search } from 'sharedComponents'
 import AlgorithmWrapper from './AlgorithmWrapper'
 import { GRADIENT } from './queries'
-import { Typography } from '@mui/material'
 
 interface GradientParams { title: string, description: string }
 const Gradient = ({ title, description }: GradientParams) => {

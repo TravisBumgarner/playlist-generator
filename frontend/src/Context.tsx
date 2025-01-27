@@ -1,4 +1,4 @@
-import { useReducer, createContext } from 'react'
+import { createContext, type JSX, useReducer } from 'react'
 
 import { logger } from 'utilities'
 
@@ -133,7 +133,7 @@ const reducer = (state: State, action: Action): State => {
   }
 }
 
-const ResultsContext = ({ children }: { children: React.ReactChild }) => {
+const ResultsContext = ({ children }: { children: JSX.Element }) => {
   const [state, dispatch] = useReducer(reducer, EMPTY_STATE)
 
   const { Provider } = context
