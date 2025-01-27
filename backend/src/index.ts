@@ -31,7 +31,7 @@ Sentry.init({
 app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
-const CORS_DEV = ['localhost:3001']
+const CORS_DEV = ['localhost:3000']
 
 const COORS_PROD = ['https://playlists.sillysideprojects.com/']
 
