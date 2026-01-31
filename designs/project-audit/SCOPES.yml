@@ -210,7 +210,7 @@ tasks:
       - Frontend compiles and renders without errors
     depends_on: [6]
     effort: 2
-    status: scoped
+    status: completed
 
   - id: 8
     github_issue: 16
@@ -258,7 +258,7 @@ tasks:
       - Utilities package compiles
     depends_on: [8]
     effort: 3
-    status: scoped
+    status: completed
 
   - id: 10
     github_issue: 18

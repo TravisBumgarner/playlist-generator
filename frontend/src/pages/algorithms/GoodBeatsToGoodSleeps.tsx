@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { useCallback, useState } from 'react'
 
 import { Search } from 'sharedComponents'
