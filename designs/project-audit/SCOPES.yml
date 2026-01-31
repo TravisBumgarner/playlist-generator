@@ -70,25 +70,25 @@ tasks:
       Spotify now allows `http://127.0.0.1:PORT` for loopback addresses (as of Nov 2025).
 
       Backend changes:
-      - `config.ts`: Change local redirect URI to `http://127.0.0.1:8000/spotify_redirect` (fix double slash)
-      - `config.ts`: Change frontendUrl to `http://127.0.0.1:3000`
+      - `config.ts`: Change local redirect URI to `http://127.0.0.1:8048/spotify_redirect` (fix double slash)
+      - `config.ts`: Change frontendUrl to `http://127.0.0.1:3033`
       - `index.ts`: Remove HTTPS server creation for dev, use plain `app.listen()` for all envs
       - `index.ts`: Remove `https`, `fs`, `path` imports used only for certs
-      - `index.ts`: Update CORS dev allowlist to `http://127.0.0.1:3000`
+      - `index.ts`: Update CORS dev allowlist to `http://127.0.0.1:3033`
 
       Frontend changes:
       - `webpack.js`: Remove `https` config from devServer
-      - `webpack.js`: Fix `__API_HTTP_ENDPOINT__` double slash, switch to `http://127.0.0.1:8000/graphql`
-      - `webpack.js`: Ensure `__API_WS_ENDPOINT__` is `ws://127.0.0.1:8000/graphql`
+      - `webpack.js`: Fix `__API_HTTP_ENDPOINT__` double slash, switch to `http://127.0.0.1:8048/graphql`
+      - `webpack.js`: Ensure `__API_WS_ENDPOINT__` is `ws://127.0.0.1:8048/graphql`
 
       Manual step: Update Spotify Developer Dashboard redirect URI.
     acceptance_criteria:
-      - Backend starts on port 8000 with plain HTTP in local dev
-      - Frontend webpack-dev-server starts on port 3000 without HTTPS
+      - Backend starts on port 8048 with plain HTTP in local dev
+      - Frontend webpack-dev-server starts on port 3033 without HTTPS
       - No .pem certificate files needed for local development
-      - Spotify OAuth redirect works with http://127.0.0.1:8000/spotify_redirect
+      - Spotify OAuth redirect works with http://127.0.0.1:8048/spotify_redirect
       - Double-slash bugs in URLs are fixed
-      - CORS allows http://127.0.0.1:3000 in dev mode
+      - CORS allows http://127.0.0.1:3033 in dev mode
       - Production configuration remains unchanged
     depends_on: []
     effort: 2
@@ -292,7 +292,7 @@ tasks:
       - Environment variables work in dev and production builds
       - index.html at project root replaces EJS template
       - Image imports and Emotion CSS-in-JS work
-      - Dev server starts on port 3000
+      - Dev server starts on port 3033
       - Production build outputs to build/ directory
     depends_on: [9]
     effort: 3

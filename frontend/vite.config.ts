@@ -4,7 +4,7 @@ import path from 'path'
 
 const envVars = {
   local: {
-    __API_BASE_URL__: JSON.stringify('http://localhost:8000'),
+    __API_BASE_URL__: JSON.stringify('http://localhost:8048'),
     __LOGGING_LEVEL__: JSON.stringify('local'),
   },
   production: {
@@ -34,7 +34,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 3000,
+      port: 3033,
     },
     build: {
       outDir: 'build',

@@ -25,8 +25,8 @@ This project is a full-stack Spotify playlist generator (React frontend, Express
 
 The current local dev setup requires:
 - Self-signed HTTPS certificates (`localhost.pem`, `localhost-key.pem`) for both frontend webpack-dev-server and backend Express.
-- `https://127.0.0.1:8000/spotify_redirect` as the Spotify OAuth callback.
-- `https://localhost:3000` for the frontend.
+- `https://127.0.0.1:8048/spotify_redirect` as the Spotify OAuth callback.
+- `https://localhost:3033` for the frontend.
 - Browser certificate trust warnings.
 
 **As of November 2025**, Spotify changed their policy:
@@ -38,8 +38,8 @@ This means local dev can use plain HTTP, eliminating the need for self-signed ce
 
 ### 4. Miscellaneous Issues
 
-- Double slash in redirect URI: `https://127.0.0.1:8000//spotify_redirect` (config.ts line 19).
-- Double slash in API endpoint: `https://127.0.0.1:8000//graphql` (webpack.js line 9).
+- Double slash in redirect URI: `https://127.0.0.1:8048//spotify_redirect` (config.ts line 19).
+- Double slash in API endpoint: `https://127.0.0.1:8048//graphql` (webpack.js line 9).
 - `ngrok.yml` has a hardcoded auth token that should be in .env or removed.
 - Frontend webpack config uses deprecated `https` option (should be `server` in webpack-dev-server 5).
 
@@ -50,9 +50,9 @@ This means local dev can use plain HTTP, eliminating the need for self-signed ce
 Switch local development from HTTPS with self-signed certs to plain HTTP for the backend and frontend. Update Spotify redirect URI configuration. This is a cross-cutting change that touches backend config, backend server setup, frontend webpack config, and frontend API endpoints.
 
 **Changes:**
-- Backend `config.ts`: Change local redirect URI from `https://127.0.0.1:8000//spotify_redirect` to `http://127.0.0.1:8000/spotify_redirect` (also fixes double slash).
-- Backend `index.ts`: Remove HTTPS server creation for dev; use plain HTTP. Remove `fs`/`https`/`path` imports for cert loading. Update CORS to allow `http://127.0.0.1:3000`.
-- Frontend `webpack.js`: Remove `https` config from devServer. Fix double slash in API endpoint. Change frontend URL to `http://127.0.0.1:3000`. Change API endpoint to `http://127.0.0.1:8000/graphql`.
+- Backend `config.ts`: Change local redirect URI from `https://127.0.0.1:8048//spotify_redirect` to `http://127.0.0.1:8048/spotify_redirect` (also fixes double slash).
+- Backend `index.ts`: Remove HTTPS server creation for dev; use plain HTTP. Remove `fs`/`https`/`path` imports for cert loading. Update CORS to allow `http://127.0.0.1:3033`.
+- Frontend `webpack.js`: Remove `https` config from devServer. Fix double slash in API endpoint. Change frontend URL to `http://127.0.0.1:3033`. Change API endpoint to `http://127.0.0.1:8048/graphql`.
 - Update Spotify Developer Dashboard redirect URI (manual step, documented).
 
 ### Milestone 2: Replace Deprecated Packages

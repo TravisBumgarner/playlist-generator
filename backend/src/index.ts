@@ -30,7 +30,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
 })
 
-const CORS_DEV = ['http://127.0.0.1:3000', 'http://localhost:3000', 'https://127.0.0.1:3000', 'https://localhost:3000']
+const CORS_DEV = ['http://127.0.0.1:3033', 'http://localhost:3033', 'https://127.0.0.1:3033', 'https://localhost:3033']
 const CORS_PROD = ['https://playlists.sillysideprojects.com']
 
 app.use(
@@ -406,7 +406,7 @@ app.post('/api/playlist/save', async (req, res) => {
 
 Sentry.setupExpressErrorHandler(app)
 
-const PORT = 8000
+const PORT = 8048
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`App listening at http://localhost:${PORT}`)

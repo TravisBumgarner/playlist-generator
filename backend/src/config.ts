@@ -14,8 +14,8 @@ const Env = Record({
 const getNonSecretKeys = () => {
   if (process.env.NODE_ENV !== 'production') {
     return {
-      frontendUrl: 'http://localhost:3000',
-      spotifyRedirectURI: 'http://127.0.0.1:8000/spotify_redirect',
+      frontendUrl: 'http://localhost:3033',
+      spotifyRedirectURI: 'http://127.0.0.1:8048/spotify_redirect',
     }
   }
   return {
