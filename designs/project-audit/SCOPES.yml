@@ -1,0 +1,292 @@
+project: playlist-generator-audit
+repo: TravisBumgarner/playlist-generator
+design_file: designs/project-audit/DESIGN.md
+scoping_date: 2026-01-30
+
+milestones:
+  - number: 1
+    title: "1. Fix Local Dev & Remove Self-Signed Certs"
+    description: Switch local dev from HTTPS with self-signed certs to plain HTTP. Update Spotify callback URI. Fix double-slash bugs.
+    branch:
+      working: 9-fix-local-dev-remove-https
+      base: main
+
+  - number: 2
+    title: "2. Replace Deprecated Packages"
+    description: Replace express-graphql with graphql-http, remove body-parser, replace file-loader with webpack 5 Asset Modules.
+    branch:
+      working: 10-replace-deprecated-packages
+      base: 9-fix-local-dev-remove-https
+
+  - number: 3
+    title: "3. Update Sentry v7 to v10"
+    description: Migrate @sentry/node and @sentry/react from v7 to v10.
+    branch:
+      working: 12-update-sentry-v10
+      base: 10-replace-deprecated-packages
+
+  - number: 4
+    title: "4. Update MUI 5 to MUI 7"
+    description: Upgrade Material UI from v5 to v7.
+    branch:
+      working: 14-update-mui-v7
+      base: 12-update-sentry-v10
+
+  - number: 5
+    title: "5. Update React 18 to React 19"
+    description: Upgrade React and React DOM to v19, update react-router.
+    branch:
+      working: 15-update-react-19
+      base: 14-update-mui-v7
+
+  - number: 6
+    title: "6. Update Remaining Dependencies"
+    description: Update TypeScript, ESLint, and all other outdated packages.
+    branch:
+      working: 16-update-remaining-deps
+      base: 15-update-react-19
+
+  - number: 7
+    title: "7. Replace Webpack with Vite"
+    description: Migrate the frontend build system from Webpack to Vite.
+    branch:
+      working: 18-replace-webpack-with-vite
+      base: 16-update-remaining-deps
+
+tasks:
+  - id: 1
+    github_issue: 9
+    milestone: 1
+    title: Switch local dev from HTTPS to plain HTTP and fix Spotify callback
+    description: |
+      Switch the local development environment from HTTPS with self-signed certificates to plain HTTP.
+      Spotify now allows `http://127.0.0.1:PORT` for loopback addresses (as of Nov 2025).
+
+      Backend changes:
+      - `config.ts`: Change local redirect URI to `http://127.0.0.1:8000/spotify_redirect` (fix double slash)
+      - `config.ts`: Change frontendUrl to `http://127.0.0.1:3000`
+      - `index.ts`: Remove HTTPS server creation for dev, use plain `app.listen()` for all envs
+      - `index.ts`: Remove `https`, `fs`, `path` imports used only for certs
+      - `index.ts`: Update CORS dev allowlist to `http://127.0.0.1:3000`
+
+      Frontend changes:
+      - `webpack.js`: Remove `https` config from devServer
+      - `webpack.js`: Fix `__API_HTTP_ENDPOINT__` double slash, switch to `http://127.0.0.1:8000/graphql`
+      - `webpack.js`: Ensure `__API_WS_ENDPOINT__` is `ws://127.0.0.1:8000/graphql`
+
+      Manual step: Update Spotify Developer Dashboard redirect URI.
+    acceptance_criteria:
+      - Backend starts on port 8000 with plain HTTP in local dev
+      - Frontend webpack-dev-server starts on port 3000 without HTTPS
+      - No .pem certificate files needed for local development
+      - Spotify OAuth redirect works with http://127.0.0.1:8000/spotify_redirect
+      - Double-slash bugs in URLs are fixed
+      - CORS allows http://127.0.0.1:3000 in dev mode
+      - Production configuration remains unchanged
+    depends_on: []
+    effort: 2
+    status: completed
+
+  - id: 2
+    github_issue: 10
+    milestone: 2
+    title: Replace express-graphql with graphql-http
+    description: |
+      `express-graphql` was archived March 2023. Replace with `graphql-http`,
+      the official GraphQL Foundation successor.
+
+      - Remove `express-graphql` from backend dependencies
+      - Install `graphql-http`
+      - Replace `graphqlHTTP()` middleware with `createHandler()` from `graphql-http/lib/use/express`
+      - Update error formatting to use graphql-http's API
+      - GraphiQL is not included in graphql-http; decide whether to add a separate
+        GraphiQL package for dev or skip it
+    acceptance_criteria:
+      - express-graphql removed from dependencies
+      - graphql-http installed and used
+      - All GraphQL queries and mutations work as before
+      - GraphQL endpoint remains at /graphql
+    depends_on: [1]
+    effort: 2
+    status: scoped
+
+  - id: 3
+    github_issue: 11
+    milestone: 2
+    title: Remove body-parser from backend
+    description: |
+      Remove `body-parser` from backend. Replace `bodyParser.json()` with
+      built-in `express.json()`.
+
+      Note: file-loader replacement is no longer needed — the Vite migration
+      (task 10) removes webpack and all its loaders entirely.
+    acceptance_criteria:
+      - body-parser removed from backend dependencies
+      - express.json() used instead of bodyParser.json()
+    depends_on: [2]
+    effort: 1
+    status: scoped
+
+  - id: 4
+    github_issue: 12
+    milestone: 3
+    title: Update @sentry/node from v7 to v10
+    description: |
+      Update `@sentry/node` from v7 to v10 in the backend.
+
+      Key changes in `backend/src/index.ts`:
+      - Replace class-based integrations with function-based:
+        `new Sentry.Integrations.Http()` -> `Sentry.httpIntegration()`
+        `new Sentry.Integrations.Express()` -> `Sentry.expressIntegration()`
+      - Remove `Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()`
+      - Remove `Sentry.Handlers.requestHandler()` and `tracingHandler()` (automatic in v8+)
+      - Replace `Sentry.Handlers.errorHandler()` with `Sentry.setupExpressErrorHandler(app)`
+    acceptance_criteria:
+      - "@sentry/node" updated to v10
+      - Initialization uses function-based integrations
+      - Express middleware uses setupExpressErrorHandler()
+      - Backend starts without Sentry-related errors
+    depends_on: []
+    effort: 2
+    status: scoped
+
+  - id: 5
+    github_issue: 13
+    milestone: 3
+    title: Update @sentry/react from v7 to v10
+    description: |
+      Update `@sentry/react` from v7 to v10 in the frontend.
+
+      - Update package version
+      - Replace any class-based integration constructors with function calls
+      - Update ErrorBoundary callback types if used (Error -> unknown in v8)
+      - Verify Sentry initialization pattern matches v10 API
+    acceptance_criteria:
+      - "@sentry/react" updated to v10
+      - All Sentry integrations use function-based API
+      - Frontend builds without Sentry-related type errors
+    depends_on: [4]
+    effort: 2
+    status: scoped
+
+  - id: 6
+    github_issue: 14
+    milestone: 4
+    title: Update MUI from v5 to v7
+    description: |
+      Upgrade Material UI from v5 to v7 in the frontend.
+
+      - Update @mui/material, @mui/icons-material, @emotion/react, @emotion/styled
+      - Fix multi-level deep imports (only one level allowed in v7)
+      - Run MUI codemods: `npx @mui/codemod v7.0.0/grid-props frontend/src/`
+      - Fix any removed deprecated APIs
+      - Verify all pages render correctly
+    acceptance_criteria:
+      - "@mui/material" and "@mui/icons-material" updated to v7
+      - No multi-level deep imports remain
+      - Frontend compiles without MUI-related type errors
+      - All pages render correctly
+    depends_on: []
+    effort: 3
+    status: scoped
+
+  - id: 7
+    github_issue: 15
+    milestone: 5
+    title: Update React 18 to React 19
+    description: |
+      Upgrade React and React DOM from v18 to v19.
+
+      - Update react, react-dom, and type packages to v19
+      - Update react-router and react-router-dom to latest
+      - Remove @types/react-router-dom (bundled in modern react-router)
+      - Remove @types/react-modal if react-modal is not used
+      - Fix any React 19 breaking changes (forwardRef, useRef, Context)
+    acceptance_criteria:
+      - react and react-dom updated to v19
+      - Type packages updated to match
+      - Unused type packages removed
+      - react-router updated to latest compatible version
+      - Frontend compiles and renders without errors
+    depends_on: [6]
+    effort: 2
+    status: scoped
+
+  - id: 8
+    github_issue: 16
+    milestone: 6
+    title: Update TypeScript to v5 across all packages
+    description: |
+      Standardize TypeScript to v5 across backend, frontend, and utilities.
+
+      - Backend: update from ^4.9.5 to ^5.0.0
+      - Frontend: update from * (wildcard) to ^5.0.0
+      - Utilities: already on ^5.1.3, no change needed
+      - Run tsc --noEmit in each package to verify compilation
+      - Fix any new type errors from stricter TS5 checking
+    acceptance_criteria:
+      - TypeScript v5 installed in backend and frontend
+      - All three packages compile without errors
+      - No wildcard version specifier for TypeScript
+    depends_on: []
+    effort: 2
+    status: scoped
+
+  - id: 9
+    github_issue: 17
+    milestone: 6
+    title: Update ESLint and remaining dependencies
+    description: |
+      Update all remaining outdated packages to latest compatible versions.
+      Webpack packages are excluded — they are removed entirely by the Vite
+      migration (task 10).
+
+      Frontend: ESLint and plugins, @apollo/client, axios, graphql, graphql-ws,
+      polished, use-async-effect, source-map-explorer.
+
+      Backend: nodemon v3, axios, cors, dotenv, graphql, graphql-ws,
+      uuid, ws, ts-node, all @types packages.
+
+      Utilities: nodemon v3.
+
+      Root: concurrently latest v9.
+    acceptance_criteria:
+      - All packages updated to latest compatible versions
+      - yarn install succeeds with no unresolved peer dependency warnings
+      - Backend compiles and starts
+      - Frontend compiles
+      - Utilities package compiles
+    depends_on: [8]
+    effort: 3
+    status: scoped
+
+  - id: 10
+    github_issue: 18
+    milestone: 7
+    title: Replace Webpack with Vite
+    description: |
+      Migrate the frontend build system from Webpack to Vite.
+
+      - Remove webpack.js and all webpack-related packages (webpack, webpack-cli,
+        webpack-dev-server, ts-loader, css-loader, style-loader, file-loader,
+        html-webpack-plugin)
+      - Add vite and @vitejs/plugin-react
+      - Create vite.config.ts with path aliases, Emotion JSX transform, and
+        environment variable definitions (replacing DefinePlugin)
+      - Move index.template.ejs content to index.html at frontend root
+      - Update package.json scripts (dev, build, deploy)
+      - Update tsconfig.json to add vite/client types
+      - Verify all assets, styles, and environment variables work
+    acceptance_criteria:
+      - webpack.js removed, vite.config.ts created
+      - All webpack packages removed from devDependencies
+      - vite and @vitejs/plugin-react added
+      - Path aliases work
+      - Environment variables work in dev and production builds
+      - index.html at project root replaces EJS template
+      - Image imports and Emotion CSS-in-JS work
+      - Dev server starts on port 3000
+      - Production build outputs to build/ directory
+    depends_on: [9]
+    effort: 3
+    status: scoped

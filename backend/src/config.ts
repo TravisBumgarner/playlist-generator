@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { Record, String } from 'runtypes'
+import { Record, String, Boolean } from 'runtypes'
 
 
 const Env = Record({
@@ -9,13 +9,14 @@ const Env = Record({
         redirectURI: String
     }),
     frontendUrl: String,
+    isProd: Boolean
 })
 
 const getNonSecretKeys = () => {
     if (process.env.NODE_ENV !== 'production') {
         return {
-            frontendUrl: 'http://localhost:3000',
-            spotifyRedirectURI: 'http://localhost:8000/spotify_redirect',
+            frontendUrl: 'http://127.0.0.1:3000',
+            spotifyRedirectURI: 'https://127.0.0.1:8000/spotify_redirect',
         }
     }
     return {
@@ -36,6 +37,7 @@ const getEnv = () => {
             redirectURI: nonSecretKeys.spotifyRedirectURI,
         },
         frontendUrl: nonSecretKeys.frontendUrl,
+        isProd: process.env.NODE_ENV === 'production',
     }
     try {
         return Env.check(env)

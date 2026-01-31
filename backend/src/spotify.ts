@@ -2,7 +2,6 @@ import { Literal, Number, Optional, Record, String, Union } from 'runtypes'
 import express from 'express'
 import config from './config'
 import axios from 'axios'
-import SpotifyWebApi from 'spotify-web-api-node'
 import { logger } from './utilities'
 import { SearchType, TPlaylistEntry } from 'playlist-generator-utilities'
 
@@ -93,22 +92,17 @@ export const getSpotifyUserTokenWithRefresh = async (refreshToken: string) => {
     }
 }
 
+let cachedAccessToken: string | null = null
 const expiresIn = {
     value: new Date()
 }
-const getSpotifyClient = async () => {
-    const spotifyApi = new SpotifyWebApi({
-        clientId: config.spotify.clientId,
-        clientSecret: config.spotify.clientSecret,
-    });
-    if (!spotifyApi.getAccessToken() || expiresIn.value < new Date()) {
+const getSpotifyAccessToken = async (): Promise<string> => {
+    if (!cachedAccessToken || expiresIn.value < new Date()) {
         const token = await getSpotifyClientToken()
-        spotifyApi.setAccessToken(token.access_token)
-
-        expiresIn.value = new Date(expiresIn.value.getTime() + token.expires_in * 1000); // There might be something off with the TTL here.
+        cachedAccessToken = token.access_token
+        expiresIn.value = new Date(expiresIn.value.getTime() + token.expires_in * 1000)
     }
-    return spotifyApi
-
+    return cachedAccessToken
 }
 
 
@@ -132,7 +126,7 @@ export const getRecommendedArtist = async (
     seeds: { id: string, type: SearchType }[]
 ) => {
     // This algorithm could definitely be improved. Kind of blocked until I find a solution on creating a graph of spotify artists.
-    const client = await getSpotifyClient()
+    const accessToken = await getSpotifyAccessToken()
 
     const options: Options = { seed_artists: [], seed_tracks: [], market, limit: 1 }
     seeds.forEach(seed => {
@@ -143,16 +137,46 @@ export const getRecommendedArtist = async (
         }
     })
 
-    const results = await client.getRecommendations(options)
-    return results.body?.tracks[0].artists[0].id
+    const params = new URLSearchParams({
+        market: options.market,
+        limit: options.limit.toString(),
+        ...(options.seed_artists.length > 0 && { seed_artists: options.seed_artists.join(',') }),
+        ...(options.seed_tracks.length > 0 && { seed_tracks: options.seed_tracks.join(',') })
+    })
 
+    const response = await axios.get(`https://api.spotify.com/v1/recommendations?${params.toString()}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+
+    return response.data?.tracks?.[0]?.artists?.[0]?.id
 }
 
 export const getRecommendationsForPlaylist = async (options: GetRecommendationsForPlaylistOptions): Promise<{ [key: string]: TPlaylistEntry }> => {
-    const client = await getSpotifyClient()
+    const accessToken = await getSpotifyAccessToken()
     try {
-        const results = await client.getRecommendations(options)
-        const playlistTracks = results.body?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
+        const params = new URLSearchParams({
+            market: options.market,
+            limit: options.limit.toString(),
+            ...(options.seed_artists && { seed_artists: Array.isArray(options.seed_artists) ? options.seed_artists.join(',') : options.seed_artists }),
+            ...(options.seed_tracks && { seed_tracks: Array.isArray(options.seed_tracks) ? options.seed_tracks.join(',') : options.seed_tracks }),
+            ...(options.min_energy !== undefined && { min_energy: options.min_energy.toString() }),
+            ...(options.max_energy !== undefined && { max_energy: options.max_energy.toString() }),
+            ...(options.target_energy !== undefined && { target_energy: options.target_energy.toString() }),
+            ...(options.target_danceability !== undefined && { target_danceability: options.target_danceability.toString() }),
+            ...(options.target_popularity !== undefined && { target_popularity: options.target_popularity.toString() }),
+            ...(options.target_tempo !== undefined && { target_tempo: options.target_tempo.toString() }),
+            ...(options.target_valence !== undefined && { target_valence: options.target_valence.toString() })
+        })
+
+        const response = await axios.get(`https://api.spotify.com/v1/recommendations?${params.toString()}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+
+        const playlistTracks = response.data?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
             return {
                 id,
                 artists: artists.map(artist => ({ name: artist.name, href: artist.external_urls.spotify })),
@@ -167,7 +191,7 @@ export const getRecommendationsForPlaylist = async (options: GetRecommendationsF
             }
         })
 
-        if (playlistTracks.length === 0) {
+        if (!playlistTracks || playlistTracks.length === 0) {
             return {}
         }
 
@@ -190,10 +214,20 @@ type GetArtistOptions = {
 }
 
 export const getArtistFromOptions = async (options: GetArtistOptions) => {
-    const client = await getSpotifyClient()
+    const accessToken = await getSpotifyAccessToken()
     try {
-        const results = await client.getRecommendations(options)
-        return results.body?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
+        const params = new URLSearchParams({
+            market: options.market,
+            ...(options.seed_artists && { seed_artists: Array.isArray(options.seed_artists) ? options.seed_artists.join(',') : options.seed_artists })
+        })
+
+        const response = await axios.get(`https://api.spotify.com/v1/recommendations?${params.toString()}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+
+        return response.data?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
             return {
                 id,
                 artists: artists.map(artist => ({ name: artist.name, href: artist.external_urls.spotify })),
@@ -206,7 +240,7 @@ export const getArtistFromOptions = async (options: GetArtistOptions) => {
                 uri,
                 href: spotify
             }
-        })
+        }) || []
     } catch (error: any) {
         console.log(error)
         console.log(error.name)
@@ -217,4 +251,4 @@ export const getArtistFromOptions = async (options: GetArtistOptions) => {
 
 
 
-export default getSpotifyClient
+export default getSpotifyAccessToken

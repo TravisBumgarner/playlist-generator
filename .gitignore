@@ -4,3 +4,5 @@ node_modules/
 .env.nfs
 yarn-error.log
 build/
+*.pem
+*-key.pem

@@ -21,14 +21,12 @@
     "react-router": "^6.4.0",
     "react-router-dom": "^6.6.1",
     "runtypes": "^6.6.0",
-    "spotify-web-api-node": "^5.0.2",
     "use-async-effect": "^2.2.7"
   },
   "devDependencies": {
     "@types/react-dom": "^18.0.10",
     "@types/react-modal": "^3.13.1",
     "@types/react-router-dom": "^5.3.3",
-    "@types/spotify-web-api-node": "^5.0.7",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.0.1",
@@ -52,7 +50,7 @@
     "analyze": "source-map-explorer 'build/*.js'",
     "lint:run": "npx eslint --ext .ts ./src/**",
     "lint:fix": "npx eslint --ext .ts ./src/** --fix",
-    "start": "export NODE_ENV=local && webpack serve --config=webpack.js",
+    "dev": "export NODE_ENV=local && webpack serve --config=webpack.js",
     "bundle": "export NODE_ENV=production && rm -rf ./build; mkdir ./build; webpack --config=webpack.js",
     "deploy:nfs": "yarn bundle && ./deploy.sh"
   }
