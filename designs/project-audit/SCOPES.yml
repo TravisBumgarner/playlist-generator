@@ -230,7 +230,7 @@ tasks:
       - No wildcard version specifier for TypeScript
     depends_on: []
     effort: 2
-    status: scoped
+    status: completed
 
   - id: 9
     github_issue: 17
