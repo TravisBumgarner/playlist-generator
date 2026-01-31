@@ -4,8 +4,8 @@ import path from 'path'
 
 const envVars = {
   local: {
-    __API_WS_ENDPOINT__: JSON.stringify('wss://127.0.0.1:8000/graphql'),
-    __API_HTTP_ENDPOINT__: JSON.stringify('https://127.0.0.1:8000/graphql'),
+    __API_WS_ENDPOINT__: JSON.stringify('ws://localhost:8000/graphql'),
+    __API_HTTP_ENDPOINT__: JSON.stringify('http://localhost:8000/graphql'),
     __LOGGING_LEVEL__: JSON.stringify('local'),
   },
   production: {
