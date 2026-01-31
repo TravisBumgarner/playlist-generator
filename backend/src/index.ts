@@ -5,6 +5,7 @@ import express from 'express'
 import { graphqlHTTP } from 'express-graphql'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { WebSocketServer } from 'ws'
+import config from './config'
 
 import schema from './schemas'
 import { handleSpotifyUserRedirect } from './spotify'
@@ -31,7 +32,7 @@ Sentry.init({
 app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
-const CORS_DEV = ['http://localhost:3000']
+const CORS_DEV = ['http://127.0.0.1:3000']
 const CORS_PROD = ['https://playlists.sillysideprojects.com']
 
 app.use(
@@ -79,10 +80,9 @@ app.use(Sentry.Handlers.errorHandler())
 const PORT = 8000
 
 const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`App listening at http://0.0.0.0:${PORT}`) //eslint-disable-line
-
-  const wsServer = new WebSocketServer({ server, path: '/graphql' })
-  useServer({ schema }, wsServer)
+  console.log(`App listening at http://0.0.0.0:${PORT}`)
 })
 
+const wsServer = new WebSocketServer({ server, path: '/graphql' })
+useServer({ schema }, wsServer)
 export { }

@@ -78,7 +78,7 @@ tasks:
       - Production configuration remains unchanged
     depends_on: []
     effort: 2
-    status: testing
+    status: implementing
 
   - id: 2
     github_issue: 10
