@@ -148,7 +148,7 @@ tasks:
       - Backend starts without Sentry-related errors
     depends_on: []
     effort: 2
-    status: implementing
+    status: completed
 
   - id: 5
     github_issue: 13
