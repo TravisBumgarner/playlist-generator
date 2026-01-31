@@ -108,7 +108,7 @@ tasks:
       - GraphQL endpoint remains at /graphql
     depends_on: [1]
     effort: 2
-    status: scoped
+    status: testing
 
   - id: 3
     github_issue: 11
