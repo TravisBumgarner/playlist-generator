@@ -1,5 +1,6 @@
 import { Box, CssBaseline, ThemeProvider } from '@mui/material'
-import { gql, useLazyQuery } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { Record, String, Array } from 'runtypes'
 import { useNavigate } from 'react-router'
 import { useCallback, useContext, useMemo, useState } from 'react'

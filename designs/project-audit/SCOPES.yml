@@ -258,7 +258,7 @@ tasks:
       - Utilities package compiles
     depends_on: [8]
     effort: 3
-    status: scoped
+    status: completed
 
   - id: 10
     github_issue: 18

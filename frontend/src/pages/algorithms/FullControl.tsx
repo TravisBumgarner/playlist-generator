@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { Button, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
