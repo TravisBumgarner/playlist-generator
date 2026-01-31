@@ -16,7 +16,8 @@ enum ELocalStorageItems {
 
 const getLocalStorage = (key: ELocalStorageItems) => {
   const result = localStorage.getItem(key)
-  return result ? JSON.parse(result) : null
+  if (result === null || result === 'undefined') return null
+  return JSON.parse(result)
 }
 
 const setLocalStorage = (key: ELocalStorageItems, value: any) => {

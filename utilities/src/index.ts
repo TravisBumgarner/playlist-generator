@@ -103,6 +103,93 @@ export type TAlgorithmMashup = {
     Response: TPlaylistEntry[];
 };
 
+export type TAlgorithmTimeMachine = {
+    Request: {
+        selectedId: string;
+        selectedType: SearchType;
+        era: string;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmMoodSwing = {
+    Request: {
+        selectedId: string;
+        selectedType: SearchType;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmWorkoutArc = {
+    Request: {
+        selectedId: string;
+        selectedType: SearchType;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmDiscoveryDial = {
+    Request: {
+        selectedId: string;
+        selectedType: SearchType;
+        adventurousness: number;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmTempoLock = {
+    Request: {
+        selectedId: string;
+        selectedType: SearchType;
+        bpm: number;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmGenreDrift = {
+    Request: {
+        startWithId: string;
+        startWithType: SearchType;
+        endWithId: string;
+        endWithType: SearchType;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmPartyCurve = {
+    Request: {
+        selectedId: string;
+        selectedType: SearchType;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmContrastPairs = {
+    Request: {
+        firstId: string;
+        firstType: SearchType;
+        secondId: string;
+        secondType: SearchType;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmFocusMode = {
+    Request: {
+        selectedId: string;
+        selectedType: SearchType;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
+export type TAlgorithmRandomWalk = {
+    Request: {
+        selectedId: string;
+        selectedType: SearchType;
+    } & TSharedAlgorithmRequestParams;
+    Response: TPlaylistEntry[];
+};
+
 export type TCreatePlaylist = {
     Request: {
         uris: string[],

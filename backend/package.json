@@ -19,7 +19,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^4.17.2",
-    "playlist-generator-utilities": "^1.0.22",
+    "playlist-generator-utilities": "*",
     "runtypes": "^6.6.0",
     "ts-node": "^10.9.2",
     "uuid": "^9"

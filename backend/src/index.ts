@@ -6,10 +6,20 @@ import { sendBadRequest, sendInternalError, sendSuccess } from './responses'
 import savePlaylist from './schemas/mutations/savePlaylist'
 import { getSpotifyRedirectURI, refreshToken } from './schemas/queries/auth'
 import autocomplete from './schemas/queries/autocomplete'
+import playlistContrastPairs from './schemas/queries/playlistContrastPairs'
+import playlistDiscoveryDial from './schemas/queries/playlistDiscoveryDial'
+import playlistFocusMode from './schemas/queries/playlistFocusMode'
 import playlistFullControl from './schemas/queries/playlistFullControl'
+import playlistGenreDrift from './schemas/queries/playlistGenreDrift'
 import playlistGoodBeatsToGoodSleeps from './schemas/queries/playlistGoodBeatsToGoodSleeps'
 import playlistGradient from './schemas/queries/playlistGradient'
 import playlistMashup from './schemas/queries/playlistMashup'
+import playlistMoodSwing from './schemas/queries/playlistMoodSwing'
+import playlistPartyCurve from './schemas/queries/playlistPartyCurve'
+import playlistRandomWalk from './schemas/queries/playlistRandomWalk'
+import playlistTempoLock from './schemas/queries/playlistTempoLock'
+import playlistTimeMachine from './schemas/queries/playlistTimeMachine'
+import playlistWorkoutArc from './schemas/queries/playlistWorkoutArc'
 import { handleSpotifyUserRedirect } from './spotify'
 import { logger } from './utilities'
 
@@ -162,6 +172,213 @@ app.get('/api/playlist/mashup', async (req, res) => {
     const result = await playlistMashup({
       artistIds,
       trackIds,
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/time-machine', async (req, res) => {
+  try {
+    const { selectedId, selectedType, era, market, trackCount } = req.query
+    if (!selectedId || !selectedType || !era || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistTimeMachine({
+      selectedId: selectedId as string,
+      selectedType: selectedType as string as SearchType,
+      era: era as string,
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/mood-swing', async (req, res) => {
+  try {
+    const { selectedId, selectedType, market, trackCount } = req.query
+    if (!selectedId || !selectedType || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistMoodSwing({
+      selectedId: selectedId as string,
+      selectedType: selectedType as string as SearchType,
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/workout-arc', async (req, res) => {
+  try {
+    const { selectedId, selectedType, market, trackCount } = req.query
+    if (!selectedId || !selectedType || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistWorkoutArc({
+      selectedId: selectedId as string,
+      selectedType: selectedType as string as SearchType,
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/discovery-dial', async (req, res) => {
+  try {
+    const { selectedId, selectedType, adventurousness, market, trackCount } = req.query
+    if (!selectedId || !selectedType || !adventurousness || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistDiscoveryDial({
+      selectedId: selectedId as string,
+      selectedType: selectedType as string as SearchType,
+      adventurousness: parseFloat(adventurousness as string),
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/tempo-lock', async (req, res) => {
+  try {
+    const { selectedId, selectedType, bpm, market, trackCount } = req.query
+    if (!selectedId || !selectedType || !bpm || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistTempoLock({
+      selectedId: selectedId as string,
+      selectedType: selectedType as string as SearchType,
+      bpm: parseInt(bpm as string, 10),
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/genre-drift', async (req, res) => {
+  try {
+    const { startWithId, endWithId, startWithType, endWithType, market, trackCount } = req.query
+    if (!startWithId || !endWithId || !startWithType || !endWithType || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistGenreDrift({
+      startWithId: startWithId as string,
+      endWithId: endWithId as string,
+      startWithType: startWithType as string as SearchType,
+      endWithType: endWithType as string as SearchType,
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/party-curve', async (req, res) => {
+  try {
+    const { selectedId, selectedType, market, trackCount } = req.query
+    if (!selectedId || !selectedType || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistPartyCurve({
+      selectedId: selectedId as string,
+      selectedType: selectedType as string as SearchType,
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/contrast-pairs', async (req, res) => {
+  try {
+    const { firstId, firstType, secondId, secondType, market, trackCount } = req.query
+    if (!firstId || !firstType || !secondId || !secondType || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistContrastPairs({
+      firstId: firstId as string,
+      firstType: firstType as string as SearchType,
+      secondId: secondId as string,
+      secondType: secondType as string as SearchType,
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/focus-mode', async (req, res) => {
+  try {
+    const { selectedId, selectedType, market, trackCount } = req.query
+    if (!selectedId || !selectedType || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistFocusMode({
+      selectedId: selectedId as string,
+      selectedType: selectedType as string as SearchType,
+      market: market as string,
+      trackCount: parseInt(trackCount as string, 10),
+    })
+    sendSuccess(res, result)
+  } catch (e) {
+    logger(e)
+    sendInternalError(res)
+  }
+})
+
+app.get('/api/playlist/random-walk', async (req, res) => {
+  try {
+    const { selectedId, selectedType, market, trackCount } = req.query
+    if (!selectedId || !selectedType || !market || !trackCount) {
+      sendBadRequest(res)
+      return
+    }
+    const result = await playlistRandomWalk({
+      selectedId: selectedId as string,
+      selectedType: selectedType as string as SearchType,
       market: market as string,
       trackCount: parseInt(trackCount as string, 10),
     })
