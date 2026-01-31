@@ -1,15 +1,15 @@
-import { Container, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
-import { pageWrapperCSS } from 'theme'
+import PageWrapper from '../styles/shared/PageWrapper'
 
 const Error = () => (
-  <Container css={pageWrapperCSS}>
+  <PageWrapper>
     <Typography variant="h2">Whoops!</Typography>
     <Typography variant="body1">Sorry, there was an error.</Typography>
     <Typography variant="body1">
       <Link to="/">Return Home</Link>
     </Typography>
-  </Container>
+  </PageWrapper>
 )
 
 export default Error

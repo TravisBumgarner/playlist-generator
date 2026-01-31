@@ -1,17 +1,17 @@
 import { Login } from 'sharedComponents'
 import { gql } from '@apollo/client'
 import { useLazyQuery } from '@apollo/client/react'
-import { Box, CssBaseline, ThemeProvider } from '@mui/material'
+import { Box } from '@mui/material'
 import axios from 'axios'
 import { context } from 'context'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useSearchParams } from 'react-router-dom'
 import { Array, Record, String } from 'runtypes'
-import { theme } from 'theme'
+import { AppThemeProvider } from 'theme'
 import useAsyncEffect from 'use-async-effect'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
-import { Footer, Header, Navigation, Router } from './components'
+import { Footer, Header, Router } from './components'
 import { SpotifyPlayerProvider } from './SpotifyPlayerContext'
 
 const REFRESH_TOKEN_QUERY = gql`
@@ -164,20 +164,18 @@ const App = () => {
     [checkUrlForTokenAndSetLocalStorage, hasAppInitialized],
   )
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <AppThemeProvider>
       <SpotifyPlayerProvider>
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
           <Header />
           <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
-            <Navigation />
             <Router />
             {OpenModal}
           </Box>
           <Footer />
         </Box>
       </SpotifyPlayerProvider>
-    </ThemeProvider>
+    </AppThemeProvider>
   )
 }
 

@@ -5,7 +5,7 @@ import Autocomplete from '@mui/material/Autocomplete'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { darken, lighten, styled } from '@mui/system'
+import { styled } from '@mui/system'
 import { context } from 'context'
 import type { TAutocomplete, TAutocompleteEntry } from 'playlist-generator-utilities'
 import { useContext, useEffect, useMemo, useState } from 'react'
@@ -130,11 +130,9 @@ const GroupHeader = styled('div')(({ theme }) => ({
   position: 'sticky',
   top: '-8px',
   padding: '4px 10px',
-  color: theme.palette.primary.main,
-  backgroundColor:
-    theme.palette.mode === 'light'
-      ? lighten(theme.palette.primary.light, 0.85)
-      : darken(theme.palette.primary.main, 0.8),
+  color: theme.palette.text.primary,
+  fontWeight: 900,
+  backgroundColor: theme.palette.background.paper,
 }))
 
 export default Search

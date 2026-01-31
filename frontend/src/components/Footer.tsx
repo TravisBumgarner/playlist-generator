@@ -1,44 +1,33 @@
-import { css } from '@emotion/react'
 import { Box, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import spotifyLogo from '../static/spotify_dark.png'
+import { SPACING, subtleBackground } from '../styles/styleConsts'
 import Alert from './Alert'
 
-const SHARED_HEIGHT = 18
-
 const Footer = () => {
+  const theme = useTheme()
+
   return (
-    <Box css={wrapperCSS}>
-      <div></div>
+    <>
       <Alert />
-      <Box css={logoWrapperCSS}>
-        <Typography css={{ marginBottom: `${SHARED_HEIGHT}px` }}>Powered by:</Typography>
-        <Box component="img" src={spotifyLogo} css={imgCSS} />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: SPACING.SMALL.PX,
+          backgroundColor: subtleBackground(theme.palette.mode),
+        }}
+      >
+        <Typography variant="body2">Manifest Playlists</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: SPACING.SMALL.PX }}>
+          <Typography variant="body2">Powered by</Typography>
+          <Box component="img" src={spotifyLogo} sx={{ height: '24px' }} />
+        </Box>
       </Box>
-    </Box>
+    </>
   )
 }
-
-const logoWrapperCSS = css`
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-  align-items: end;
-`
-
-const wrapperCSS = css`
-  flex-direction: row;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  > div {
-    width: calc(100%/3);
-  }
-`
-
-const imgCSS = css`
-  height: calc(${SHARED_HEIGHT}px * 2);
-  margin: ${SHARED_HEIGHT}px;
-`
 
 export default Footer

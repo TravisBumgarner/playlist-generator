@@ -1,6 +1,6 @@
 import { Description } from '@mui/icons-material'
-import { Container, List, ListItem, ListItemText, Typography } from '@mui/material'
-import { pageWrapperCSS } from 'theme'
+import { Box, List, ListItem, ListItemText, Typography } from '@mui/material'
+import PageWrapper from '../styles/shared/PageWrapper'
 
 const changelogData: Array<{ version: string; date: string; title: string; notes: string[] }> = [
   {
@@ -28,14 +28,14 @@ const changelogData: Array<{ version: string; date: string; title: string; notes
 
 const Changelog = () => {
   return (
-    <Container css={pageWrapperCSS}>
+    <PageWrapper>
       <Typography variant="h2" gutterBottom>
         Changelog
       </Typography>
       <Typography textAlign="center" variant="body1" gutterBottom>
         As I tweak playlist generators and make other changes, I will to track them here.
       </Typography>
-      <Container>
+      <Box sx={{ width: '100%' }}>
         <List>
           {changelogData.map((entry, index) => (
             <ListItem key={index} disablePadding>
@@ -48,8 +48,8 @@ const Changelog = () => {
               />
               <Typography variant="body1" sx={{ marginLeft: '2rem', width: '70%' }}>
                 <List>
-                  {entry.notes.map((note, index) => (
-                    <ListItem key={index}>
+                  {entry.notes.map((note, noteIndex) => (
+                    <ListItem key={noteIndex}>
                       <Description sx={{ marginRight: '0.5rem' }} />
                       <ListItemText primary={note} />
                     </ListItem>
@@ -59,8 +59,8 @@ const Changelog = () => {
             </ListItem>
           ))}
         </List>
-      </Container>
-    </Container>
+      </Box>
+    </PageWrapper>
   )
 }
 

@@ -1,9 +1,9 @@
 import { Loading } from 'sharedComponents'
 import { gql } from '@apollo/client'
 import { useMutation } from '@apollo/client/react'
-import { Box, Button, Card, css, IconButton, Link, Typography } from '@mui/material'
 import Pause from '@mui/icons-material/Pause'
 import PlayArrow from '@mui/icons-material/PlayArrow'
+import { Box, Button, Card, css, IconButton, Link, Typography } from '@mui/material'
 import Avatar from '@mui/material/Avatar'
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
@@ -37,7 +37,11 @@ const PlaylistItem = ({
   data,
   isPlaying,
   onPlay,
-}: { data: TPlaylistEntry; isPlaying: boolean; onPlay: (uri: string) => void }) => {
+}: {
+  data: TPlaylistEntry
+  isPlaying: boolean
+  onPlay: (uri: string) => void
+}) => {
   const Artists = useMemo(() => {
     return data.artists.map(({ name, href }) => (
       <Link css={playlistLinkCSS} key={href} target="_blank" href={href}>
@@ -87,20 +91,23 @@ const Playlist = ({ playlistEntries, initialTitle, initialDescription, resetStat
   const { dispatch } = useContext(context)
   const { isReady, currentTrackUri, isPaused, play, togglePlay } = useSpotifyPlayer()
 
-  const handlePlay = useCallback((uri: string) => {
-    if (!isReady) {
-      // Fallback for non-Premium / not connected: open in Spotify
-      const entry = playlistEntries.find((e) => e.uri === uri)
-      if (entry) window.open(entry.href, '_blank', 'noopener,noreferrer')
-      return
-    }
+  const handlePlay = useCallback(
+    (uri: string) => {
+      if (!isReady) {
+        // Fallback for non-Premium / not connected: open in Spotify
+        const entry = playlistEntries.find((e) => e.uri === uri)
+        if (entry) window.open(entry.href, '_blank', 'noopener,noreferrer')
+        return
+      }
 
-    if (currentTrackUri === uri) {
-      togglePlay()
-    } else {
-      play(uri)
-    }
-  }, [isReady, currentTrackUri, isPaused, play, togglePlay, playlistEntries])
+      if (currentTrackUri === uri) {
+        togglePlay()
+      } else {
+        play(uri)
+      }
+    },
+    [isReady, currentTrackUri, play, togglePlay, playlistEntries],
+  )
 
   const handleSavePlaylistSubmit = useCallback(async () => {
     setIsSavingPlaylist(true)
@@ -176,8 +183,8 @@ const Playlist = ({ playlistEntries, initialTitle, initialDescription, resetStat
           overflowY: 'scroll',
           maxHeight: '30vh',
           margin: '0.5rem 0',
-          border: '1px solid #363636',
-          borderRadius: '0.4rem',
+          border: '1px solid',
+          borderColor: 'divider',
         }}
       >
         {Playlist}
