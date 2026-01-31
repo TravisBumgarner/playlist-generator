@@ -5,8 +5,8 @@
     "dev": "nodemon ./src/index.ts",
     "start-production": "node build/index.js",
     "build": "rm -rf ./build && tsc",
-    "lint:run": "npx eslint --ext .ts ./src/**",
-    "lint:fix": "npx eslint --ext .ts ./src/** --fix",
+    "lint": "biome check ./src",
+    "lint:fix": "biome check --fix ./src",
     "deploy:nfs": "yarn run build && bash deploy.sh",
     "start:prod": "export NODE_ENV=production && node build/index.js"
   },

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
 import { Container, Slider, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
 
 export const MIN_TRACK_COUNT = 20
 
@@ -38,15 +38,17 @@ const TrackCount = ({ trackCountCallback }: TrackCountProps) => {
     calculateDuration()
   }, [value])
 
-  const handleChange = (event: Event, newValue: number | number[]) => {
+  const handleChange = (_event: Event, newValue: number | number[]) => {
     setValue(newValue as number)
     trackCountCallback(newValue as number)
   }
 
   return (
     <Container sx={{ marginBottom: '1rem' }}>
-      <Typography textAlign="center" variant='h6'>Desired Number of Tracks</Typography>
-      <Typography textAlign="center" variant='body1'>
+      <Typography textAlign="center" variant="h6">
+        Desired Number of Tracks
+      </Typography>
+      <Typography textAlign="center" variant="body1">
         Note - The more obscure the request, the harder it will be to meet the desired number of tracks.
       </Typography>
 
@@ -56,10 +58,14 @@ const TrackCount = ({ trackCountCallback }: TrackCountProps) => {
         min={20}
         max={500}
         step={5}
-        marks={[{ value: 20, label: '20' }, { value: 500, label: '500' }]}
+        marks={[
+          { value: 20, label: '20' },
+          { value: 500, label: '500' },
+        ]}
       />
-      <Typography textAlign="center" variant='body1'>
-        Selected: {value} track{value !== 1 && 's'} | Estimated Duration: {formatDuration(duration.hours, duration.minutes)}
+      <Typography textAlign="center" variant="body1">
+        Selected: {value} track{value !== 1 && 's'} | Estimated Duration:{' '}
+        {formatDuration(duration.hours, duration.minutes)}
       </Typography>
     </Container>
   )

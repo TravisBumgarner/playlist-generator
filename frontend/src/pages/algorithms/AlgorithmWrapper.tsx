@@ -1,9 +1,8 @@
-import { Button, Container, Typography } from '@mui/material'
-import { type JSX, useCallback, useContext, useMemo, useState } from 'react'
 import { Loading, Playlist, TrackCount } from 'sharedComponents'
-
+import { Button, Container, Typography } from '@mui/material'
 import { context } from 'context'
-import { type TPlaylistEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
+import type { TPlaylistEntry, TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
+import { type JSX, useCallback, useContext, useMemo, useState } from 'react'
 import { pageWrapperCSS } from 'theme'
 import { MIN_TRACK_COUNT } from '../../sharedComponents/TrackCount'
 
@@ -25,7 +24,16 @@ enum EStep {
   PreviewingPlaylist = 'PreviewingPlaylist',
 }
 
-const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, apiCall, resetStateCallback, initialPlaylistTitle, initialPlaylistDescription }: AlgorithmWrapperProps) => {
+const AlgorithmWrapper = ({
+  title,
+  description,
+  searchParams,
+  searchDisabled,
+  apiCall,
+  resetStateCallback,
+  initialPlaylistTitle,
+  initialPlaylistDescription,
+}: AlgorithmWrapperProps) => {
   const [playlistEntries, setPlaylistEntries] = useState<TPlaylistEntry[]>([])
   const [step, setStep] = useState<EStep>(EStep.Inputting)
   const [trackCount, setTrackCount] = useState<number>(MIN_TRACK_COUNT)
@@ -60,35 +68,58 @@ const AlgorithmWrapper = ({ title, description, searchParams, searchDisabled, ap
             {searchParams}
             {/* Search Params shared by all algorithms go below */}
             <TrackCount trackCountCallback={trackCountCallback} />
-            <Button fullWidth variant='contained' disabled={searchDisabled} onClick={handleSearch}>Search</Button>
+            <Button fullWidth variant="contained" disabled={searchDisabled} onClick={handleSearch}>
+              Search
+            </Button>
           </>
-
         )
       case EStep.PreviewingPlaylist:
         if (playlistEntries.length === 0) {
-          return <>
-            <Typography variant="body1" gutterBottom>No results found</Typography>
-            <Button
-              fullWidth
-              variant='text' onClick={resetState}>Start Over
-            </Button>
-          </>
+          return (
+            <>
+              <Typography variant="body1" gutterBottom>
+                No results found
+              </Typography>
+              <Button fullWidth variant="text" onClick={resetState}>
+                Start Over
+              </Button>
+            </>
+          )
         }
 
-        return <Playlist initialDescription={initialPlaylistDescription} resetStateCallback={resetState} initialTitle={initialPlaylistTitle} playlistEntries={playlistEntries} />
+        return (
+          <Playlist
+            initialDescription={initialPlaylistDescription}
+            resetStateCallback={resetState}
+            initialTitle={initialPlaylistTitle}
+            playlistEntries={playlistEntries}
+          />
+        )
       case EStep.Searching:
         return <Loading />
     }
-  }, [step, searchParams, playlistEntries, resetState, handleSearch, searchDisabled, initialPlaylistTitle, initialPlaylistDescription, trackCountCallback])
+  }, [
+    step,
+    searchParams,
+    playlistEntries,
+    resetState,
+    handleSearch,
+    searchDisabled,
+    initialPlaylistTitle,
+    initialPlaylistDescription,
+    trackCountCallback,
+  ])
 
   return (
     <Container css={pageWrapperCSS}>
-      <Typography variant="h2" gutterBottom>{title}</Typography>
-      <Typography textAlign="center" variant="body1" gutterBottom>{description}</Typography>
-      <Container>
-        {Content}
-      </Container>
-    </Container >
+      <Typography variant="h2" gutterBottom>
+        {title}
+      </Typography>
+      <Typography textAlign="center" variant="body1" gutterBottom>
+        {description}
+      </Typography>
+      <Container>{Content}</Container>
+    </Container>
   )
 }
 

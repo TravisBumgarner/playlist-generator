@@ -1,11 +1,6 @@
-import Gradient from './Gradient'
-import GoodBeatsToGoodSleeps from './GoodBeatsToGoodSleeps'
-import Mashup from './Mashup'
 import FullControl from './FullControl'
+import GoodBeatsToGoodSleeps from './GoodBeatsToGoodSleeps'
+import Gradient from './Gradient'
+import Mashup from './Mashup'
 
-export {
-  Gradient,
-  GoodBeatsToGoodSleeps,
-  Mashup,
-  FullControl
-}
+export { Gradient, GoodBeatsToGoodSleeps, Mashup, FullControl }

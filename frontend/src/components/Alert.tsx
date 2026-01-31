@@ -1,8 +1,7 @@
-import { useContext } from 'react'
-import { Alert as AlertMUI, Box, Button, Link } from '@mui/material'
 import { css } from '@emotion/react'
-
+import { Alert as AlertMUI, Box, Button, Link } from '@mui/material'
 import { context } from 'context'
+import { useContext } from 'react'
 
 const AlertPositionerCSS = css`
     display: flex;
@@ -21,14 +20,22 @@ const Alert = () => {
   return (
     <Box css={AlertPositionerCSS}>
       <AlertMUI
-        variant='outlined'
+        variant="outlined"
         action={
           <Button color="inherit" size="small" onClick={handleSubmit}>
             Close
           </Button>
         }
-        severity={state.alert.severity}>{state.alert.text} {state.alert.url && <Link target="_blank" href={state.alert.url}>Open Playlist</Link>}</AlertMUI>
-    </Box >
+        severity={state.alert.severity}
+      >
+        {state.alert.text}{' '}
+        {state.alert.url && (
+          <Link target="_blank" href={state.alert.url}>
+            Open Playlist
+          </Link>
+        )}
+      </AlertMUI>
+    </Box>
   )
 }
 

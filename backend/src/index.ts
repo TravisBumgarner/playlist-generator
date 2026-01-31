@@ -1,13 +1,13 @@
+import fs from 'node:fs'
+import https from 'node:https'
+import path from 'node:path'
 import * as Sentry from '@sentry/node'
 import cors from 'cors'
 import express from 'express'
-import { createHandler } from 'graphql-http/lib/use/express'
 import { GraphQLError } from 'graphql'
+import { createHandler } from 'graphql-http/lib/use/express'
 import { useServer } from 'graphql-ws/use/ws'
 import { WebSocketServer } from 'ws'
-import https from 'https'
-import fs from 'fs'
-import path from 'path'
 import config from './config'
 
 import schema from './schemas'
@@ -17,10 +17,7 @@ import { logger } from './utilities'
 const app = express()
 Sentry.init({
   dsn: 'https://838c24cda4bd47d09cfbe44a11406585@o196886.ingest.sentry.io/4505303436886016',
-  integrations: [
-    Sentry.httpIntegration(),
-    Sentry.expressIntegration(),
-  ],
+  integrations: [Sentry.httpIntegration(), Sentry.expressIntegration()],
   tracesSampleRate: 1.0,
 })
 
@@ -30,26 +27,23 @@ const CORS_PROD = ['https://playlists.sillysideprojects.com']
 app.use(
   cors({
     origin: process.env.NODE_ENV === 'production' ? CORS_PROD : CORS_DEV,
-  })
+  }),
 )
 
 app.use(express.json())
 
-app.get('/ok', async (req: express.Request, res: express.Response) => {
+app.get('/ok', async (_req: express.Request, res: express.Response) => {
   res.send('Pong!')
 })
 
-app.get(
-  '/spotify_redirect',
-  async (req: express.Request, res: express.Response) => {
-    const response = await handleSpotifyUserRedirect(req.query)
-    if (response === null) {
-      res.sendStatus(500)
-      return
-    }
-    res.redirect(response)
+app.get('/spotify_redirect', async (req: express.Request, res: express.Response) => {
+  const response = await handleSpotifyUserRedirect(req.query)
+  if (response === null) {
+    res.sendStatus(500)
+    return
   }
-)
+  res.redirect(response)
+})
 
 app.all(
   '/graphql',
@@ -59,14 +53,14 @@ app.all(
       logger(err.message)
       return new GraphQLError('Something went wrong')
     },
-  })
+  }),
 )
 
 Sentry.setupExpressErrorHandler(app)
 
 const PORT = 8000
 
-let server: https.Server | import("http").Server
+let server: https.Server | import('http').Server
 if (config.isProd) {
   server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`App listening at http://0.0.0.0:${PORT}`)
@@ -77,7 +71,7 @@ if (config.isProd) {
       key: fs.readFileSync(path.join(__dirname, '/../localhost-key.pem')),
       cert: fs.readFileSync(path.join(__dirname, '/../localhost.pem')),
     },
-    app
+    app,
   )
 
   server.listen(PORT, '0.0.0.0', () => {
@@ -87,4 +81,3 @@ if (config.isProd) {
 
 const wsServer = new WebSocketServer({ server, path: '/graphql' })
 useServer({ schema }, wsServer)
-export { }

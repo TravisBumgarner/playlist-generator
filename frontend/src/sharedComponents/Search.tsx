@@ -1,16 +1,15 @@
-import TextField from '@mui/material/TextField'
-import React, { useMemo, useContext, useEffect, useState } from 'react'
-import Autocomplete from '@mui/material/Autocomplete'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import { debounce } from '@mui/material'
 import { gql } from '@apollo/client'
 import { useLazyQuery } from '@apollo/client/react'
-import { type TAutocomplete, type TAutocompleteEntry } from 'playlist-generator-utilities'
-import { logger } from 'utilities'
-import { Avatar } from '@mui/material'
-import { context } from 'context'
+import { Avatar, debounce } from '@mui/material'
+import Autocomplete from '@mui/material/Autocomplete'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import { darken, lighten, styled } from '@mui/system'
+import { context } from 'context'
+import type { TAutocomplete, TAutocompleteEntry } from 'playlist-generator-utilities'
+import { useContext, useEffect, useMemo, useState } from 'react'
+import { logger } from 'utilities'
 
 const AUTOCOMPLETE_QUERY = gql`
 query Autocomplete($query: String!, $market: String!) {
@@ -36,24 +35,20 @@ const Search = ({ resultSelectedCallback, disabled }: SearchParams) => {
 
   const fetch = useMemo(
     () =>
-      debounce(
-        (
-          request: string,
-          handleResults: (results?: TAutocomplete['Response']) => void
-        ) => {
-          autocomplete({ variables: { query: request, market: state.user!.market } }).then(result => {
-            if ((result.data?.autocomplete) != null) {
+      debounce((request: string, handleResults: (results?: TAutocomplete['Response']) => void) => {
+        autocomplete({ variables: { query: request, market: state.user!.market } })
+          .then((result) => {
+            if (result.data?.autocomplete != null) {
               handleResults(result.data?.autocomplete)
             } else {
               return []
             }
-          }).catch(e => {
+          })
+          .catch((_e) => {
             logger('failed to autocomplete')
           })
-        },
-        400
-      ),
-    [autocomplete, state.user]
+      }, 400),
+    [autocomplete, state.user],
   )
 
   useEffect(() => {
@@ -94,16 +89,14 @@ const Search = ({ resultSelectedCallback, disabled }: SearchParams) => {
       clearOnEscape
       loadingText="Enter a query to get started"
       noOptionsText="No Results"
-      onChange={(event: any, newValue: TAutocompleteEntry | null) => {
+      onChange={(_event: any, newValue: TAutocompleteEntry | null) => {
         newValue && resultSelectedCallback(newValue)
         setQuery('')
       }}
-      onInputChange={(event, newInputValue) => {
+      onInputChange={(_event, newInputValue) => {
         setQuery(newInputValue)
       }}
-      renderInput={(params) => (
-        <TextField {...params} label="Select an Artist or Track" fullWidth margin='normal' />
-      )}
+      renderInput={(params) => <TextField {...params} label="Select an Artist or Track" fullWidth margin="normal" />}
       groupBy={(option) => option.type}
       renderOption={(props, option) => {
         return (
@@ -125,9 +118,7 @@ const Search = ({ resultSelectedCallback, disabled }: SearchParams) => {
         return (
           <li key={params.key}>
             <GroupHeader>{params.group}s</GroupHeader>
-            <ul>
-              {params.children}
-            </ul>
+            <ul>{params.children}</ul>
           </li>
         )
       }}
@@ -143,7 +134,7 @@ const GroupHeader = styled('div')(({ theme }) => ({
   backgroundColor:
     theme.palette.mode === 'light'
       ? lighten(theme.palette.primary.light, 0.85)
-      : darken(theme.palette.primary.main, 0.8)
+      : darken(theme.palette.primary.main, 0.8),
 }))
 
 export default Search

@@ -1,15 +1,14 @@
-import { useCallback, useContext, useMemo } from 'react'
+import LoginIcon from '@mui/icons-material/Login'
+import LogoutIcon from '@mui/icons-material/Logout'
+import MenuIcon from '@mui/icons-material/Menu'
+import { Avatar, Link, Tooltip } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
+import IconButton from '@mui/material/IconButton'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import LogoutIcon from '@mui/icons-material/Logout'
-import LoginIcon from '@mui/icons-material/Login'
-import { Avatar, Link, Tooltip } from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-
-import { logout } from 'utilities'
 import { context } from 'context'
+import { useCallback, useContext, useMemo } from 'react'
+import { logout } from 'utilities'
 
 const Header = () => {
   const { dispatch, state } = useContext(context)
@@ -25,17 +24,11 @@ const Header = () => {
   const Login = useMemo(() => {
     return (
       <Tooltip title="Login">
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-          onClick={login}
-        >
+        <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={login}>
           <LoginIcon />
         </IconButton>
-      </Tooltip>)
+      </Tooltip>
+    )
   }, [login])
 
   const handleMenuClick = useCallback(() => {
@@ -45,22 +38,15 @@ const Header = () => {
   const AuthedUser = useMemo(() => {
     if (!state.user) return null
 
-    return (<>
-      <Avatar sx={{ marginRight: '1rem' }} src={state.user.image ?? ''} alt={state.user.displayName} />
-      <Tooltip title="Logout">
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-
-          aria-label="menu"
-          sx={{ mr: 2 }}
-          onClick={handleLogout}
-        >
-          <LogoutIcon />
-        </IconButton>
-      </Tooltip>
-    </>
+    return (
+      <>
+        <Avatar sx={{ marginRight: '1rem' }} src={state.user.image ?? ''} alt={state.user.displayName} />
+        <Tooltip title="Logout">
+          <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={handleLogout}>
+            <LogoutIcon />
+          </IconButton>
+        </Tooltip>
+      </>
     )
   }, [state.user, handleLogout])
 
@@ -86,7 +72,7 @@ const Header = () => {
         </Typography>
         {state.user ? AuthedUser : Login}
       </Toolbar>
-    </AppBar >
+    </AppBar>
   )
 }
 

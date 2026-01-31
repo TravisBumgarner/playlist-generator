@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
-import spotifyLogo from '../static/spotify_dark.png'
 import { Box, Typography } from '@mui/material'
+import spotifyLogo from '../static/spotify_dark.png'
 import Alert from './Alert'
 
 const SHARED_HEIGHT = 18
@@ -14,7 +14,7 @@ const Footer = () => {
         <Typography css={{ marginBottom: `${SHARED_HEIGHT}px` }}>Powered by:</Typography>
         <Box component="img" src={spotifyLogo} css={imgCSS} />
       </Box>
-    </Box >
+    </Box>
   )
 }
 

@@ -4,24 +4,16 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import { ApolloProvider } from '@apollo/client/react'
 import * as Sentry from '@sentry/react'
-
+import ResultsContext from 'context'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { apolloClient } from './utilities'
-
-import ResultsContext from 'context'
 import App from './App'
+import { apolloClient } from './utilities'
 
 Sentry.init({
   dsn: 'https://59d667a871be4737959f079fb3031167@o196886.ingest.sentry.io/4505303387144192',
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-  ],
-  tracePropagationTargets: [
-    'localhost',
-    /^https:\/\/playlists.sillysideprojects\.com/,
-  ],
+  integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
+  tracePropagationTargets: ['localhost', /^https:\/\/playlists.sillysideprojects\.com/],
   tracesSampleRate: 1.0,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
@@ -36,5 +28,5 @@ root.render(
         <App />
       </ApolloProvider>
     </ResultsContext>
-  </BrowserRouter>
+  </BrowserRouter>,
 )

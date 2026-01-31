@@ -1,15 +1,8 @@
-import Home from './Home'
+import Changelog from './ChangeLog'
 import Error from './Error'
+import Home from './Home'
 import LandingPage from './LandingPage'
 import NotFound from './NotFound'
 import Sandbox from './Sandbox'
-import Changelog from './ChangeLog'
 
-export {
-  Home,
-  Error,
-  LandingPage,
-  NotFound,
-  Sandbox,
-  Changelog
-}
+export { Home, Error, LandingPage, NotFound, Sandbox, Changelog }

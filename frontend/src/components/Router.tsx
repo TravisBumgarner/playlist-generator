@@ -1,10 +1,9 @@
+import { Loading } from 'sharedComponents'
+import { Container } from '@mui/material'
+import { context } from 'context'
 import { type JSX, useContext } from 'react'
 import { Route, Routes } from 'react-router'
 import { Navigate } from 'react-router-dom'
-
-import { Container } from '@mui/material'
-import { context } from 'context'
-import { Loading } from 'sharedComponents'
 import { ALGORITHM_ROUTES } from '../algorithms'
 import { Changelog, Error, Home, LandingPage, NotFound, Sandbox } from '../pages'
 
@@ -39,28 +38,21 @@ const Router = () => {
   return (
     <Routes>
       <Route path="/error" element={<Error />} />
-      <Route path="/" element={(
-        <ConditionalRoute
-          authedComponent={<Home />}
-          unauthedComponent={<LandingPage />}
-        />
-      )}
-      />
+      <Route path="/" element={<ConditionalRoute authedComponent={<Home />} unauthedComponent={<LandingPage />} />} />
       {ALGORITHM_ROUTES.map(({ href, component, title, description }) => {
         return (
-          <Route key={href} path={href} element={(
-            <ConditionalRoute
-              authedComponent={component(title, description)}
-              unauthedComponent={<LandingPage />}
-            />
-          )}
+          <Route
+            key={href}
+            path={href}
+            element={
+              <ConditionalRoute authedComponent={component(title, description)} unauthedComponent={<LandingPage />} />
+            }
           />
         )
       })}
       <Route path="/changelog" element={<Changelog />} />
       <Route path="/rudaruda" element={<Sandbox />} />
       <Route path="*" element={<NotFound />} />
-
     </Routes>
   )
 }
