@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/node'
-import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import { createHandler } from 'graphql-http/lib/use/express'
@@ -19,22 +18,11 @@ const app = express()
 Sentry.init({
   dsn: 'https://838c24cda4bd47d09cfbe44a11406585@o196886.ingest.sentry.io/4505303436886016',
   integrations: [
-    // enable HTTP calls tracing
-    new Sentry.Integrations.Http({ tracing: true }),
-    // enable Express.js middleware tracing
-    new Sentry.Integrations.Express({ app }),
-    // Automatically instrument Node.js libraries and frameworks
-    ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
+    Sentry.httpIntegration(),
+    Sentry.expressIntegration(),
   ],
-
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
   tracesSampleRate: 1.0,
 })
-
-app.use(Sentry.Handlers.requestHandler())
-app.use(Sentry.Handlers.tracingHandler())
 
 const CORS_DEV = ['http://127.0.0.1:3000', 'http://localhost:3000', 'https://127.0.0.1:3000', 'https://localhost:3000']
 const CORS_PROD = ['https://playlists.sillysideprojects.com']
@@ -45,7 +33,7 @@ app.use(
   })
 )
 
-app.use(bodyParser.json())
+app.use(express.json())
 
 app.get('/ok', async (req: express.Request, res: express.Response) => {
   res.send('Pong!')
@@ -74,7 +62,7 @@ app.all(
   })
 )
 
-app.use(Sentry.Handlers.errorHandler())
+Sentry.setupExpressErrorHandler(app)
 
 const PORT = 8000
 
