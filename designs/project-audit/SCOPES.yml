@@ -188,7 +188,7 @@ tasks:
       - All pages render correctly
     depends_on: []
     effort: 3
-    status: scoped
+    status: completed
 
   - id: 7
     github_issue: 15
