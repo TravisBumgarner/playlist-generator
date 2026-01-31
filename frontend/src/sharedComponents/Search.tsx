@@ -3,7 +3,7 @@ import React, { useMemo, useContext, useEffect, useState } from 'react'
 import Autocomplete from '@mui/material/Autocomplete'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import { debounce } from '@mui/material/utils'
+import { debounce } from '@mui/material'
 import { gql, useLazyQuery } from '@apollo/client'
 import { type TAutocomplete, type TAutocompleteEntry } from 'playlist-generator-utilities'
 import { logger } from 'utilities'
@@ -108,10 +108,10 @@ const Search = ({ resultSelectedCallback, disabled }: SearchParams) => {
         return (
           <li {...props} key={option.id}>
             <Grid container alignItems="center">
-              <Grid item sx={{ display: 'flex', width: 44 }}>
+              <Grid sx={{ display: 'flex', width: 44 }}>
                 <Avatar variant="square" alt={option.name} src={option.image} />
               </Grid>
-              <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
+              <Grid sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
                 <Typography variant="body2" color="text.secondary">
                   {option.name}
                 </Typography>

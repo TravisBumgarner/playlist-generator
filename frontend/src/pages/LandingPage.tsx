@@ -11,7 +11,7 @@ const Algorithms = () => {
       {
         ALGORITHM_ROUTES.map(({ title: text, href, description }) => {
           return (
-            <Grid xs={1} sm={1} item key={text} >
+            <Grid size={{ xs: 1, sm: 1 }} key={text} >
               <Typography variant="h6">{text}</Typography>
               <Typography variant='body1'><span>{description}</span></Typography>
             </Grid >
