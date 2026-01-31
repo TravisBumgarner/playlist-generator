@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/node'
-import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import { createHandler } from 'graphql-http/lib/use/express'
@@ -45,7 +44,7 @@ app.use(
   })
 )
 
-app.use(bodyParser.json())
+app.use(express.json())
 
 app.get('/ok', async (req: express.Request, res: express.Response) => {
   res.send('Pong!')
