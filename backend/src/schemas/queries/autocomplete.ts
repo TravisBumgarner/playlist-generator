@@ -1,8 +1,7 @@
-import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 import axios from 'axios'
-
+import { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
+import { SearchType, type TAutocomplete, type TAutocompleteEntry } from 'playlist-generator-utilities'
 import getSpotifyAccessToken from '../../spotify'
-import { SearchType, TAutocomplete, TAutocompleteEntry } from 'playlist-generator-utilities'
 
 const AutoCompleteType = new GraphQLObjectType({
   name: 'AutocompleteResult',
@@ -20,12 +19,12 @@ const autocomplete = {
   description: 'Get a list of items searched for autocomplete',
   args: {
     query: { type: new GraphQLNonNull(GraphQLString) },
-    market: { type: new GraphQLNonNull(GraphQLString) }
+    market: { type: new GraphQLNonNull(GraphQLString) },
   },
   resolve: async (_: any, { query, market }: TAutocomplete['Request']): Promise<TAutocomplete['Response']> => {
     const accessToken = await getSpotifyAccessToken()
 
-    // hard coding for now, I suspect I'll want to expand. 
+    // hard coding for now, I suspect I'll want to expand.
     const TYPES = ['artist', 'track'] as const
 
     const params = new URLSearchParams({
@@ -33,13 +32,13 @@ const autocomplete = {
       type: TYPES.join(','),
       market,
       offset: '0',
-      limit: '10'
+      limit: '10',
     })
 
     const spotifyResults = await axios.get(`https://api.spotify.com/v1/search?${params.toString()}`, {
       headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
+        Authorization: `Bearer ${accessToken}`,
+      },
     })
 
     const autocompleteResults: TAutocompleteEntry[] = []
@@ -50,7 +49,7 @@ const autocomplete = {
           id,
           name,
           image: images.length > 0 ? images[0].url : '',
-          type: SearchType.Artist
+          type: SearchType.Artist,
         })
       })
     }
@@ -61,13 +60,13 @@ const autocomplete = {
           id,
           name,
           image: album.images.length > 0 ? album.images[0].url : '',
-          type: SearchType.Track
+          type: SearchType.Track,
         })
       })
     }
 
     return autocompleteResults
-  }
+  },
 }
 
 export default autocomplete

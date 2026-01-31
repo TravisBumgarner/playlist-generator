@@ -1,17 +1,17 @@
-import { Box, CssBaseline, ThemeProvider } from '@mui/material'
-import { gql, useLazyQuery } from '@apollo/client'
-import { Record, String, Array } from 'runtypes'
-import { useNavigate } from 'react-router'
-import { useCallback, useContext, useMemo, useState } from 'react'
-import axios from 'axios'
-import useAsyncEffect from 'use-async-effect'
-
-import { theme } from 'theme'
-import { Router, Header, Navigation, Footer } from './components'
-import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
-import { context } from 'context'
-import { useSearchParams } from 'react-router-dom'
 import { Login } from 'sharedComponents'
+import { gql } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
+import { Box, CssBaseline, ThemeProvider } from '@mui/material'
+import axios from 'axios'
+import { context } from 'context'
+import { useCallback, useContext, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
+import { useSearchParams } from 'react-router-dom'
+import { Array, Record, String } from 'runtypes'
+import { theme } from 'theme'
+import useAsyncEffect from 'use-async-effect'
+import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
+import { Footer, Header, Navigation, Router } from './components'
 
 const REFRESH_TOKEN_QUERY = gql`
 query RefreshToken($refreshToken: String!) {
@@ -27,16 +27,18 @@ const App = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { state, dispatch } = useContext(context)
-  const [refreshToken] = useLazyQuery<{ refreshToken: { refreshToken: string, accessToken: string, expiresIn: string } }>(REFRESH_TOKEN_QUERY)
+  const [refreshToken] = useLazyQuery<{
+    refreshToken: { refreshToken: string; accessToken: string; expiresIn: string }
+  }>(REFRESH_TOKEN_QUERY)
   const [hasAppInitialized, setHasAppInitialized] = useState(false)
 
   const getUserDetails = useCallback(async () => {
-    const accessToken = (getLocalStorage(ELocalStorageItems.AccessToken)) as string
+    const accessToken = getLocalStorage(ELocalStorageItems.AccessToken) as string
     if (!accessToken) {
       logger('No access token')
       dispatch({
         type: 'ADD_ALERT',
-        data: { text: 'Please login again', severity: 'info' }
+        data: { text: 'Please login again', severity: 'info' },
       })
     }
     try {
@@ -44,26 +46,27 @@ const App = () => {
         method: 'GET',
         url: 'https://api.spotify.com/v1/me',
         headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       })
 
       const User = Record({
         display_name: String,
-        images: Array(Record({
-          url: String
-        })),
+        images: Array(
+          Record({
+            url: String,
+          }),
+        ),
         uri: String,
-        country: String
+        country: String,
       })
 
       const parsed = User.check(response.data)
       const user = {
         displayName: parsed.display_name,
-        image:
-          parsed.images.length > 0 ? parsed.images[0].url : '',
+        image: parsed.images.length > 0 ? parsed.images[0].url : '',
         uri: parsed.uri,
-        market: parsed.country
+        market: parsed.country,
       }
 
       dispatch({ type: 'LOGIN', data: user })
@@ -76,14 +79,17 @@ const App = () => {
     setHasAppInitialized(true)
   }, [dispatch])
 
-  const updateTokenLocalStorage = useCallback((args: { accessToken: string, expiresIn: string, refreshToken: string }) => {
-    const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + parseInt(args.expiresIn, 10) * 1000) // expiresIn is in seconds
+  const updateTokenLocalStorage = useCallback(
+    (args: { accessToken: string; expiresIn: string; refreshToken: string }) => {
+      const expiresAt = new Date()
+      expiresAt.setDate(expiresAt.getDate() + parseInt(args.expiresIn, 10) * 1000) // expiresIn is in seconds
 
-    setLocalStorage(ELocalStorageItems.AccessToken, args.accessToken)
-    setLocalStorage(ELocalStorageItems.ExpiresAt, expiresAt)
-    setLocalStorage(ELocalStorageItems.RefreshToken, args.refreshToken)
-  }, [])
+      setLocalStorage(ELocalStorageItems.AccessToken, args.accessToken)
+      setLocalStorage(ELocalStorageItems.ExpiresAt, expiresAt)
+      setLocalStorage(ELocalStorageItems.RefreshToken, args.refreshToken)
+    },
+    [],
+  )
 
   const checkUrlForTokenAndSetLocalStorage = useCallback(() => {
     // On app load, if url searchParams includes access_token after Spotify redirect, set it as local storage.
@@ -95,7 +101,7 @@ const App = () => {
       updateTokenLocalStorage({
         accessToken: accessTokenSearchParam,
         refreshToken: refreshTokenParam,
-        expiresIn: expiresInParam
+        expiresIn: expiresInParam,
       })
       navigate('.', { replace: true })
       return true
@@ -135,24 +141,27 @@ const App = () => {
     return <Login isOpen={true} />
   }, [state.openModal])
 
-  useAsyncEffect(async (isMounted) => {
-    if (hasAppInitialized || !isMounted) return
+  useAsyncEffect(
+    async (isMounted) => {
+      if (hasAppInitialized || !isMounted) return
 
-    const inUrl = checkUrlForTokenAndSetLocalStorage()
+      const inUrl = checkUrlForTokenAndSetLocalStorage()
 
-    if (!inUrl) {
-      const status = await checkTokenValidInStorage()
-      if (status === 'does_not_exist') {
-        return
+      if (!inUrl) {
+        const status = await checkTokenValidInStorage()
+        if (status === 'does_not_exist') {
+          return
+        }
+
+        if (status === 'expired') {
+          await refreshTokenInStorage()
+        }
+
+        await getUserDetails()
       }
-
-      if (status === 'expired') {
-        await refreshTokenInStorage()
-      }
-
-      await getUserDetails()
-    }
-  }, [checkUrlForTokenAndSetLocalStorage, hasAppInitialized])
+    },
+    [checkUrlForTokenAndSetLocalStorage, hasAppInitialized],
+  )
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

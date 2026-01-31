@@ -1,8 +1,7 @@
 import { GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 import { v4 as uuidv4 } from 'uuid'
-
-import { getSpotifyUserTokenWithRefresh } from '../../spotify'
 import config from '../../config'
+import { getSpotifyUserTokenWithRefresh } from '../../spotify'
 
 type RefreshTokenArgs = {
   refreshToken: string
@@ -21,32 +20,31 @@ const TokenType = new GraphQLObjectType({
 export const getSpotifyRedirectURI = {
   type: GraphQLString,
   description: 'Initiate Login Process',
-  args: {
-  },
+  args: {},
   resolve: async () => {
-    const state = uuidv4();
-    const scope = 'user-read-private user-read-email playlist-modify-public';
+    const state = uuidv4()
+    const scope = 'user-read-private user-read-email playlist-modify-public'
 
     const queryString = new URLSearchParams({
       response_type: 'code',
       client_id: config.spotify.clientId,
       scope: scope,
       redirect_uri: config.spotify.redirectURI,
-      state: state
+      state: state,
     })
 
-    const redirectUrl = 'https://accounts.spotify.com/authorize?' + queryString.toString()
+    const redirectUrl = `https://accounts.spotify.com/authorize?${queryString.toString()}`
     return redirectUrl
-  }
+  },
 }
 
 export const refreshToken = {
   type: new GraphQLNonNull(TokenType),
   description: 'Initiate Token Refresh Process',
   args: {
-    refreshToken: { type: new GraphQLNonNull(GraphQLString) }
+    refreshToken: { type: new GraphQLNonNull(GraphQLString) },
   },
   resolve: async (_: any, { refreshToken }: RefreshTokenArgs) => {
     return await getSpotifyUserTokenWithRefresh(refreshToken)
-  }
+  },
 }

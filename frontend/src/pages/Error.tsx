@@ -6,7 +6,9 @@ const Error = () => (
   <Container css={pageWrapperCSS}>
     <Typography variant="h2">Whoops!</Typography>
     <Typography variant="body1">Sorry, there was an error.</Typography>
-    <Typography variant="body1"><Link to="/" >Return Home</Link></Typography>
+    <Typography variant="body1">
+      <Link to="/">Return Home</Link>
+    </Typography>
   </Container>
 )
 

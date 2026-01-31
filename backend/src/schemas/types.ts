@@ -1,4 +1,4 @@
-import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
+import { GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 
 const PlaylistArtistType = new GraphQLObjectType({
   name: 'PlaylistArtistResult',
@@ -31,4 +31,3 @@ export const PlaylistType = new GraphQLObjectType({
     href: { type: new GraphQLNonNull(GraphQLString) },
   }),
 })
-

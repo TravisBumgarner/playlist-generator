@@ -26,7 +26,7 @@ const EMPTY_STATE: State = {
   user: null,
   isMenuOpen: false,
   isLoggingIn: false,
-  openModal: null
+  openModal: null,
 }
 
 interface Login {
@@ -90,12 +90,11 @@ type Action =
 
 const context = createContext({
   state: EMPTY_STATE,
-  dispatch: () => { }
+  dispatch: () => {},
 } as {
   state: State
   dispatch: React.Dispatch<Action>
-}
-)
+})
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -138,17 +137,8 @@ const ResultsContext = ({ children }: { children: JSX.Element }) => {
 
   const { Provider } = context
 
-  return (
-    <Provider value={
-      { state, dispatch }
-    }>
-      {children}
-    </Provider>
-  )
+  return <Provider value={{ state, dispatch }}>{children}</Provider>
 }
 
 export default ResultsContext
-export {
-  context,
-  type Action
-}
+export { context, type Action }

@@ -1,8 +1,8 @@
-import { gql, ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client'
-import { type Action } from 'context'
-import { createClient } from 'graphql-ws'
+import { ApolloClient, gql, HttpLink, InMemoryCache, split } from '@apollo/client'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
+import type { Action } from 'context'
+import { createClient } from 'graphql-ws'
 
 type AtLeast<T, K extends keyof T> = Partial<T> & Pick<T, K>
 type Exactly<T, K extends keyof T> = Pick<T, K>
@@ -14,7 +14,7 @@ const logger = (message: any) => {
 enum ELocalStorageItems {
   AccessToken = 'accessToken',
   RefreshToken = 'refreshToken',
-  ExpiresAt = 'expiresAt'
+  ExpiresAt = 'expiresAt',
 }
 
 const getLocalStorage = (key: ELocalStorageItems) => {
@@ -49,24 +49,21 @@ const httpLink = new HttpLink({ uri: __API_HTTP_ENDPOINT__ })
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query)
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    )
+    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
   },
   wsLink,
-  httpLink
+  httpLink,
 )
 
 export const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
-  link: splitLink
+  link: splitLink,
 })
 
 const login = async (dispatch: (value: Action) => void) => {
   dispatch({ type: 'LOGIN_INITIATED' })
   const response = await apolloClient.query<{ getSpotifyRedirectURI: string }>({
-    query: GET_SPOTIFY_REDIRECT_URI_QUERY
+    query: GET_SPOTIFY_REDIRECT_URI_QUERY,
   })
   if (response.data) {
     window.open(response.data.getSpotifyRedirectURI, '_self')
@@ -84,5 +81,5 @@ export {
   deleteLocalStorage,
   ELocalStorageItems,
   login,
-  logout
+  logout,
 }

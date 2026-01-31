@@ -1,13 +1,7 @@
 import Alert from './Alert'
-import Router from './Router'
+import Footer from './Footer'
 import Header from './Header'
 import Navigation from './Navigation'
-import Footer from './Footer'
+import Router from './Router'
 
-export {
-  Router,
-  Alert,
-  Header,
-  Navigation,
-  Footer
-}
+export { Router, Alert, Header, Navigation, Footer }

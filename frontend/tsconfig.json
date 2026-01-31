@@ -10,12 +10,14 @@
     "lib": [
       "DOM"
     ],
+    "types": ["vite/client"],
     "allowJs": true,
     "moduleResolution": "node",
     "baseUrl": ".",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
+    "skipLibCheck": true,
     "paths": {
       "*": [
         "src/types/*"

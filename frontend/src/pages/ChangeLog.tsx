@@ -1,18 +1,17 @@
-import React from 'react'
-import { Container, Typography, List, ListItem, ListItemText } from '@mui/material'
 import { Description } from '@mui/icons-material'
+import { Container, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { pageWrapperCSS } from 'theme'
 
-const changelogData: Array<{ version: string, date: string, title: string, notes: string[] }> = [
+const changelogData: Array<{ version: string; date: string; title: string; notes: string[] }> = [
   {
     version: '1.1.0',
     date: 'July 4, 2023',
     notes: [
       'Added descriptions for playlists.',
       'Added the ability to search for tracks in addition to artists.',
-      'To accommodate the above change, the "From Artist to Artist" algorithm has been renamed to "Gradient", and the "Gradient" algorithm has been renamed to "Mashup".'
+      'To accommodate the above change, the "From Artist to Artist" algorithm has been renamed to "Gradient", and the "Gradient" algorithm has been renamed to "Mashup".',
     ],
-    title: 'Playlist Descriptions, Track Search, and Algorithm Renaming'
+    title: 'Playlist Descriptions, Track Search, and Algorithm Renaming',
   },
   {
     version: '1.0.0',
@@ -21,17 +20,21 @@ const changelogData: Array<{ version: string, date: string, title: string, notes
       'Added Artist Mashup Algorithm.',
       'Added From Artist to Artist Algorithm.',
       'Added Full Control Algorithm.',
-      'Added Good Beats to Good Sleeps Algorithm.'
+      'Added Good Beats to Good Sleeps Algorithm.',
     ],
-    title: 'Initial Release'
-  }
+    title: 'Initial Release',
+  },
 ]
 
 const Changelog = () => {
   return (
     <Container css={pageWrapperCSS}>
-      <Typography variant="h2" gutterBottom>Changelog</Typography>
-      <Typography textAlign="center" variant="body1" gutterBottom>As I tweak playlist generators and make other changes, I will to track them here.</Typography>
+      <Typography variant="h2" gutterBottom>
+        Changelog
+      </Typography>
+      <Typography textAlign="center" variant="body1" gutterBottom>
+        As I tweak playlist generators and make other changes, I will to track them here.
+      </Typography>
       <Container>
         <List>
           {changelogData.map((entry, index) => (
@@ -57,7 +60,7 @@ const Changelog = () => {
           ))}
         </List>
       </Container>
-    </Container >
+    </Container>
   )
 }
 

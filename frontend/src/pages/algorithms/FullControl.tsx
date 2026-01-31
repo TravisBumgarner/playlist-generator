@@ -1,9 +1,16 @@
-import { useLazyQuery } from '@apollo/client'
-import { Button, Typography, MenuItem, Select, Box, InputLabel } from '@mui/material'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-
 import { Search } from 'sharedComponents'
-import { type TAlgorithmFullControl, type TAutocompleteEntry, EFilterOption, type TFilter, EFilterValue, stringifyFilters, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
+import { useLazyQuery } from '@apollo/client/react'
+import { Box, Button, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import {
+  EFilterOption,
+  EFilterValue,
+  stringifyFilters,
+  type TAlgorithmFullControl,
+  type TAutocompleteEntry,
+  type TFilter,
+  type TSharedAlgorithmRequestParams,
+} from 'playlist-generator-utilities'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import AlgorithmWrapper from './AlgorithmWrapper'
 import { FULL_CONTROL } from './queries'
 
@@ -13,34 +20,33 @@ interface FilterOptionInfo {
 }
 
 type FilterOptions = {
-  [key in EFilterOption]: FilterOptionInfo;
+  [key in EFilterOption]: FilterOptionInfo
 }
 
 const availableValues: FilterOptions = {
   [EFilterOption.Danceability]: {
     title: 'Danceability',
     description:
-      'How suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.'
+      'How suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity.',
   },
   [EFilterOption.Energy]: {
     title: 'Energy',
     description:
-      'Represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.'
+      'Represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy. Perceptual features contributing to this attribute include dynamic range, perceived loudness, timbre, onset rate, and general entropy.',
   },
   [EFilterOption.Popularity]: {
     title: 'Popularity',
-    description: 'The popularity of the track as determined by Spotify.'
+    description: 'The popularity of the track as determined by Spotify.',
   },
   [EFilterOption.Tempo]: {
     title: 'Tempo',
-    description:
-      'The overall estimated tempo of a track in beats per minute (BPM).'
+    description: 'The overall estimated tempo of a track in beats per minute (BPM).',
   },
   [EFilterOption.Valence]: {
     title: 'Valence',
     description:
-      'A measure describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive, while tracks with low valence sound more negative.'
-  }
+      'A measure describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive, while tracks with low valence sound more negative.',
+  },
 }
 
 interface FullControlFiltersProps {
@@ -78,7 +84,9 @@ const FullControlFilters = ({ filtersSelectedCallback }: FullControlFiltersProps
 
   return (
     <>
-      <Typography align='center' variant="body1">What would you like to control?</Typography>
+      <Typography align="center" variant="body1">
+        What would you like to control?
+      </Typography>
       {Object.values(EFilterOption).map((filterOption) => (
         <Box key={filterOption} sx={{ marginBottom: '0.5rem' }}>
           <Button
@@ -92,12 +100,16 @@ const FullControlFilters = ({ filtersSelectedCallback }: FullControlFiltersProps
           </Button>
           {selectedValues.includes(filterOption) && (
             <>
-              <Typography gutterBottom variant="body2">{availableValues[filterOption].description}</Typography>
-              <Box sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '1.5rem'
-              }}>
+              <Typography gutterBottom variant="body2">
+                {availableValues[filterOption].description}
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: '1.5rem',
+                }}
+              >
                 <Box sx={{ flexGrow: 0.48 }}>
                   <InputLabel id={`start-${filterOption}`}>Start playlist</InputLabel>
                   <Select
@@ -107,7 +119,7 @@ const FullControlFilters = ({ filtersSelectedCallback }: FullControlFiltersProps
                     onChange={(event) => {
                       handleStartChange(
                         filters.findIndex((filter) => filter.value === filterOption),
-                        event.target.value as EFilterValue
+                        event.target.value as EFilterValue,
                       )
                     }}
                   >
@@ -127,7 +139,7 @@ const FullControlFilters = ({ filtersSelectedCallback }: FullControlFiltersProps
                     onChange={(event) => {
                       handleEndChange(
                         filters.findIndex((filter) => filter.value === filterOption),
-                        event.target.value as EFilterValue
+                        event.target.value as EFilterValue,
                       )
                     }}
                   >
@@ -141,17 +153,23 @@ const FullControlFilters = ({ filtersSelectedCallback }: FullControlFiltersProps
               </Box>
             </>
           )}
-        </Box >
+        </Box>
       ))}
-    </ >
+    </>
   )
 }
 
-interface FullControlParams { title: string, description: string }
+interface FullControlParams {
+  title: string
+  description: string
+}
 const FullControl = ({ title, description }: FullControlParams) => {
   const [selectedEntry, setSelectedEntry] = useState<TAutocompleteEntry | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<TFilter[]>([])
-  const [createPlaylistFullControl] = useLazyQuery<{ playlistFullControl: TAlgorithmFullControl['Response'] }, TAlgorithmFullControl['Request']>(FULL_CONTROL, { fetchPolicy: 'network-only' })
+  const [createPlaylistFullControl] = useLazyQuery<
+    { playlistFullControl: TAlgorithmFullControl['Response'] },
+    TAlgorithmFullControl['Request']
+  >(FULL_CONTROL, { fetchPolicy: 'network-only' })
 
   const resetState = useCallback(() => {
     setSelectedEntry(null)
@@ -165,15 +183,27 @@ const FullControl = ({ title, description }: FullControlParams) => {
     setSelectedFilters(filters)
   }, [])
 
-  const apiCall = useCallback(async (shared: TSharedAlgorithmRequestParams) => {
-    const result = await createPlaylistFullControl({ variables: { selectedId: selectedEntry!.id, selectedType: selectedEntry!.type, filters: stringifyFilters(selectedFilters), ...shared } })
-    return result.data?.playlistFullControl
-  }, [selectedEntry, createPlaylistFullControl, selectedFilters])
+  const apiCall = useCallback(
+    async (shared: TSharedAlgorithmRequestParams) => {
+      const result = await createPlaylistFullControl({
+        variables: {
+          selectedId: selectedEntry!.id,
+          selectedType: selectedEntry!.type,
+          filters: stringifyFilters(selectedFilters),
+          ...shared,
+        },
+      })
+      return result.data?.playlistFullControl
+    },
+    [selectedEntry, createPlaylistFullControl, selectedFilters],
+  )
 
   const initialPlaylistDescription = useMemo(() => {
     let result = description
     result += ' Selected Filters - '
-    result += selectedFilters.map(({ value, start, end }) => ` ${availableValues[value].title} from ${start} to ${end}`).join(', ')
+    result += selectedFilters
+      .map(({ value, start, end }) => ` ${availableValues[value].title} from ${start} to ${end}`)
+      .join(', ')
     result += '.'
     return result
   }, [description, selectedFilters])
@@ -193,8 +223,7 @@ const FullControl = ({ title, description }: FullControlParams) => {
       apiCall={apiCall}
       resetStateCallback={resetState}
       initialPlaylistTitle={`Full Control with ${selectedEntry?.name}`}
-    >
-    </AlgorithmWrapper >
+    ></AlgorithmWrapper>
   )
 }
 

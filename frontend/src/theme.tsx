@@ -1,36 +1,37 @@
-import { type LinkProps, createTheme, css } from '@mui/material'
-import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
+import { createTheme, css, type LinkProps } from '@mui/material'
 import { forwardRef } from 'react'
+import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
 
-const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
->((props, ref) => {
-  const { href, ...other } = props
-  return <RouterLink ref={ref} to={href} {...other} />
-})
+const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }>(
+  (props, ref) => {
+    const { href, ...other } = props
+    return <RouterLink ref={ref} to={href} {...other} />
+  },
+)
 LinkBehavior.displayName = 'LinkBehavior'
 
 export const theme = createTheme({
   palette: {
-    mode: 'dark'
+    mode: 'dark',
   },
   typography: {
     h2: {
       fontSize: '2rem',
-      fontWeight: 700
-    }
+      fontWeight: 700,
+    },
   },
   components: {
     MuiLink: {
       defaultProps: {
-        component: LinkBehavior
-      } as LinkProps
+        component: LinkBehavior,
+      } as LinkProps,
     },
     MuiButtonBase: {
       defaultProps: {
-        LinkComponent: LinkBehavior
-      }
-    }
-  }
+        LinkComponent: LinkBehavior,
+      },
+    },
+  },
 })
 
 export const pageWrapperCSS = css`

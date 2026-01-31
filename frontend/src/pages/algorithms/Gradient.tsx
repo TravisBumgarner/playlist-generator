@@ -1,16 +1,26 @@
-import { useLazyQuery } from '@apollo/client'
-import { useCallback, useState } from 'react'
-
-import { type TAlgorithmGradient, type TAutocompleteEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import { Search } from 'sharedComponents'
+import { useLazyQuery } from '@apollo/client/react'
+
+import type {
+  TAlgorithmGradient,
+  TAutocompleteEntry,
+  TSharedAlgorithmRequestParams,
+} from 'playlist-generator-utilities'
+import { useCallback, useState } from 'react'
 import AlgorithmWrapper from './AlgorithmWrapper'
 import { GRADIENT } from './queries'
 
-interface GradientParams { title: string, description: string }
+interface GradientParams {
+  title: string
+  description: string
+}
 const Gradient = ({ title, description }: GradientParams) => {
   const [startWith, setStartWith] = useState<TAutocompleteEntry | null>(null)
   const [endWith, setEndWith] = useState<TAutocompleteEntry | null>(null)
-  const [createPlaylistGradient] = useLazyQuery<{ playlistGradient: TAlgorithmGradient['Response'] }, TAlgorithmGradient['Request']>(GRADIENT, { fetchPolicy: 'network-only' })
+  const [createPlaylistGradient] = useLazyQuery<
+    { playlistGradient: TAlgorithmGradient['Response'] },
+    TAlgorithmGradient['Request']
+  >(GRADIENT, { fetchPolicy: 'network-only' })
 
   const resetState = useCallback(() => {
     setStartWith(null)
@@ -25,20 +35,23 @@ const Gradient = ({ title, description }: GradientParams) => {
     setEndWith(value)
   }, [])
 
-  const apiCall = useCallback(async (shared: TSharedAlgorithmRequestParams) => {
-    const result = await createPlaylistGradient({
-      variables: {
-        startWithId: startWith!.id,
-        startWithType: startWith!.type,
-        endWithId: endWith!.id,
-        endWithType: endWith!.type,
-        ...shared
+  const apiCall = useCallback(
+    async (shared: TSharedAlgorithmRequestParams) => {
+      const result = await createPlaylistGradient({
+        variables: {
+          startWithId: startWith!.id,
+          startWithType: startWith!.type,
+          endWithId: endWith!.id,
+          endWithType: endWith!.type,
+          ...shared,
+        },
+      })
+      if (result.data?.playlistGradient != null) {
+        return result.data?.playlistGradient
       }
-    })
-    if ((result.data?.playlistGradient) != null) {
-      return result.data?.playlistGradient
-    }
-  }, [startWith, endWith, createPlaylistGradient])
+    },
+    [startWith, endWith, createPlaylistGradient],
+  )
 
   return (
     <AlgorithmWrapper
@@ -55,8 +68,7 @@ const Gradient = ({ title, description }: GradientParams) => {
       apiCall={apiCall}
       resetStateCallback={resetState}
       initialPlaylistTitle={`From ${startWith?.name} to ${endWith?.name}`}
-    >
-    </AlgorithmWrapper >
+    ></AlgorithmWrapper>
   )
 }
 
