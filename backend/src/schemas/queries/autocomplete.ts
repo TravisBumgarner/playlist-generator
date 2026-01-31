@@ -1,6 +1,7 @@
 import { GraphQLEnumType, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
+import axios from 'axios'
 
-import getSpotifyClient from '../../spotify'
+import getSpotifyAccessToken from '../../spotify'
 import { SearchType, TAutocomplete, TAutocompleteEntry } from 'playlist-generator-utilities'
 
 const AutoCompleteType = new GraphQLObjectType({
@@ -22,17 +23,29 @@ const autocomplete = {
     market: { type: new GraphQLNonNull(GraphQLString) }
   },
   resolve: async (_: any, { query, market }: TAutocomplete['Request']): Promise<TAutocomplete['Response']> => {
-    const client = await getSpotifyClient()
+    const accessToken = await getSpotifyAccessToken()
 
     // hard coding for now, I suspect I'll want to expand. 
     const TYPES = ['artist', 'track'] as const
 
-    const spotifyResults = await client.search(query, TYPES, { market, offset: 0, limit: 10 })
+    const params = new URLSearchParams({
+      q: query,
+      type: TYPES.join(','),
+      market,
+      offset: '0',
+      limit: '10'
+    })
+
+    const spotifyResults = await axios.get(`https://api.spotify.com/v1/search?${params.toString()}`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
 
     const autocompleteResults: TAutocompleteEntry[] = []
 
-    if (TYPES.includes('artist') && spotifyResults?.body?.artists?.items) {
-      spotifyResults.body.artists.items.forEach(({ id, name, images }) => {
+    if (TYPES.includes('artist') && spotifyResults?.data?.artists?.items) {
+      spotifyResults.data.artists.items.forEach(({ id, name, images }) => {
         autocompleteResults.push({
           id,
           name,
@@ -42,8 +55,8 @@ const autocomplete = {
       })
     }
 
-    if (TYPES.includes('track') && spotifyResults?.body?.tracks?.items) {
-      spotifyResults.body.tracks.items.forEach(({ id, name, album }) => {
+    if (TYPES.includes('track') && spotifyResults?.data?.tracks?.items) {
+      spotifyResults.data.tracks.items.forEach(({ id, name, album }) => {
         autocompleteResults.push({
           id,
           name,
