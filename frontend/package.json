@@ -10,7 +10,7 @@
     "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "~5.11.16",
     "@mui/material": "~5.12.3",
-    "@sentry/react": "^7.54.0",
+    "@sentry/react": "^10",
     "axios": "^1.4.0",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.12.1",

@@ -167,7 +167,7 @@ tasks:
       - Frontend builds without Sentry-related type errors
     depends_on: [4]
     effort: 2
-    status: scoped
+    status: completed
 
   - id: 6
     github_issue: 14
