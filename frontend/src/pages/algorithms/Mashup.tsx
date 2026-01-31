@@ -1,17 +1,11 @@
 import { Search } from 'sharedComponents'
-import { useLazyQuery } from '@apollo/client/react'
 import CloseIcon from '@mui/icons-material/Close'
 import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
 import { context } from 'context'
-import {
-  SearchType,
-  type TAlgorithmMashup,
-  type TAutocompleteEntry,
-  type TSharedAlgorithmRequestParams,
-} from 'playlist-generator-utilities'
+import { SearchType, type TAutocompleteEntry, type TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { playlistMashup } from '../../api'
 import AlgorithmWrapper from './AlgorithmWrapper'
-import { MASHUP } from './queries'
 
 interface ArtistListItemProps {
   autocompleteEntry: TAutocompleteEntry
@@ -50,10 +44,6 @@ interface MashupProps {
 const Mashup = ({ title, description }: MashupProps) => {
   const { dispatch } = useContext(context)
   const [selectedAutocompleteEntries, setSelectedAutocompleteEntries] = useState<TAutocompleteEntry[]>([])
-  const [createPlaylistMashup] = useLazyQuery<
-    { playlistMashup: TAlgorithmMashup['Response'] },
-    TAlgorithmMashup['Request']
-  >(MASHUP, { fetchPolicy: 'network-only' })
 
   const removeAutocompleteEntry = useCallback((entryId: string) => {
     setSelectedAutocompleteEntries((prev) => prev.filter(({ id }) => id !== entryId))
@@ -72,10 +62,10 @@ const Mashup = ({ title, description }: MashupProps) => {
       const artistIds = selectedAutocompleteEntries.filter(({ type }) => type === SearchType.Artist).map(({ id }) => id)
       const trackIds = selectedAutocompleteEntries.filter(({ type }) => type === SearchType.Track).map(({ id }) => id)
 
-      const result = await createPlaylistMashup({ variables: { artistIds, trackIds, ...shared } })
-      return result.data?.playlistMashup
+      const result = await playlistMashup({ artistIds, trackIds, ...shared })
+      return result.success ? result.data : undefined
     },
-    [selectedAutocompleteEntries, createPlaylistMashup],
+    [selectedAutocompleteEntries],
   )
 
   const ListItems = useMemo(() => {

@@ -1,6 +1,4 @@
 import { Login } from 'sharedComponents'
-import { gql } from '@apollo/client'
-import { useLazyQuery } from '@apollo/client/react'
 import { Box } from '@mui/material'
 import axios from 'axios'
 import { context } from 'context'
@@ -11,26 +9,14 @@ import { Array, Record, String } from 'runtypes'
 import { AppThemeProvider } from 'theme'
 import useAsyncEffect from 'use-async-effect'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
+import { refreshToken } from './api'
 import { Footer, Header, Router } from './components'
 import { SpotifyPlayerProvider } from './SpotifyPlayerContext'
-
-const REFRESH_TOKEN_QUERY = gql`
-query RefreshToken($refreshToken: String!) {
-    refreshToken(refreshToken: $refreshToken){
-      expiresIn,
-      refreshToken,
-      accessToken
-    }
-  }
-`
 
 const App = () => {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { state, dispatch } = useContext(context)
-  const [refreshToken] = useLazyQuery<{
-    refreshToken: { refreshToken: string; accessToken: string; expiresIn: string }
-  }>(REFRESH_TOKEN_QUERY)
   const [hasAppInitialized, setHasAppInitialized] = useState(false)
 
   const getUserDetails = useCallback(async () => {
@@ -81,9 +67,9 @@ const App = () => {
   }, [dispatch])
 
   const updateTokenLocalStorage = useCallback(
-    (args: { accessToken: string; expiresIn: string; refreshToken: string }) => {
+    (args: { accessToken: string; expiresIn: string | number; refreshToken: string }) => {
       const expiresAt = new Date()
-      expiresAt.setDate(expiresAt.getDate() + parseInt(args.expiresIn, 10) * 1000) // expiresIn is in seconds
+      expiresAt.setDate(expiresAt.getDate() + parseInt(String(args.expiresIn), 10) * 1000) // expiresIn is in seconds
 
       setLocalStorage(ELocalStorageItems.AccessToken, args.accessToken)
       setLocalStorage(ELocalStorageItems.ExpiresAt, expiresAt)
@@ -115,14 +101,14 @@ const App = () => {
     if (!refreshTokenLocalStorage) {
       return false
     }
-    const response = await refreshToken({ variables: { refreshToken: refreshTokenLocalStorage } })
-    if (!response.data) {
+    const response = await refreshToken(refreshTokenLocalStorage)
+    if (!response.success) {
       return false
     }
 
-    updateTokenLocalStorage(response.data.refreshToken)
+    updateTokenLocalStorage(response.data)
     return true
-  }, [refreshToken, updateTokenLocalStorage])
+  }, [updateTokenLocalStorage])
 
   const checkTokenValidInStorage = useCallback(async (): Promise<'valid' | 'expired' | 'does_not_exist'> => {
     const accessTokenLocalStorage = getLocalStorage(ELocalStorageItems.AccessToken)
@@ -166,7 +152,7 @@ const App = () => {
   return (
     <AppThemeProvider>
       <SpotifyPlayerProvider>
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '90vh' }}>
           <Header />
           <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
             <Router />

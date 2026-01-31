@@ -17,6 +17,22 @@ LinkBehavior.displayName = 'LinkBehavior'
 
 const baseThemeOptions: ThemeOptions = {
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        '*, *::before, *::after': {
+          boxSizing: 'border-box',
+        },
+        'html, body, #root': {
+          margin: 0,
+          padding: 0,
+        },
+        'ul, ol': {
+          margin: 0,
+          padding: 0,
+          listStyle: 'none',
+        },
+      },
+    },
     MuiLink: {
       defaultProps: {
         component: LinkBehavior,

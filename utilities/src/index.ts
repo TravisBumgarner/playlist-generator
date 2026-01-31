@@ -112,6 +112,26 @@ export type TCreatePlaylist = {
     },
 }
 
+// API response types
+export const ErrorCode = {
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+  INVALID_INPUT: 'INVALID_INPUT',
+  SPOTIFY_AUTH_ERROR: 'SPOTIFY_AUTH_ERROR',
+  PLAYLIST_SAVE_FAILED: 'PLAYLIST_SAVE_FAILED',
+} as const
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode]
+
+export const errorMessages: Record<ErrorCode, string> = {
+  INTERNAL_ERROR: 'Something went wrong. Please try again.',
+  INVALID_INPUT: 'Invalid input provided.',
+  SPOTIFY_AUTH_ERROR: 'Spotify authentication failed.',
+  PLAYLIST_SAVE_FAILED: 'Failed to save playlist.',
+}
+
+export type ApiSuccess<T> = { success: true; data: T }
+export type ApiFailure = { success: false; errorCode: ErrorCode }
+export type ApiResponse<T> = ApiSuccess<T> | ApiFailure
+
 export const stringifyFilters = (filters: TFilter[]): string => {
     return JSON.stringify(filters)
 }
