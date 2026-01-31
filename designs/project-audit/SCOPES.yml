@@ -41,10 +41,17 @@ milestones:
 
   - number: 6
     title: "6. Update Remaining Dependencies"
-    description: Update TypeScript, webpack, ESLint, and all other outdated packages.
+    description: Update TypeScript, ESLint, and all other outdated packages.
     branch:
       working: 16-update-remaining-deps
       base: 15-update-react-19
+
+  - number: 7
+    title: "7. Replace Webpack with Vite"
+    description: Migrate the frontend build system from Webpack to Vite.
+    branch:
+      working: 18-replace-webpack-with-vite
+      base: 16-update-remaining-deps
 
 tasks:
   - id: 1
@@ -106,20 +113,16 @@ tasks:
   - id: 3
     github_issue: 11
     milestone: 2
-    title: Remove body-parser and replace file-loader with Asset Modules
+    title: Remove body-parser from backend
     description: |
-      Two small deprecation fixes:
+      Remove `body-parser` from backend. Replace `bodyParser.json()` with
+      built-in `express.json()`.
 
-      1. Remove `body-parser` from backend. Replace `bodyParser.json()` with
-         built-in `express.json()`.
-
-      2. Remove `file-loader` from frontend. Replace webpack rule with
-         `type: 'asset/resource'` (webpack 5 Asset Modules).
+      Note: file-loader replacement is no longer needed — the Vite migration
+      (task 10) removes webpack and all its loaders entirely.
     acceptance_criteria:
       - body-parser removed from backend dependencies
       - express.json() used instead of bodyParser.json()
-      - file-loader removed from frontend devDependencies
-      - Image assets load correctly using webpack Asset Modules
     depends_on: [2]
     effort: 1
     status: scoped
@@ -232,12 +235,13 @@ tasks:
   - id: 9
     github_issue: 17
     milestone: 6
-    title: Update webpack, ESLint, and remaining dependencies
+    title: Update ESLint and remaining dependencies
     description: |
       Update all remaining outdated packages to latest compatible versions.
+      Webpack packages are excluded — they are removed entirely by the Vite
+      migration (task 10).
 
-      Frontend: webpack ecosystem (latest v5), webpack-dev-server v5,
-      ESLint and plugins, @apollo/client, axios, graphql, graphql-ws,
+      Frontend: ESLint and plugins, @apollo/client, axios, graphql, graphql-ws,
       polished, use-async-effect, source-map-explorer.
 
       Backend: nodemon v3, axios, cors, dotenv, graphql, graphql-ws,
@@ -250,8 +254,39 @@ tasks:
       - All packages updated to latest compatible versions
       - yarn install succeeds with no unresolved peer dependency warnings
       - Backend compiles and starts
-      - Frontend compiles and webpack-dev-server starts
+      - Frontend compiles
       - Utilities package compiles
     depends_on: [8]
+    effort: 3
+    status: scoped
+
+  - id: 10
+    github_issue: 18
+    milestone: 7
+    title: Replace Webpack with Vite
+    description: |
+      Migrate the frontend build system from Webpack to Vite.
+
+      - Remove webpack.js and all webpack-related packages (webpack, webpack-cli,
+        webpack-dev-server, ts-loader, css-loader, style-loader, file-loader,
+        html-webpack-plugin)
+      - Add vite and @vitejs/plugin-react
+      - Create vite.config.ts with path aliases, Emotion JSX transform, and
+        environment variable definitions (replacing DefinePlugin)
+      - Move index.template.ejs content to index.html at frontend root
+      - Update package.json scripts (dev, build, deploy)
+      - Update tsconfig.json to add vite/client types
+      - Verify all assets, styles, and environment variables work
+    acceptance_criteria:
+      - webpack.js removed, vite.config.ts created
+      - All webpack packages removed from devDependencies
+      - vite and @vitejs/plugin-react added
+      - Path aliases work
+      - Environment variables work in dev and production builds
+      - index.html at project root replaces EJS template
+      - Image imports and Emotion CSS-in-JS work
+      - Dev server starts on port 3000
+      - Production build outputs to build/ directory
+    depends_on: [9]
     effort: 3
     status: scoped
