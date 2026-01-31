@@ -40,7 +40,7 @@ tasks:
       - Exports are importable from other frontend modules
     depends_on: []
     effort: 1
-    status: testing
+    status: implementing
 
   - id: 2
     github_issue: 34
