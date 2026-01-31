@@ -1,7 +1,9 @@
 import { Loading } from 'sharedComponents'
 import { gql } from '@apollo/client'
 import { useMutation } from '@apollo/client/react'
-import { Box, Button, Card, css, Link, Typography } from '@mui/material'
+import { Box, Button, Card, css, IconButton, Link, Typography } from '@mui/material'
+import Pause from '@mui/icons-material/Pause'
+import PlayArrow from '@mui/icons-material/PlayArrow'
 import Avatar from '@mui/material/Avatar'
 import ListItem from '@mui/material/ListItem'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
@@ -9,7 +11,7 @@ import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 import { context } from 'context'
 import type { TPlaylistEntry } from 'playlist-generator-utilities'
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { ELocalStorageItems, getLocalStorage } from 'utilities'
 
@@ -30,7 +32,11 @@ const SAVE_PLAYLIST_MUTATION = gql`
   }
 `
 
-const PlaylistItem = (data: TPlaylistEntry) => {
+const PlaylistItem = ({
+  data,
+  isPlaying,
+  onPlay,
+}: { data: TPlaylistEntry; isPlaying: boolean; onPlay: (trackId: string, previewUrl: string) => void }) => {
   const Artists = useMemo(() => {
     return data.artists.map(({ name, href }) => (
       <Link css={playlistLinkCSS} key={href} target="_blank" href={href}>
@@ -38,6 +44,14 @@ const PlaylistItem = (data: TPlaylistEntry) => {
       </Link>
     ))
   }, [data.artists])
+
+  const handlePlayClick = useCallback(() => {
+    if (data.previewUrl) {
+      onPlay(data.id, data.previewUrl)
+    } else {
+      window.open(data.href, '_blank', 'noopener,noreferrer')
+    }
+  }, [data.previewUrl, data.id, data.href, onPlay])
 
   return (
     <ListItem>
@@ -54,6 +68,9 @@ const PlaylistItem = (data: TPlaylistEntry) => {
         }
         secondary={Artists}
       />
+      <IconButton edge="end" aria-label={data.previewUrl ? 'preview track' : 'play on spotify'} onClick={handlePlayClick}>
+        {isPlaying ? <Pause /> : <PlayArrow />}
+      </IconButton>
     </ListItem>
   )
 }
@@ -69,8 +86,29 @@ const Playlist = ({ playlistEntries, initialTitle, initialDescription, resetStat
   const [playlistTitle, setPlaylistTitle] = useState(initialTitle)
   const [playlistDescription, setPlaylistDescription] = useState(initialDescription + ADVERTISEMENT)
   const [isSavingPlaylist, setIsSavingPlaylist] = useState(false)
+  const [playingTrackId, setPlayingTrackId] = useState<string | null>(null)
+  const audioRef = useRef<HTMLAudioElement>(null)
   const navigate = useNavigate()
   const { dispatch } = useContext(context)
+
+  const handlePlay = useCallback((trackId: string, previewUrl: string) => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    if (playingTrackId === trackId) {
+      audio.pause()
+      setPlayingTrackId(null)
+      return
+    }
+
+    audio.src = previewUrl
+    audio.play()
+    setPlayingTrackId(trackId)
+  }, [playingTrackId])
+
+  const handleAudioEnded = useCallback(() => {
+    setPlayingTrackId(null)
+  }, [])
 
   const handleSavePlaylistSubmit = useCallback(async () => {
     setIsSavingPlaylist(true)
@@ -98,8 +136,15 @@ const Playlist = ({ playlistEntries, initialTitle, initialDescription, resetStat
 
   const Playlist = useMemo(() => {
     // Sometimes duplicate tracks come back in a playlist. Currently it doesn't look possible to dedup a playlist and keep its integrity.
-    return playlistEntries.map((result, index) => <PlaylistItem key={`${result.uri}_${index}`} {...result} />)
-  }, [playlistEntries])
+    return playlistEntries.map((result, index) => (
+      <PlaylistItem
+        key={`${result.uri}_${index}`}
+        data={result}
+        isPlaying={playingTrackId === result.id}
+        onPlay={handlePlay}
+      />
+    ))
+  }, [playlistEntries, playingTrackId, handlePlay])
 
   if (isSavingPlaylist) {
     return <Loading />
@@ -107,6 +152,7 @@ const Playlist = ({ playlistEntries, initialTitle, initialDescription, resetStat
 
   return (
     <Box>
+      <audio ref={audioRef} onEnded={handleAudioEnded} />
       <TextField
         fullWidth
         label="Title this Playlist"

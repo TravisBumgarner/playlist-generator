@@ -29,5 +29,6 @@ export const PlaylistType = new GraphQLObjectType({
     album: { type: new GraphQLNonNull(PlaylistAlbumType) },
     uri: { type: new GraphQLNonNull(GraphQLString) },
     href: { type: new GraphQLNonNull(GraphQLString) },
+    previewUrl: { type: GraphQLString },
   }),
 })

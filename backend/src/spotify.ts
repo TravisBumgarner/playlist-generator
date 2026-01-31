@@ -191,7 +191,7 @@ export const getRecommendationsForPlaylist = async (
     })
 
     const playlistTracks = response.data?.tracks?.map(
-      ({ id, name, artists, album, uri, external_urls: { spotify } }) => {
+      ({ id, name, artists, album, uri, external_urls: { spotify }, preview_url }) => {
         return {
           id,
           artists: artists.map((artist) => ({ name: artist.name, href: artist.external_urls.spotify })),
@@ -203,6 +203,7 @@ export const getRecommendationsForPlaylist = async (
           name,
           uri,
           href: spotify,
+          previewUrl: preview_url ?? undefined,
         }
       },
     )
@@ -248,7 +249,7 @@ export const getArtistFromOptions = async (options: GetArtistOptions) => {
     })
 
     return (
-      response.data?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify } }) => {
+      response.data?.tracks?.map(({ id, name, artists, album, uri, external_urls: { spotify }, preview_url }) => {
         return {
           id,
           artists: artists.map((artist) => ({ name: artist.name, href: artist.external_urls.spotify })),
@@ -260,6 +261,7 @@ export const getArtistFromOptions = async (options: GetArtistOptions) => {
           name,
           uri,
           href: spotify,
+          previewUrl: preview_url ?? undefined,
         }
       }) || []
     )

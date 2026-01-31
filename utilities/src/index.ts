@@ -23,6 +23,7 @@ export interface TPlaylistEntry {
     uri: string
     href: string
     image: string
+    previewUrl?: string
 }
 
 export enum SearchType {
