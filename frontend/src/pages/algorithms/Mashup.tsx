@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client/react'
 import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
