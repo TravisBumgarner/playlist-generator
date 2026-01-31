@@ -53,6 +53,13 @@ milestones:
       working: 18-replace-webpack-with-vite
       base: 16-update-remaining-deps
 
+  - number: 8
+    title: "8. Replace ESLint with Biome"
+    description: Replace ESLint and all its plugins with Biome for linting and formatting.
+    branch:
+      working: 19-replace-eslint-with-biome
+      base: 18-replace-webpack-with-vite
+
 tasks:
   - id: 1
     github_issue: 9
@@ -289,4 +296,39 @@ tasks:
       - Production build outputs to build/ directory
     depends_on: [9]
     effort: 3
+    status: completed
+
+  - id: 11
+    github_issue: 28
+    milestone: 8
+    title: Replace ESLint with Biome
+    description: |
+      Remove ESLint and all its plugins from frontend and backend.
+      Install Biome as the unified linter and formatter.
+
+      Frontend:
+      - Remove eslint, eslint-config-standard-with-typescript,
+        eslint-plugin-import, eslint-plugin-n, eslint-plugin-promise,
+        eslint-plugin-react, eslint-plugin-react-hooks,
+        @typescript-eslint/eslint-plugin
+      - Remove any .eslintrc config files
+      - Install @biomejs/biome
+      - Create biome.json with project-appropriate rules
+      - Update package.json lint scripts to use biome
+
+      Backend:
+      - Remove any ESLint config/dependencies if present
+      - Update package.json lint scripts to use biome
+
+      Root:
+      - Consider a single biome.json at the root for the monorepo
+    acceptance_criteria:
+      - All ESLint packages removed from dependencies
+      - Biome installed and configured
+      - biome.json created with reasonable defaults
+      - Lint scripts updated in package.json files
+      - No ESLint config files remain
+      - biome check passes on the codebase (or only has acceptable warnings)
+    depends_on: [10]
+    effort: 2
     status: scoped
