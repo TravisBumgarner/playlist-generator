@@ -60,11 +60,7 @@ const LandingPage = () => {
       </Button>
       <Algorithms />
       <Typography sx={{ marginTop: SPACING.MEDIUM.PX }} variant="body1">
-        Don&#39;t see the one you&#39;re looking for?{' '}
-        <Link target="_blank" href="https://forms.gle/Sx34MTubf5vb8YFL7">
-          Leave feedback
-        </Link>{' '}
-        and I will create it!
+        Don&#39;t see what you&#39;re looking for? <Link href="/contact">Request a playlist generator</Link>
       </Typography>
     </PageWrapper>
   )

@@ -5,7 +5,7 @@ import { type JSX, useContext } from 'react'
 import { Route, Routes } from 'react-router'
 import { Navigate } from 'react-router-dom'
 import { ALGORITHM_ROUTES } from '../algorithms'
-import { Changelog, Error, Home, LandingPage, NotFound, Sandbox } from '../pages'
+import { Changelog, Contact, Error, Home, LandingPage, NotFound, Sandbox } from '../pages'
 
 interface ConditionalRouteProps {
   authedComponent: JSX.Element
@@ -51,6 +51,7 @@ const Router = () => {
         )
       })}
       <Route path="/changelog" element={<Changelog />} />
+      <Route path="/contact" element={<Contact />} />
       <Route path="/rudaruda" element={<Sandbox />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
