@@ -1,45 +1,60 @@
-import AddCommentIcon from '@mui/icons-material/AddComment'
-import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
-import { Container, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material'
-import ListItem from '@mui/material/ListItem'
-import { pageWrapperCSS } from 'theme'
+import { Box, Link, Typography } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 import { ALGORITHM_ROUTES } from '../algorithms'
+import PageWrapper from '../styles/shared/PageWrapper'
+import { SPACING, subtleBackground } from '../styles/styleConsts'
 
 const Algorithms = () => {
+  const theme = useTheme()
+
   return (
-    <List>
-      {ALGORITHM_ROUTES.map(({ title: text, href, description }) => {
-        return (
-          <ListItem disablePadding key={text}>
-            <ListItemButton href={href}>
-              <ListItemIcon>
-                <PlaylistPlayIcon />
-              </ListItemIcon>
-              <ListItemText primary={text} secondary={description} />
-            </ListItemButton>
-          </ListItem>
-        )
-      })}
-      <ListItem disablePadding key="wantmore">
-        <ListItemButton target="_blank" href="https://forms.gle/Sx34MTubf5vb8YFL7">
-          <ListItemIcon>
-            <AddCommentIcon />
-          </ListItemIcon>
-          <ListItemText primary="Want more?" secondary="Request a playlist generator!" />
-        </ListItemButton>
-      </ListItem>
-    </List>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: SPACING.MEDIUM.PX,
+        width: '100%',
+        '@media (max-width: 480px)': {
+          gridTemplateColumns: '1fr',
+        },
+      }}
+    >
+      {ALGORITHM_ROUTES.map(({ title, href, description }) => (
+        <Box
+          key={title}
+          component="a"
+          href={href}
+          sx={{
+            padding: SPACING.MEDIUM.PX,
+            backgroundColor: subtleBackground(theme.palette.mode),
+            textDecoration: 'none',
+            color: 'inherit',
+            '&:hover': {
+              backgroundColor: subtleBackground(theme.palette.mode, 'slightly'),
+            },
+          }}
+        >
+          <Typography variant="h3" gutterBottom>
+            {title}
+          </Typography>
+          <Typography variant="body2">{description}</Typography>
+        </Box>
+      ))}
+    </Box>
   )
 }
 
 const Home = () => {
   return (
-    <Container css={pageWrapperCSS}>
+    <PageWrapper>
       <Typography variant="h2" gutterBottom>
         Manifest Playlists!
       </Typography>
       <Algorithms />
-    </Container>
+      <Typography sx={{ marginTop: SPACING.MEDIUM.PX }} variant="body1">
+        Don&#39;t see what you&#39;re looking for? <Link href="/contact">Request a playlist generator</Link>
+      </Typography>
+    </PageWrapper>
   )
 }
 

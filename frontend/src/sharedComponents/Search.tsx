@@ -1,26 +1,14 @@
-import { gql } from '@apollo/client'
-import { useLazyQuery } from '@apollo/client/react'
 import { Avatar, debounce } from '@mui/material'
 import Autocomplete from '@mui/material/Autocomplete'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import { darken, lighten, styled } from '@mui/system'
+import { styled } from '@mui/system'
 import { context } from 'context'
 import type { TAutocomplete, TAutocompleteEntry } from 'playlist-generator-utilities'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { logger } from 'utilities'
-
-const AUTOCOMPLETE_QUERY = gql`
-query Autocomplete($query: String!, $market: String!) {
-    autocomplete(query: $query, market: $market) {
-        name
-        id
-        image
-        type
-    }
-  }
-`
+import { autocomplete } from '../api'
 
 interface SearchParams {
   resultSelectedCallback: (data: TAutocompleteEntry) => void
@@ -31,15 +19,14 @@ const Search = ({ resultSelectedCallback, disabled }: SearchParams) => {
   const [query, setQuery] = useState('')
   const [options, setOptions] = useState<readonly TAutocompleteEntry[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [autocomplete] = useLazyQuery<{ autocomplete: TAutocomplete['Response'] }>(AUTOCOMPLETE_QUERY)
 
   const fetch = useMemo(
     () =>
       debounce((request: string, handleResults: (results?: TAutocomplete['Response']) => void) => {
-        autocomplete({ variables: { query: request, market: state.user!.market } })
+        autocomplete(request, state.user!.market)
           .then((result) => {
-            if (result.data?.autocomplete != null) {
-              handleResults(result.data?.autocomplete)
+            if (result.success) {
+              handleResults(result.data)
             } else {
               return []
             }
@@ -48,7 +35,7 @@ const Search = ({ resultSelectedCallback, disabled }: SearchParams) => {
             logger('failed to autocomplete')
           })
       }, 400),
-    [autocomplete, state.user],
+    [state.user],
   )
 
   useEffect(() => {
@@ -130,11 +117,9 @@ const GroupHeader = styled('div')(({ theme }) => ({
   position: 'sticky',
   top: '-8px',
   padding: '4px 10px',
-  color: theme.palette.primary.main,
-  backgroundColor:
-    theme.palette.mode === 'light'
-      ? lighten(theme.palette.primary.light, 0.85)
-      : darken(theme.palette.primary.main, 0.8),
+  color: theme.palette.text.primary,
+  fontWeight: 900,
+  backgroundColor: theme.palette.background.paper,
 }))
 
 export default Search

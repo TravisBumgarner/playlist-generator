@@ -1,19 +1,13 @@
-import LoginIcon from '@mui/icons-material/Login'
-import LogoutIcon from '@mui/icons-material/Logout'
-import MenuIcon from '@mui/icons-material/Menu'
-import { Avatar, Link, Tooltip } from '@mui/material'
-import AppBar from '@mui/material/AppBar'
-import IconButton from '@mui/material/IconButton'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
+import { Avatar, Box, Button, Link, Tooltip, Typography } from '@mui/material'
 import { context } from 'context'
 import { useCallback, useContext, useMemo } from 'react'
 import { logout } from 'utilities'
+import { SPACING } from '../styles/styleConsts'
 
 const Header = () => {
   const { dispatch, state } = useContext(context)
 
-  const login = useCallback(() => {
+  const handleLogin = useCallback(() => {
     dispatch({ type: 'OPEN_MODAL', data: 'login' })
   }, [dispatch])
 
@@ -21,58 +15,53 @@ const Header = () => {
     logout(dispatch)
   }, [dispatch])
 
-  const Login = useMemo(() => {
+  const RightSide = useMemo(() => {
+    if (state.user) {
+      return (
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: SPACING.SMALL.PX }}>
+          <Link href="/changelog" sx={{ textDecoration: 'none' }}>
+            Changelog
+          </Link>
+          <Avatar sx={{ width: 32, height: 32 }} src={state.user.image ?? ''} alt={state.user.displayName} />
+          <Tooltip title="Logout">
+            <Button variant="text" size="small" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Tooltip>
+        </Box>
+      )
+    }
+
     return (
-      <Tooltip title="Login">
-        <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={login}>
-          <LoginIcon />
-        </IconButton>
-      </Tooltip>
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: SPACING.SMALL.PX }}>
+        <Link href="/changelog" sx={{ textDecoration: 'none' }}>
+          Changelog
+        </Link>
+        <Button variant="contained" size="small" onClick={handleLogin}>
+          Login
+        </Button>
+      </Box>
     )
-  }, [login])
-
-  const handleMenuClick = useCallback(() => {
-    dispatch({ type: 'TOGGLE_MENU' })
-  }, [dispatch])
-
-  const AuthedUser = useMemo(() => {
-    if (!state.user) return null
-
-    return (
-      <>
-        <Avatar sx={{ marginRight: '1rem' }} src={state.user.image ?? ''} alt={state.user.displayName} />
-        <Tooltip title="Logout">
-          <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={handleLogout}>
-            <LogoutIcon />
-          </IconButton>
-        </Tooltip>
-      </>
-    )
-  }, [state.user, handleLogout])
+  }, [state.user, handleLogin, handleLogout])
 
   return (
-    <AppBar position="relative">
-      <Toolbar>
-        <Tooltip title="Menu">
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={handleMenuClick}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Tooltip>
-        <Typography variant="h6" component="h1" sx={{ flexGrow: 1 }}>
-          <Link css={{ color: 'white', textDecoration: 'none' }} href="/">
-            Manifest Playlists
-          </Link>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: `${SPACING.SMALL.PX} ${SPACING.MEDIUM.PX}`,
+        marginBottom: SPACING.MEDIUM.PX,
+      }}
+    >
+      <Link href="/" sx={{ textDecoration: 'none' }}>
+        <Typography variant="h3" component="h1">
+          Manifest Playlists
         </Typography>
-        {state.user ? AuthedUser : Login}
-      </Toolbar>
-    </AppBar>
+      </Link>
+      {RightSide}
+    </Box>
   )
 }
 

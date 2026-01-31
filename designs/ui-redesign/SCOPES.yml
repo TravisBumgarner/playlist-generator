@@ -1,0 +1,161 @@
+project: UI Redesign
+repo: TravisBumgarner/playlist-generator
+design_file: designs/ui-redesign/DESIGN.md
+scoping_date: 2026-01-31
+
+milestones:
+  - number: 1
+    title: "1. Design System Foundation"
+    description: Create the design token system, theme rewrite with light/dark mode, Satoshi font, and PageWrapper component.
+    branch:
+      working: 33-design-system-foundation
+      base: main
+
+  - number: 2
+    title: "2. Layout & Navigation Overhaul"
+    description: Replace AppBar + drawer navigation with simpler header, remove drawer, simplify footer, clean up index.html.
+    branch:
+      working: 37-layout-navigation-overhaul
+      base: 33-design-system-foundation
+
+  - number: 3
+    title: "3. Page & Component Restyling"
+    description: Restyle Home, LandingPage, algorithm pages, and shared components to use the new design system.
+    branch:
+      working: 39-page-component-restyling
+      base: 37-layout-navigation-overhaul
+
+tasks:
+  - id: 1
+    github_issue: 33
+    milestone: 1
+    title: Create design token system (styleConsts.ts)
+    description: |
+      Create `frontend/src/styles/styleConsts.ts` with centralized design tokens:
+      PALETTE (grayscale), BORDER_RADIUS, FONT_SIZES, SPACING, button style configs,
+      and subtleBackground() helper. Match the Photo Palettes pattern exactly.
+    acceptance_criteria:
+      - File exists at frontend/src/styles/styleConsts.ts with all token exports
+      - All values match the Photo Palettes design system
+      - Exports are importable from other frontend modules
+    depends_on: []
+    effort: 1
+    status: completed
+
+  - id: 2
+    github_issue: 34
+    milestone: 1
+    title: Add Satoshi font and font-face declaration
+    description: |
+      Copy Satoshi variable font files from photo-palettes to frontend/public/fonts/.
+      Add @font-face declaration. Remove @fontsource/roboto import if present.
+    acceptance_criteria:
+      - Font files exist at frontend/public/fonts/Satoshi-Variable.*
+      - @font-face declaration is loaded by the app
+      - Text renders in Satoshi when the font loads
+    depends_on: []
+    effort: 1
+    status: completed
+
+  - id: 3
+    github_issue: 35
+    milestone: 1
+    title: Rewrite theme with light/dark mode and design tokens
+    description: |
+      Rewrite frontend/src/theme.tsx to use design tokens, support light/dark mode
+      via prefers-color-scheme, set borderRadius 0 on all MUI components, configure
+      typography with Satoshi, and export AppThemeProvider. Remove pageWrapperCSS.
+      Preserve LinkBehavior for React Router.
+    acceptance_criteria:
+      - Theme supports light and dark mode based on system preference
+      - All MUI components render with zero border-radius
+      - Buttons have no box-shadow and no text-transform
+      - Typography uses Satoshi font with correct sizes and weights
+    depends_on: [1, 2]
+    effort: 3
+    status: completed
+
+  - id: 4
+    github_issue: 36
+    milestone: 1
+    title: Create PageWrapper component
+    description: |
+      Create frontend/src/styles/shared/PageWrapper.tsx — a reusable page layout
+      wrapper with width prop (small=400px, medium=600px, full=100%), centered,
+      flex column layout. Replaces the pageWrapperCSS emotion export.
+    acceptance_criteria:
+      - PageWrapper component exists at frontend/src/styles/shared/PageWrapper.tsx
+      - Supports width prop with 'small', 'medium', 'full' options
+      - Content is centered horizontally with maxWidth 95%
+    depends_on: [1]
+    effort: 1
+    status: completed
+
+  - id: 5
+    github_issue: 37
+    milestone: 2
+    title: Redesign Header and remove drawer Navigation
+    description: |
+      Replace MUI AppBar + hamburger drawer with a simple flex header.
+      Left: logo link. Right: changelog link, login/logout button, avatar.
+      Delete Navigation.tsx. Remove isMenuOpen/TOGGLE_MENU from Context.
+      Update App.tsx to use AppThemeProvider and remove Navigation import.
+    acceptance_criteria:
+      - Header renders as simple flex row with logo left, actions right
+      - No hamburger menu icon or drawer
+      - Navigation.tsx is deleted
+      - isMenuOpen / TOGGLE_MENU removed from Context
+    depends_on: [3]
+    effort: 2
+    status: completed
+
+  - id: 6
+    github_issue: 38
+    milestone: 2
+    title: Simplify Footer and clean up index.html
+    description: |
+      Simplify footer to a two-section flex row with subtleBackground.
+      Remove large inline CSS reset from index.html (CssBaseline handles it).
+      Add Satoshi @font-face declaration to index.html if not already present.
+    acceptance_criteria:
+      - Footer is a simple two-section flex row with subtleBackground
+      - Large inline CSS reset is removed from index.html
+      - @font-face for Satoshi is declared
+      - Alert component still functions correctly
+    depends_on: [1, 2]
+    effort: 2
+    status: completed
+
+  - id: 7
+    github_issue: 39
+    milestone: 3
+    title: Restyle Home and Landing pages with card grid layout
+    description: |
+      Replace Container+pageWrapperCSS with PageWrapper on both pages.
+      Display algorithms as a responsive 2-column grid of cards (1 col on mobile).
+      Cards use subtleBackground, zero border-radius, and are clickable.
+    acceptance_criteria:
+      - Both pages use PageWrapper instead of Container + pageWrapperCSS
+      - Algorithms display as responsive grid of cards
+      - Cards have subtle background and zero border-radius
+      - Cards are clickable and navigate to the algorithm page
+    depends_on: [4, 5]
+    effort: 2
+    status: completed
+
+  - id: 8
+    github_issue: 40
+    milestone: 3
+    title: Migrate algorithm pages and shared components to new design system
+    description: |
+      Update AlgorithmWrapper to use PageWrapper. Replace hardcoded #363636 border
+      in Playlist with theme divider color. Update Search group header colors.
+      Ensure Loading component works in both modes. Migrate Changelog/Error/NotFound pages.
+    acceptance_criteria:
+      - All pages use PageWrapper instead of Container + pageWrapperCSS
+      - Playlist card border uses theme divider color
+      - Search group headers use theme-aware colors
+      - No hardcoded color values remain in modified components
+    depends_on: [4, 3]
+    effort: 2
+    status: completed

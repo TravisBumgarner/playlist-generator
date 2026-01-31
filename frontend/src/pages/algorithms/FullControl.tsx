@@ -1,18 +1,16 @@
 import { Search } from 'sharedComponents'
-import { useLazyQuery } from '@apollo/client/react'
 import { Box, Button, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import {
   EFilterOption,
   EFilterValue,
   stringifyFilters,
-  type TAlgorithmFullControl,
   type TAutocompleteEntry,
   type TFilter,
   type TSharedAlgorithmRequestParams,
 } from 'playlist-generator-utilities'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { playlistFullControl } from '../../api'
 import AlgorithmWrapper from './AlgorithmWrapper'
-import { FULL_CONTROL } from './queries'
 
 interface FilterOptionInfo {
   title: string
@@ -166,10 +164,6 @@ interface FullControlParams {
 const FullControl = ({ title, description }: FullControlParams) => {
   const [selectedEntry, setSelectedEntry] = useState<TAutocompleteEntry | null>(null)
   const [selectedFilters, setSelectedFilters] = useState<TFilter[]>([])
-  const [createPlaylistFullControl] = useLazyQuery<
-    { playlistFullControl: TAlgorithmFullControl['Response'] },
-    TAlgorithmFullControl['Request']
-  >(FULL_CONTROL, { fetchPolicy: 'network-only' })
 
   const resetState = useCallback(() => {
     setSelectedEntry(null)
@@ -185,17 +179,15 @@ const FullControl = ({ title, description }: FullControlParams) => {
 
   const apiCall = useCallback(
     async (shared: TSharedAlgorithmRequestParams) => {
-      const result = await createPlaylistFullControl({
-        variables: {
-          selectedId: selectedEntry!.id,
-          selectedType: selectedEntry!.type,
-          filters: stringifyFilters(selectedFilters),
-          ...shared,
-        },
+      const result = await playlistFullControl({
+        selectedId: selectedEntry!.id,
+        selectedType: selectedEntry!.type,
+        filters: stringifyFilters(selectedFilters),
+        ...shared,
       })
-      return result.data?.playlistFullControl
+      return result.success ? result.data : undefined
     },
-    [selectedEntry, createPlaylistFullControl, selectedFilters],
+    [selectedEntry, selectedFilters],
   )
 
   const initialPlaylistDescription = useMemo(() => {

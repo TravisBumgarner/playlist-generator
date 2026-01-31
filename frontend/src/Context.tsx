@@ -15,7 +15,6 @@ interface State {
     uri: string
     market: string
   } | null
-  isMenuOpen: boolean
   isLoggingIn: boolean
   openModal: 'login' | null
 }
@@ -24,7 +23,6 @@ const EMPTY_STATE: State = {
   alert: null,
   hasErrored: false,
   user: null,
-  isMenuOpen: false,
   isLoggingIn: false,
   openModal: null,
 }
@@ -51,10 +49,6 @@ interface HasErrored {
   type: 'HAS_ERRORED'
 }
 
-interface ToggleMenu {
-  type: 'TOGGLE_MENU'
-}
-
 interface AddMessage {
   type: 'ADD_ALERT'
   data: {
@@ -77,16 +71,7 @@ interface CloseModal {
   type: 'CLOSE_MODAL'
 }
 
-type Action =
-  | AddMessage
-  | DeleteMessage
-  | HasErrored
-  | Login
-  | Logout
-  | ToggleMenu
-  | LoginInitiated
-  | OpenModal
-  | CloseModal
+type Action = AddMessage | DeleteMessage | HasErrored | Login | Logout | LoginInitiated | OpenModal | CloseModal
 
 const context = createContext({
   state: EMPTY_STATE,
@@ -98,9 +83,6 @@ const context = createContext({
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'TOGGLE_MENU': {
-      return { ...state, isMenuOpen: !state.isMenuOpen }
-    }
     case 'HAS_ERRORED': {
       return { ...state, hasErrored: true }
     }

@@ -1,10 +1,10 @@
 import { Loading, Playlist, TrackCount } from 'sharedComponents'
-import { Button, Container, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { context } from 'context'
 import type { TPlaylistEntry, TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import { type JSX, useCallback, useContext, useMemo, useState } from 'react'
-import { pageWrapperCSS } from 'theme'
 import { MIN_TRACK_COUNT } from '../../sharedComponents/TrackCount'
+import PageWrapper from '../../styles/shared/PageWrapper'
 
 interface AlgorithmWrapperProps {
   title: string
@@ -111,15 +111,15 @@ const AlgorithmWrapper = ({
   ])
 
   return (
-    <Container css={pageWrapperCSS}>
+    <PageWrapper>
       <Typography variant="h2" gutterBottom>
         {title}
       </Typography>
       <Typography textAlign="center" variant="body1" gutterBottom>
         {description}
       </Typography>
-      <Container>{Content}</Container>
-    </Container>
+      <Box sx={{ width: '100%' }}>{Content}</Box>
+    </PageWrapper>
   )
 }
 

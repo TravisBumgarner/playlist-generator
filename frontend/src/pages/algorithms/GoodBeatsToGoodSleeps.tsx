@@ -1,13 +1,8 @@
 import { Search } from 'sharedComponents'
-import { useLazyQuery } from '@apollo/client/react'
-import type {
-  TAlgorithmGoodBeatsToGoodSleeps,
-  TAutocompleteEntry,
-  TSharedAlgorithmRequestParams,
-} from 'playlist-generator-utilities'
+import type { TAutocompleteEntry, TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import { useCallback, useState } from 'react'
+import { playlistGoodBeatsToGoodSleeps } from '../../api'
 import AlgorithmWrapper from './AlgorithmWrapper'
-import { GOOD_BEATS_TO_GOOD_SLEEPS } from './queries'
 
 interface GoodBeatsToGoodSleepsProps {
   title: string
@@ -15,10 +10,6 @@ interface GoodBeatsToGoodSleepsProps {
 }
 const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps) => {
   const [selectedEntry, setSelectedEntry] = useState<TAutocompleteEntry | null>(null)
-  const [createPlaylistGoodBeatsToGoodSleeps] = useLazyQuery<
-    { playlistGoodBeatsToGoodSleeps: TAlgorithmGoodBeatsToGoodSleeps['Response'] },
-    TAlgorithmGoodBeatsToGoodSleeps['Request']
-  >(GOOD_BEATS_TO_GOOD_SLEEPS, { fetchPolicy: 'network-only' })
 
   const resetState = useCallback(() => {
     setSelectedEntry(null)
@@ -30,12 +21,14 @@ const GoodBetsToGoodSleeps = ({ title, description }: GoodBeatsToGoodSleepsProps
 
   const apiCall = useCallback(
     async (shared: TSharedAlgorithmRequestParams) => {
-      const result = await createPlaylistGoodBeatsToGoodSleeps({
-        variables: { selectedId: selectedEntry!.id, selectedType: selectedEntry!.type, ...shared },
+      const result = await playlistGoodBeatsToGoodSleeps({
+        selectedId: selectedEntry!.id,
+        selectedType: selectedEntry!.type,
+        ...shared,
       })
-      return result.data?.playlistGoodBeatsToGoodSleeps
+      return result.success ? result.data : undefined
     },
-    [selectedEntry, createPlaylistGoodBeatsToGoodSleeps],
+    [selectedEntry],
   )
 
   return (

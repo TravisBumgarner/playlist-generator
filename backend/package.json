@@ -19,22 +19,16 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^4.17.2",
-    "graphql": "^16.12.0",
-    "graphql-http": "^1.22.4",
-    "graphql-subscriptions": "^2.0.0",
-    "graphql-ws": "^6.0.7",
     "playlist-generator-utilities": "^1.0.22",
     "runtypes": "^6.6.0",
     "ts-node": "^10.9.2",
-    "uuid": "^9",
-    "ws": "^8.19.0"
+    "uuid": "^9"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^22",
     "@types/uuid": "^9",
-    "@types/ws": "^8.18.1",
     "nodemon": "^3.1.11",
     "typescript": "^5"
   }

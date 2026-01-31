@@ -1,14 +1,9 @@
 import { Search } from 'sharedComponents'
-import { useLazyQuery } from '@apollo/client/react'
 
-import type {
-  TAlgorithmGradient,
-  TAutocompleteEntry,
-  TSharedAlgorithmRequestParams,
-} from 'playlist-generator-utilities'
+import type { TAutocompleteEntry, TSharedAlgorithmRequestParams } from 'playlist-generator-utilities'
 import { useCallback, useState } from 'react'
+import { playlistGradient } from '../../api'
 import AlgorithmWrapper from './AlgorithmWrapper'
-import { GRADIENT } from './queries'
 
 interface GradientParams {
   title: string
@@ -17,10 +12,6 @@ interface GradientParams {
 const Gradient = ({ title, description }: GradientParams) => {
   const [startWith, setStartWith] = useState<TAutocompleteEntry | null>(null)
   const [endWith, setEndWith] = useState<TAutocompleteEntry | null>(null)
-  const [createPlaylistGradient] = useLazyQuery<
-    { playlistGradient: TAlgorithmGradient['Response'] },
-    TAlgorithmGradient['Request']
-  >(GRADIENT, { fetchPolicy: 'network-only' })
 
   const resetState = useCallback(() => {
     setStartWith(null)
@@ -37,20 +28,16 @@ const Gradient = ({ title, description }: GradientParams) => {
 
   const apiCall = useCallback(
     async (shared: TSharedAlgorithmRequestParams) => {
-      const result = await createPlaylistGradient({
-        variables: {
-          startWithId: startWith!.id,
-          startWithType: startWith!.type,
-          endWithId: endWith!.id,
-          endWithType: endWith!.type,
-          ...shared,
-        },
+      const result = await playlistGradient({
+        startWithId: startWith!.id,
+        startWithType: startWith!.type,
+        endWithId: endWith!.id,
+        endWithType: endWith!.type,
+        ...shared,
       })
-      if (result.data?.playlistGradient != null) {
-        return result.data?.playlistGradient
-      }
+      return result.success ? result.data : undefined
     },
-    [startWith, endWith, createPlaylistGradient],
+    [startWith, endWith],
   )
 
   return (
