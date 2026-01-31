@@ -108,6 +108,19 @@ const baseThemeOptions: ThemeOptions = {
         },
       },
     },
+    MuiSlider: {
+      styleOverrides: {
+        thumb: {
+          borderRadius: BORDER_RADIUS.ZERO.PX,
+        },
+        track: {
+          borderRadius: BORDER_RADIUS.ZERO.PX,
+        },
+        rail: {
+          borderRadius: BORDER_RADIUS.ZERO.PX,
+        },
+      },
+    },
   },
   typography: {
     fontFamily: '"Satoshi", "Roboto", "Helvetica", "Arial", sans-serif',
@@ -206,6 +219,22 @@ const getThemeOptions = (mode: 'light' | 'dark'): ThemeOptions => ({
           '&:visited': {
             color: mode === 'light' ? PALETTE.grayscale[800] : PALETTE.grayscale[100],
           },
+        },
+      },
+    },
+    MuiSlider: {
+      styleOverrides: {
+        thumb: {
+          color: mode === 'light' ? PALETTE.grayscale[900] : PALETTE.grayscale[100],
+        },
+        track: {
+          color: mode === 'light' ? PALETTE.grayscale[900] : PALETTE.grayscale[100],
+        },
+        rail: {
+          color: mode === 'light' ? PALETTE.grayscale[400] : PALETTE.grayscale[600],
+        },
+        markLabel: {
+          color: mode === 'light' ? PALETTE.grayscale[700] : PALETTE.grayscale[300],
         },
       },
     },

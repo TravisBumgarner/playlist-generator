@@ -1,65 +1,42 @@
-import { Description } from '@mui/icons-material'
-import { Box, List, ListItem, ListItemText, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import PageWrapper from '../styles/shared/PageWrapper'
+import { SPACING } from '../styles/styleConsts'
 
-const changelogData: Array<{ version: string; date: string; title: string; notes: string[] }> = [
+const changelogData: Array<{ version: string; date: string; notes: string[] }> = [
   {
     version: '1.1.0',
     date: 'July 4, 2023',
     notes: [
       'Added descriptions for playlists.',
-      'Added the ability to search for tracks in addition to artists.',
-      'To accommodate the above change, the "From Artist to Artist" algorithm has been renamed to "Gradient", and the "Gradient" algorithm has been renamed to "Mashup".',
+      'Added track search in addition to artist search.',
+      'Renamed "From Artist to Artist" to "Gradient" and "Gradient" to "Mashup".',
     ],
-    title: 'Playlist Descriptions, Track Search, and Algorithm Renaming',
   },
   {
     version: '1.0.0',
     date: 'June 22, 2023',
-    notes: [
-      'Added Artist Mashup Algorithm.',
-      'Added From Artist to Artist Algorithm.',
-      'Added Full Control Algorithm.',
-      'Added Good Beats to Good Sleeps Algorithm.',
-    ],
-    title: 'Initial Release',
+    notes: ['Artist Mashup, From Artist to Artist, Full Control, and Good Beats to Good Sleeps algorithms.'],
   },
 ]
 
 const Changelog = () => {
   return (
-    <PageWrapper>
+    <PageWrapper width="small">
       <Typography variant="h2" gutterBottom>
         Changelog
       </Typography>
-      <Typography textAlign="center" variant="body1" gutterBottom>
-        As I tweak playlist generators and make other changes, I will to track them here.
-      </Typography>
-      <Box sx={{ width: '100%' }}>
-        <List>
-          {changelogData.map((entry, index) => (
-            <ListItem key={index} disablePadding>
-              <ListItemText
-                sx={{ width: '30%' }}
-                primary={`${entry.version} - ${entry.title}`}
-                secondary={entry.date}
-                primaryTypographyProps={{ variant: 'h6' }}
-                secondaryTypographyProps={{ variant: 'subtitle1' }}
-              />
-              <Typography variant="body1" sx={{ marginLeft: '2rem', width: '70%' }}>
-                <List>
-                  {entry.notes.map((note, noteIndex) => (
-                    <ListItem key={noteIndex}>
-                      <Description sx={{ marginRight: '0.5rem' }} />
-                      <ListItemText primary={note} />
-                    </ListItem>
-                  ))}
-                </List>
-              </Typography>
-            </ListItem>
+      {changelogData.map((entry) => (
+        <Box key={entry.version} sx={{ width: '100%', marginBottom: SPACING.MEDIUM.PX }}>
+          <Typography variant="body2" sx={{ opacity: 0.6 }}>
+            {entry.version} &middot; {entry.date}
+          </Typography>
+          {entry.notes.map((note, i) => (
+            <Typography key={i} variant="body1">
+              {note}
+            </Typography>
           ))}
-        </List>
-      </Box>
+        </Box>
+      ))}
     </PageWrapper>
   )
 }
