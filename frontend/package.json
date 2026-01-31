@@ -13,7 +13,7 @@
     "@types/lodash": "^4.17.23",
     "axios": "^1.13.4",
     "lodash": "^4.17.23",
-    "playlist-generator-utilities": "^1.0.22",
+    "playlist-generator-utilities": "*",
     "polished": "^4.3.1",
     "react": "^19",
     "react-dom": "^19",

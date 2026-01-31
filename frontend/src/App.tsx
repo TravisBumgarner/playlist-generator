@@ -69,7 +69,7 @@ const App = () => {
   const updateTokenLocalStorage = useCallback(
     (args: { accessToken: string; expiresIn: string | number; refreshToken: string }) => {
       const expiresAt = new Date()
-      expiresAt.setDate(expiresAt.getDate() + parseInt(String(args.expiresIn), 10) * 1000) // expiresIn is in seconds
+      expiresAt.setDate(expiresAt.getDate() + parseInt(`${args.expiresIn}`, 10) * 1000) // expiresIn is in seconds
 
       setLocalStorage(ELocalStorageItems.AccessToken, args.accessToken)
       setLocalStorage(ELocalStorageItems.ExpiresAt, expiresAt)

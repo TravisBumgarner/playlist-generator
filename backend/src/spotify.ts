@@ -126,9 +126,20 @@ export type GetRecommendationsForPlaylistOptions = {
   max_energy?: number
   target_energy?: number
   target_danceability?: number
+  min_danceability?: number
+  max_danceability?: number
   target_popularity?: number
+  min_popularity?: number
+  max_popularity?: number
   target_tempo?: number
+  min_tempo?: number
+  max_tempo?: number
   target_valence?: number
+  min_valence?: number
+  max_valence?: number
+  target_acousticness?: number
+  min_acousticness?: number
+  max_acousticness?: number
 }
 
 type Options = { seed_artists: string[]; seed_tracks: string[]; market: string; limit: number }
@@ -182,6 +193,17 @@ export const getRecommendationsForPlaylist = async (
       ...(options.target_popularity !== undefined && { target_popularity: options.target_popularity.toString() }),
       ...(options.target_tempo !== undefined && { target_tempo: options.target_tempo.toString() }),
       ...(options.target_valence !== undefined && { target_valence: options.target_valence.toString() }),
+      ...(options.min_danceability !== undefined && { min_danceability: options.min_danceability.toString() }),
+      ...(options.max_danceability !== undefined && { max_danceability: options.max_danceability.toString() }),
+      ...(options.min_popularity !== undefined && { min_popularity: options.min_popularity.toString() }),
+      ...(options.max_popularity !== undefined && { max_popularity: options.max_popularity.toString() }),
+      ...(options.min_tempo !== undefined && { min_tempo: options.min_tempo.toString() }),
+      ...(options.max_tempo !== undefined && { max_tempo: options.max_tempo.toString() }),
+      ...(options.min_valence !== undefined && { min_valence: options.min_valence.toString() }),
+      ...(options.max_valence !== undefined && { max_valence: options.max_valence.toString() }),
+      ...(options.target_acousticness !== undefined && { target_acousticness: options.target_acousticness.toString() }),
+      ...(options.min_acousticness !== undefined && { min_acousticness: options.min_acousticness.toString() }),
+      ...(options.max_acousticness !== undefined && { max_acousticness: options.max_acousticness.toString() }),
     })
 
     const response = await axios.get(`https://api.spotify.com/v1/recommendations?${params.toString()}`, {

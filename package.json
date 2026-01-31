@@ -1,12 +1,11 @@
 {
+  "workspaces": ["utilities", "backend", "frontend"],
   "dependencies": {
     "concurrently": "^9.2.1"
   },
   "scripts": {
-    "dev": "concurrently -n frontend,backend,utilities -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"cd frontend && yarn run dev\" \"cd backend && yarn run dev\" \"cd utilities && yarn start\"",
-    "deploy:nfs": "concurrently -n backend,frontend -c \"bgMagenta.bold,bgBlue.bold\" \"cd backend && yarn deploy:nfs\" \"cd frontend && yarn deploy:nfs\"",
-    "deploy-with-package:nfs": "cd utilities && yarn deploy && cd ../backend && yarn deploy:nfs && cd ../frontend && yarn deploy:nfs",
-    "bootstrap": "cd utilities && yarn && cd ../backend && yarn && cd ../frontend && yarn"
+    "dev": "concurrently -n frontend,backend,utilities -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"npm run dev --workspace=frontend\" \"npm run dev --workspace=backend\" \"npm start --workspace=utilities\"",
+    "deploy:nfs": "concurrently -n backend,frontend -c \"bgMagenta.bold,bgBlue.bold\" \"npm run deploy:nfs --workspace=backend\" \"npm run deploy:nfs --workspace=frontend\""
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.13"

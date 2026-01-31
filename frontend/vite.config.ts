@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
     define: envVars[env],
     resolve: {
       alias: {
+        'playlist-generator-utilities': path.resolve(__dirname, '../utilities/src/index.ts'),
         sharedComponents: path.resolve(__dirname, 'src/sharedComponents/'),
         sharedTypes: path.resolve(__dirname, 'src/sharedTypes/index.ts'),
         theme: path.resolve(__dirname, 'src/theme.tsx'),

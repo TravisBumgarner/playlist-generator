@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ES5",
+        "target": "ES2020",
         "resolveJsonModule": true,
         "strict": true,
         "baseUrl": ".",
@@ -16,7 +16,8 @@
         "sourceMap": true,
         "strictNullChecks": true,
         "esModuleInterop": true,
-        "outDir": "build/"
+        "outDir": "build/",
+        "declaration": true
     },
     "include": [
         "src/**/*"
