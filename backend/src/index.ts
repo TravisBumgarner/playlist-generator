@@ -2,7 +2,8 @@ import * as Sentry from '@sentry/node'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import express from 'express'
-import { graphqlHTTP } from 'express-graphql'
+import { createHandler } from 'graphql-http/lib/use/express'
+import { GraphQLError } from 'graphql'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { WebSocketServer } from 'ws'
 import https from 'https'
@@ -62,20 +63,15 @@ app.get(
   }
 )
 
-app.use(
+app.all(
   '/graphql',
-  graphqlHTTP(() => ({
+  createHandler({
     schema,
-    graphiql: process.env.NODE_ENV !== 'production',
-    customFormatErrorFn: (err: any) => {
+    formatError: (err) => {
       logger(err.message)
-      // if (err.message in errorLookup) return errorLookup[err.message]
-      return {
-        statusCode: 500,
-        message: 'Something went wrong',
-      }
+      return new GraphQLError('Something went wrong')
     },
-  }))
+  })
 )
 
 app.use(Sentry.Handlers.errorHandler())
