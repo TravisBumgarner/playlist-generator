@@ -12,6 +12,7 @@ import { theme } from 'theme'
 import useAsyncEffect from 'use-async-effect'
 import { ELocalStorageItems, getLocalStorage, logger, logout, setLocalStorage } from 'utilities'
 import { Footer, Header, Navigation, Router } from './components'
+import { SpotifyPlayerProvider } from './SpotifyPlayerContext'
 
 const REFRESH_TOKEN_QUERY = gql`
 query RefreshToken($refreshToken: String!) {
@@ -165,15 +166,17 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-        <Header />
-        <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
-          <Navigation />
-          <Router />
-          {OpenModal}
+      <SpotifyPlayerProvider>
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+          <Header />
+          <Box sx={{ overflowY: 'auto', flexGrow: 1 }}>
+            <Navigation />
+            <Router />
+            {OpenModal}
+          </Box>
+          <Footer />
         </Box>
-        <Footer />
-      </Box>
+      </SpotifyPlayerProvider>
     </ThemeProvider>
   )
 }

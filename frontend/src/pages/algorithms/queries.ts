@@ -15,7 +15,6 @@ const Playlist = gql`
     uri
     image
     href
-    previewUrl
   }
 `
 
