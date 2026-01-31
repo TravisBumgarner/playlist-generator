@@ -5,8 +5,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const PLUGIN_VARS = {
   local: {
-    __API_WS_ENDPOINT__: "'ws://127.0.0.1:8000/graphql'",
-    __API_HTTP_ENDPOINT__: "'http://127.0.0.1:8000/graphql'",
+    __API_WS_ENDPOINT__: "'wss://127.0.0.1:8000/graphql'",
+    __API_HTTP_ENDPOINT__: "'https://127.0.0.1:8000/graphql'",
     __LOGGING_LEVEL__: "'local'"
   },
   production: {

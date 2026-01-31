@@ -5,6 +5,9 @@ import express from 'express'
 import { graphqlHTTP } from 'express-graphql'
 import { useServer } from 'graphql-ws/lib/use/ws'
 import { WebSocketServer } from 'ws'
+import https from 'https'
+import fs from 'fs'
+import path from 'path'
 import config from './config'
 
 import schema from './schemas'
@@ -32,7 +35,7 @@ Sentry.init({
 app.use(Sentry.Handlers.requestHandler())
 app.use(Sentry.Handlers.tracingHandler())
 
-const CORS_DEV = ['http://127.0.0.1:3000']
+const CORS_DEV = ['http://127.0.0.1:3000', 'http://localhost:3000', 'https://127.0.0.1:3000', 'https://localhost:3000']
 const CORS_PROD = ['https://playlists.sillysideprojects.com']
 
 app.use(
@@ -79,9 +82,24 @@ app.use(Sentry.Handlers.errorHandler())
 
 const PORT = 8000
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`App listening at http://0.0.0.0:${PORT}`)
-})
+let server: https.Server | import("http").Server
+if (config.isProd) {
+  server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`App listening at http://0.0.0.0:${PORT}`)
+  })
+} else {
+  server = https.createServer(
+    {
+      key: fs.readFileSync(path.join(__dirname, '/../localhost-key.pem')),
+      cert: fs.readFileSync(path.join(__dirname, '/../localhost.pem')),
+    },
+    app
+  )
+
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`App listening at https://127.0.0.1:${PORT}`)
+  })
+}
 
 const wsServer = new WebSocketServer({ server, path: '/graphql' })
 useServer({ schema }, wsServer)

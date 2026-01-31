@@ -16,7 +16,7 @@ const getNonSecretKeys = () => {
     if (process.env.NODE_ENV !== 'production') {
         return {
             frontendUrl: 'http://127.0.0.1:3000',
-            spotifyRedirectURI: 'http://127.0.0.1:8000/spotify_redirect',
+            spotifyRedirectURI: 'https://127.0.0.1:8000/spotify_redirect',
         }
     }
     return {
